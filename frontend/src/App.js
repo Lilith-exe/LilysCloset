@@ -230,15 +230,20 @@ const App = () => {
     const ctx = canvas.getContext('2d');
     const img = imageRef.current;
 
-    // Set canvas size
-    canvas.width = cropSize.width;
-    canvas.height = cropSize.height;
+    // Set high quality canvas size - use actual crop dimensions for better quality
+    const finalSize = 800; // Higher resolution output
+    canvas.width = finalSize;
+    canvas.height = finalSize;
 
     // Calculate scale factors
     const scaleX = img.naturalWidth / img.width;
     const scaleY = img.naturalHeight / img.height;
 
-    // Draw cropped image
+    // Enable high quality rendering
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+
+    // Draw cropped image at high quality
     ctx.drawImage(
       img,
       cropPosition.x * scaleX,
@@ -247,11 +252,12 @@ const App = () => {
       cropSize.height * scaleY,
       0,
       0,
-      cropSize.width,
-      cropSize.height
+      finalSize,
+      finalSize
     );
 
-    const croppedBase64 = canvas.toDataURL('image/jpeg', 0.9);
+    // Use high quality JPEG with 95% quality
+    const croppedBase64 = canvas.toDataURL('image/jpeg', 0.95);
     setCroppedImage(croppedBase64);
     
     if (editingItem) {
