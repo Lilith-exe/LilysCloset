@@ -100,13 +100,8 @@ const App = () => {
     fetchClothingItems();
     fetchCategories();
     fetchTagCategories();
+    fetchAvailableTags();
     fetchStats();
-    
-    // Load category-specific tags from localStorage
-    const savedCategoryTags = localStorage.getItem('categorySpecificTags');
-    if (savedCategoryTags) {
-      setCategorySpecificTags(JSON.parse(savedCategoryTags));
-    }
   }, []);
 
   // Filter items when search query, category, or tags change
