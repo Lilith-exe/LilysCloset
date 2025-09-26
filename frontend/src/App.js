@@ -175,6 +175,24 @@ const App = () => {
     }
   };
 
+  const fetchAvailableTags = async () => {
+    try {
+      const response = await axios.get(`${API}/tags`);
+      setAvailableTags(response.data);
+    } catch (error) {
+      console.error('Error fetching available tags:', error);
+    }
+  };
+
+  const fetchSubcategories = async (parentCategory) => {
+    try {
+      const response = await axios.get(`${API}/subcategories/${parentCategory}`);
+      setSubcategories(prev => ({ ...prev, [parentCategory]: response.data }));
+    } catch (error) {
+      console.error('Error fetching subcategories:', error);
+    }
+  };
+
   const fetchStats = async () => {
     try {
       const response = await axios.get(`${API}/stats`);
