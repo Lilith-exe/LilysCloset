@@ -1017,6 +1017,7 @@ const App = () => {
         <div className="flex-1 p-6">
           {currentPage === 'home' && <HomePage />}
           {currentPage === 'stats' && <StatsPage />}
+          {currentPage === 'settings' && <SettingsPage />}
           
           {currentPage === 'catalog' && (
             <div className="space-y-6">
