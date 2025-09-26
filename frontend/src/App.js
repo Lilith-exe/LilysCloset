@@ -56,6 +56,7 @@ const getColorOrder = () => {
 
 const App = () => {
   const [currentPage, setCurrentPage] = useState('home');
+  const [selectedSubcategoryParent, setSelectedSubcategoryParent] = useState(null);
   const [clothingItems, setClothingItems] = useState([]);
   const [categories, setCategories] = useState([]);
   const [tagCategories, setTagCategories] = useState([]);
