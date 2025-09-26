@@ -33,19 +33,25 @@ const getCategoryIcon = (categoryName) => {
   return iconUrls[key] || 'https://cdn-icons-png.flaticon.com/128/7183/7183097.png'; // Default to hanger
 };
 
-// Color mapping for color tags
+// Color mapping for color tags - rainbow order with proper colors
 const getColorHex = (colorName) => {
   const colors = {
-    'red': '#EF4444', 'pink': '#EC4899', 'purple': '#8B5CF6', 'blue': '#3B82F6',
-    'green': '#10B981', 'yellow': '#F59E0B', 'orange': '#F97316', 'brown': '#92400E',
-    'black': '#1F2937', 'white': '#F9FAFB', 'gray': '#6B7280', 'grey': '#6B7280',
+    'red': '#EF4444', 'orange': '#F97316', 'yellow': '#FDE047', 'green': '#22C55E', 
+    'blue': '#3B82F6', 'indigo': '#6366F1', 'purple': '#8B5CF6', 'pink': '#EC4899',
+    'white': '#F9FAFB', 'gray': '#6B7280', 'grey': '#6B7280', 'black': '#1F2937',
     'navy': '#1E3A8A', 'maroon': '#7F1D1D', 'beige': '#D2B48C', 'cream': '#FEF3C7',
     'gold': '#F59E0B', 'silver': '#9CA3AF', 'rose': '#FB7185', 'coral': '#FF7F7F',
-    'mint': '#6EE7B7', 'lavender': '#C4B5FD', 'turquoise': '#06B6D4', 'olive': '#84CC16'
+    'mint': '#6EE7B7', 'lavender': '#C4B5FD', 'turquoise': '#06B6D4', 'olive': '#84CC16',
+    'brown': '#92400E', 'rainbow': 'linear-gradient(90deg, #ff0000, #ff8000, #ffff00, #80ff00, #00ff00, #00ff80, #00ffff, #0080ff, #0000ff, #8000ff, #ff00ff, #ff0080)'
   };
   
   const key = colorName.toLowerCase();
   return colors[key] || '#6B7280'; // Default to gray
+};
+
+// Rainbow order for color tags
+const getColorOrder = () => {
+  return ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'purple', 'pink', 'white', 'gray', 'black', 'rainbow'];
 };
 
 const App = () => {
