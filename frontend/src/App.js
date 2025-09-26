@@ -533,7 +533,213 @@ const App = () => {
     </div>
   );
 
-  // Stats Page Component
+  // Settings Page Component
+  const SettingsPage = () => {
+    const [newCategoryIcon, setNewCategoryIcon] = useState('');
+    const [selectedCategoryForIcon, setSelectedCategoryForIcon] = useState('');
+    const [newCategorySpecificTag, setNewCategorySpecificTag] = useState('');
+    const [selectedCategoryForTag, setSelectedCategoryForTag] = useState('');
+    const [selectedTagTypeForCategory, setSelectedTagTypeForCategory] = useState('');
+
+    const handleUploadCategoryIcon = () => {
+      if (selectedCategoryForIcon && newCategoryIcon) {
+        // In a real implementation, this would upload the icon to the server
+        alert(`Icon uploaded for ${selectedCategoryForIcon}`);
+        setNewCategoryIcon('');
+        setSelectedCategoryForIcon('');
+      }
+    };
+
+    const handleDeleteCategory = async (categoryId, categoryName) => {
+      if (window.confirm(`Are you sure you want to delete the "${categoryName}" category? This will not delete items in this category.`)) {
+        try {
+          await axios.delete(`${API}/categories/${categoryId}`);
+          fetchCategories();
+          alert('Category deleted successfully');
+        } catch (error) {
+          console.error('Error deleting category:', error);
+          alert('Error deleting category');
+        }
+      }
+    };
+
+    const handleAddCategorySpecificTag = () => {
+      if (selectedCategoryForTag && selectedTagTypeForCategory && newCategorySpecificTag) {
+        const key = `${selectedCategoryForTag}-${selectedTagTypeForCategory}`;
+        const updated = { ...categorySpecificTags };
+        if (!updated[key]) updated[key] = [];
+        if (!updated[key].includes(newCategorySpecificTag)) {
+          updated[key].push(newCategorySpecificTag);
+          setCategorySpecificTags(updated);
+          // Save to localStorage for persistence
+          localStorage.setItem('categorySpecificTags', JSON.stringify(updated));
+        }
+        setNewCategorySpecificTag('');
+      }
+    };
+
+    const handleRemoveCategorySpecificTag = (category, tagType, tag) => {
+      const key = `${category}-${tagType}`;
+      const updated = { ...categorySpecificTags };
+      if (updated[key]) {
+        updated[key] = updated[key].filter(t => t !== tag);
+        if (updated[key].length === 0) delete updated[key];
+        setCategorySpecificTags(updated);
+        localStorage.setItem('categorySpecificTags', JSON.stringify(updated));
+      }
+    };
+
+    return (
+      <div className="space-y-8">
+        <div className="text-center">
+          <h2 className="text-3xl font-bold text-gray-800 mb-2">Settings</h2>
+          <p className="text-gray-600">Manage your categories, icons, and tags</p>
+        </div>
+
+        {/* Category Management */}
+        <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+          <h3 className="text-xl font-semibold text-gray-800 mb-4">Category Management</h3>
+          
+          {/* Upload Category Icon */}
+          <div className="mb-6">
+            <h4 className="font-medium text-gray-700 mb-3">Upload Category Icon</h4>
+            <div className="flex gap-3">
+              <select
+                value={selectedCategoryForIcon}
+                onChange={(e) => setSelectedCategoryForIcon(e.target.value)}
+                className="px-3 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-300 outline-none bg-white"
+              >
+                <option value="">Select Category</option>
+                {categories.map(category => (
+                  <option key={category.id} value={category.name}>{category.name}</option>
+                ))}
+              </select>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  const file = e.target.files[0];
+                  if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => setNewCategoryIcon(e.target.result);
+                    reader.readAsDataURL(file);
+                  }
+                }}
+                className="flex-1 px-3 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-300 outline-none"
+              />
+              <button
+                onClick={handleUploadCategoryIcon}
+                className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-xl transition-colors"
+              >
+                Upload
+              </button>
+            </div>
+          </div>
+
+          {/* Delete Categories */}
+          <div>
+            <h4 className="font-medium text-gray-700 mb-3">Delete Categories</h4>
+            <div className="space-y-2">
+              {categories.map(category => (
+                <div key={category.id} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                  <span className="font-medium">{category.name}</span>
+                  <button
+                    onClick={() => handleDeleteCategory(category.id, category.name)}
+                    className="bg-red-100 hover:bg-red-200 text-red-700 px-3 py-1 rounded-lg text-sm transition-colors"
+                  >
+                    Delete
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Category-Specific Tags */}
+        <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+          <h3 className="text-xl font-semibold text-gray-800 mb-4">Category-Specific Tags</h3>
+          <p className="text-gray-600 mb-4">Add tags that are only available for specific categories (e.g., "cropped" for tops, "choker" for accessories)</p>
+          
+          {/* Add Category-Specific Tag */}
+          <div className="mb-6">
+            <h4 className="font-medium text-gray-700 mb-3">Add Category-Specific Tag</h4>
+            <div className="flex gap-3 mb-3">
+              <select
+                value={selectedCategoryForTag}
+                onChange={(e) => setSelectedCategoryForTag(e.target.value)}
+                className="px-3 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-300 outline-none bg-white"
+              >
+                <option value="">Select Category</option>
+                {categories.map(category => (
+                  <option key={category.id} value={category.name}>{category.name}</option>
+                ))}
+              </select>
+              <select
+                value={selectedTagTypeForCategory}
+                onChange={(e) => setSelectedTagTypeForCategory(e.target.value)}
+                className="px-3 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-300 outline-none bg-white"
+              >
+                <option value="">Select Tag Type</option>
+                {tagCategories.map(tagCat => (
+                  <option key={tagCat.id} value={tagCat.name}>{tagCat.name}</option>
+                ))}
+              </select>
+              <input
+                type="text"
+                value={newCategorySpecificTag}
+                onChange={(e) => setNewCategorySpecificTag(e.target.value)}
+                placeholder="Tag name (e.g., cropped, choker)"
+                className="flex-1 px-3 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-300 outline-none"
+              />
+              <button
+                onClick={handleAddCategorySpecificTag}
+                className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-xl transition-colors"
+              >
+                Add
+              </button>
+            </div>
+          </div>
+
+          {/* Display Category-Specific Tags */}
+          <div>
+            <h4 className="font-medium text-gray-700 mb-3">Current Category-Specific Tags</h4>
+            {Object.keys(categorySpecificTags).length === 0 ? (
+              <p className="text-gray-500 italic">No category-specific tags yet</p>
+            ) : (
+              <div className="space-y-3">
+                {Object.entries(categorySpecificTags).map(([key, tags]) => {
+                  const [category, tagType] = key.split('-');
+                  return (
+                    <div key={key} className="p-3 bg-gray-50 rounded-lg">
+                      <h5 className="font-medium text-gray-800 mb-2">
+                        {category} - {tagType}
+                      </h5>
+                      <div className="flex flex-wrap gap-2">
+                        {tags.map(tag => (
+                          <span
+                            key={tag}
+                            className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-800"
+                          >
+                            {tag}
+                            <button
+                              onClick={() => handleRemoveCategorySpecificTag(category, tagType, tag)}
+                              className="ml-2 text-red-600 hover:text-red-800"
+                            >
+                              ×
+                            </button>
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  };
   const StatsPage = () => (
     <div className="space-y-8">
       <div className="text-center">
