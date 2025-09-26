@@ -93,7 +93,6 @@ const App = () => {
   });
   const [newCategory, setNewCategory] = useState('');
   const [newTagCategory, setNewTagCategory] = useState('');
-  const [newTag, setNewTag] = useState({ type: '', value: '' });
 
   // Load data on component mount
   useEffect(() => {
@@ -161,6 +160,12 @@ const App = () => {
     try {
       const response = await axios.get(`${API}/categories`);
       setCategories(response.data);
+      
+      // Fetch subcategories for accessories
+      const accessoriesCategory = response.data.find(cat => cat.name.toLowerCase() === 'accessories');
+      if (accessoriesCategory) {
+        fetchSubcategories('accessories');
+      }
     } catch (error) {
       console.error('Error fetching categories:', error);
     }
@@ -282,36 +287,6 @@ const App = () => {
     
     setShowCropModal(false);
     setOriginalImage(null);
-  };
-
-  const handleAddTag = () => {
-    if (newTag.value.trim() && newTag.type) {
-      const targetData = editingItem || formData;
-      const updatedTags = { ...targetData.tags };
-      if (!updatedTags[newTag.type]) {
-        updatedTags[newTag.type] = [];
-      }
-      updatedTags[newTag.type] = [...updatedTags[newTag.type], newTag.value.trim()];
-      
-      if (editingItem) {
-        setEditingItem({ ...editingItem, tags: updatedTags });
-      } else {
-        setFormData({ ...formData, tags: updatedTags });
-      }
-      setNewTag({ ...newTag, value: '' });
-    }
-  };
-
-  const handleRemoveTag = (tagType, tagValue) => {
-    const targetData = editingItem || formData;
-    const updatedTags = { ...targetData.tags };
-    updatedTags[tagType] = updatedTags[tagType].filter(tag => tag !== tagValue);
-    
-    if (editingItem) {
-      setEditingItem({ ...editingItem, tags: updatedTags });
-    } else {
-      setFormData({ ...formData, tags: updatedTags });
-    }
   };
 
   const handleSubmitItem = async (e) => {
@@ -445,22 +420,15 @@ const App = () => {
     );
   };
 
-  const getAllAvailableTags = (category, tagType) => {
-    return getAvailableTagsForCategory(category, tagType);
-  };
-
   const getAllTags = () => {
     const allTags = {};
-    clothingItems.forEach(item => {
-      Object.entries(item.tags).forEach(([type, tags]) => {
-        if (!allTags[type]) allTags[type] = new Set();
-        tags.forEach(tag => allTags[type].add(tag));
-      });
-    });
     
-    // Convert sets to arrays
-    Object.keys(allTags).forEach(type => {
-      allTags[type] = Array.from(allTags[type]).sort();
+    // Get tags from available tags system filtered by current category
+    tagCategories.forEach(tagCat => {
+      const categoryTags = getAvailableTagsForCategory(selectedCategory, tagCat.name);
+      if (categoryTags.length > 0) {
+        allTags[tagCat.name] = categoryTags.map(tag => tag.name).sort();
+      }
     });
     
     return allTags;
@@ -510,6 +478,231 @@ const App = () => {
           alt={alt}
           className="w-full h-full object-contain"
         />
+      </div>
+    );
+  };
+
+  // Settings Page Component
+  const SettingsPage = () => {
+    const [newTag, setNewTag] = useState({ name: '', tag_type: '', categories: [] });
+    const [newSubcategory, setNewSubcategory] = useState({ name: '', parent_category: 'accessories' });
+
+    const handleAddTag = async () => {
+      if (!newTag.name || !newTag.tag_type) return;
+
+      try {
+        await axios.post(`${API}/tags`, newTag);
+        setNewTag({ name: '', tag_type: '', categories: [] });
+        fetchAvailableTags();
+        alert('Tag added successfully');
+      } catch (error) {
+        console.error('Error adding tag:', error);
+        alert('Error adding tag. It might already exist.');
+      }
+    };
+
+    const handleDeleteTag = async (tagId) => {
+      if (window.confirm('Are you sure you want to delete this tag?')) {
+        try {
+          await axios.delete(`${API}/tags/${tagId}`);
+          fetchAvailableTags();
+          alert('Tag deleted successfully');
+        } catch (error) {
+          console.error('Error deleting tag:', error);
+          alert('Error deleting tag');
+        }
+      }
+    };
+
+    const handleAddSubcategory = async () => {
+      if (!newSubcategory.name || !newSubcategory.parent_category) return;
+
+      try {
+        await axios.post(`${API}/subcategories`, newSubcategory);
+        setNewSubcategory({ name: '', parent_category: 'accessories' });
+        fetchSubcategories(newSubcategory.parent_category);
+        alert('Subcategory added successfully');
+      } catch (error) {
+        console.error('Error adding subcategory:', error);
+        alert('Error adding subcategory. It might already exist.');
+      }
+    };
+
+    const handleDeleteCategory = async (categoryId, categoryName) => {
+      if (window.confirm(`Are you sure you want to delete the "${categoryName}" category? This will not delete items in this category.`)) {
+        try {
+          await axios.delete(`${API}/categories/${categoryId}`);
+          fetchCategories();
+          alert('Category deleted successfully');
+        } catch (error) {
+          console.error('Error deleting category:', error);
+          alert('Error deleting category');
+        }
+      }
+    };
+
+    return (
+      <div className="space-y-8">
+        <div className="text-center">
+          <h2 className="text-3xl font-bold text-gray-800 mb-2">Settings</h2>
+          <p className="text-gray-600">Manage your categories, tags, and subcategories</p>
+        </div>
+
+        {/* Tag Management */}
+        <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+          <h3 className="text-xl font-semibold text-gray-800 mb-4">Tag Management</h3>
+          
+          {/* Add New Tag */}
+          <div className="mb-6">
+            <h4 className="font-medium text-gray-700 mb-3">Add New Tag</h4>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+              <input
+                type="text"
+                value={newTag.name}
+                onChange={(e) => setNewTag({ ...newTag, name: e.target.value })}
+                placeholder="Tag name (e.g., cropped, choker)"
+                className="px-3 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-300 outline-none"
+              />
+              <select
+                value={newTag.tag_type}
+                onChange={(e) => setNewTag({ ...newTag, tag_type: e.target.value })}
+                className="px-3 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-300 outline-none bg-white"
+              >
+                <option value="">Select Tag Type</option>
+                {tagCategories.map(tagCat => (
+                  <option key={tagCat.id} value={tagCat.name}>{tagCat.name}</option>
+                ))}
+              </select>
+              <select
+                multiple
+                value={newTag.categories}
+                onChange={(e) => setNewTag({ 
+                  ...newTag, 
+                  categories: Array.from(e.target.selectedOptions, option => option.value)
+                })}
+                className="px-3 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-300 outline-none bg-white"
+              >
+                <option value="">Available for all categories</option>
+                {categories.map(category => (
+                  <option key={category.id} value={category.name}>{category.name}</option>
+                ))}
+              </select>
+              <button
+                onClick={handleAddTag}
+                className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-xl transition-colors"
+              >
+                Add Tag
+              </button>
+            </div>
+            <p className="text-xs text-gray-500 mt-1">
+              Hold Ctrl/Cmd to select multiple categories, or leave empty for all categories
+            </p>
+          </div>
+
+          {/* Current Tags */}
+          <div>
+            <h4 className="font-medium text-gray-700 mb-3">Current Tags</h4>
+            {tagCategories.map(tagCat => (
+              <div key={tagCat.id} className="mb-4">
+                <h5 className="font-medium text-gray-800 mb-2 capitalize">{tagCat.name}</h5>
+                <div className="space-y-2">
+                  {availableTags
+                    .filter(tag => tag.tag_type === tagCat.name)
+                    .map(tag => (
+                      <div key={tag.id} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                        <div>
+                          <span className="font-medium">{tag.name}</span>
+                          {tag.categories.length > 0 && (
+                            <span className="text-sm text-gray-500 ml-2">
+                              ({tag.categories.join(', ')})
+                            </span>
+                          )}
+                        </div>
+                        <button
+                          onClick={() => handleDeleteTag(tag.id)}
+                          className="bg-red-100 hover:bg-red-200 text-red-700 px-3 py-1 rounded-lg text-sm transition-colors"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Category Management */}
+        <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+          <h3 className="text-xl font-semibold text-gray-800 mb-4">Category Management</h3>
+          
+          {/* Delete Categories */}
+          <div>
+            <h4 className="font-medium text-gray-700 mb-3">Delete Categories</h4>
+            <div className="space-y-2">
+              {categories.map(category => (
+                <div key={category.id} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                  <span className="font-medium">{category.name}</span>
+                  <button
+                    onClick={() => handleDeleteCategory(category.id, category.name)}
+                    className="bg-red-100 hover:bg-red-200 text-red-700 px-3 py-1 rounded-lg text-sm transition-colors"
+                  >
+                    Delete
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Subcategory Management */}
+        <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+          <h3 className="text-xl font-semibold text-gray-800 mb-4">Accessories Subcategories</h3>
+          
+          {/* Add Subcategory */}
+          <div className="mb-6">
+            <h4 className="font-medium text-gray-700 mb-3">Add Accessories Subcategory</h4>
+            <div className="flex gap-3">
+              <input
+                type="text"
+                value={newSubcategory.name}
+                onChange={(e) => setNewSubcategory({ ...newSubcategory, name: e.target.value })}
+                placeholder="Subcategory name (e.g., Chokers, Harnesses, Jewelry)"
+                className="flex-1 px-3 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-300 outline-none"
+              />
+              <button
+                onClick={handleAddSubcategory}
+                className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-xl transition-colors"
+              >
+                Add Subcategory
+              </button>
+            </div>
+          </div>
+
+          {/* Current Subcategories */}
+          {subcategories.accessories && (
+            <div>
+              <h4 className="font-medium text-gray-700 mb-3">Current Accessories Subcategories</h4>
+              <div className="space-y-2">
+                {subcategories.accessories.map(sub => (
+                  <div key={sub.id} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                    <span className="font-medium">{sub.name}</span>
+                    <button
+                      onClick={() => {
+                        if (window.confirm(`Delete ${sub.name} subcategory?`)) {
+                          // Handle delete subcategory
+                        }
+                      }}
+                      className="bg-red-100 hover:bg-red-200 text-red-700 px-3 py-1 rounded-lg text-sm transition-colors"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     );
   };
@@ -570,213 +763,7 @@ const App = () => {
     </div>
   );
 
-  // Settings Page Component
-  const SettingsPage = () => {
-    const [newCategoryIcon, setNewCategoryIcon] = useState('');
-    const [selectedCategoryForIcon, setSelectedCategoryForIcon] = useState('');
-    const [newCategorySpecificTag, setNewCategorySpecificTag] = useState('');
-    const [selectedCategoryForTag, setSelectedCategoryForTag] = useState('');
-    const [selectedTagTypeForCategory, setSelectedTagTypeForCategory] = useState('');
-
-    const handleUploadCategoryIcon = () => {
-      if (selectedCategoryForIcon && newCategoryIcon) {
-        // In a real implementation, this would upload the icon to the server
-        alert(`Icon uploaded for ${selectedCategoryForIcon}`);
-        setNewCategoryIcon('');
-        setSelectedCategoryForIcon('');
-      }
-    };
-
-    const handleDeleteCategory = async (categoryId, categoryName) => {
-      if (window.confirm(`Are you sure you want to delete the "${categoryName}" category? This will not delete items in this category.`)) {
-        try {
-          await axios.delete(`${API}/categories/${categoryId}`);
-          fetchCategories();
-          alert('Category deleted successfully');
-        } catch (error) {
-          console.error('Error deleting category:', error);
-          alert('Error deleting category');
-        }
-      }
-    };
-
-    const handleAddCategorySpecificTag = () => {
-      if (selectedCategoryForTag && selectedTagTypeForCategory && newCategorySpecificTag) {
-        const key = `${selectedCategoryForTag}-${selectedTagTypeForCategory}`;
-        const updated = { ...categorySpecificTags };
-        if (!updated[key]) updated[key] = [];
-        if (!updated[key].includes(newCategorySpecificTag)) {
-          updated[key].push(newCategorySpecificTag);
-          setCategorySpecificTags(updated);
-          // Save to localStorage for persistence
-          localStorage.setItem('categorySpecificTags', JSON.stringify(updated));
-        }
-        setNewCategorySpecificTag('');
-      }
-    };
-
-    const handleRemoveCategorySpecificTag = (category, tagType, tag) => {
-      const key = `${category}-${tagType}`;
-      const updated = { ...categorySpecificTags };
-      if (updated[key]) {
-        updated[key] = updated[key].filter(t => t !== tag);
-        if (updated[key].length === 0) delete updated[key];
-        setCategorySpecificTags(updated);
-        localStorage.setItem('categorySpecificTags', JSON.stringify(updated));
-      }
-    };
-
-    return (
-      <div className="space-y-8">
-        <div className="text-center">
-          <h2 className="text-3xl font-bold text-gray-800 mb-2">Settings</h2>
-          <p className="text-gray-600">Manage your categories, icons, and tags</p>
-        </div>
-
-        {/* Category Management */}
-        <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
-          <h3 className="text-xl font-semibold text-gray-800 mb-4">Category Management</h3>
-          
-          {/* Upload Category Icon */}
-          <div className="mb-6">
-            <h4 className="font-medium text-gray-700 mb-3">Upload Category Icon</h4>
-            <div className="flex gap-3">
-              <select
-                value={selectedCategoryForIcon}
-                onChange={(e) => setSelectedCategoryForIcon(e.target.value)}
-                className="px-3 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-300 outline-none bg-white"
-              >
-                <option value="">Select Category</option>
-                {categories.map(category => (
-                  <option key={category.id} value={category.name}>{category.name}</option>
-                ))}
-              </select>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={(e) => {
-                  const file = e.target.files[0];
-                  if (file) {
-                    const reader = new FileReader();
-                    reader.onload = (e) => setNewCategoryIcon(e.target.result);
-                    reader.readAsDataURL(file);
-                  }
-                }}
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-300 outline-none"
-              />
-              <button
-                onClick={handleUploadCategoryIcon}
-                className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-xl transition-colors"
-              >
-                Upload
-              </button>
-            </div>
-          </div>
-
-          {/* Delete Categories */}
-          <div>
-            <h4 className="font-medium text-gray-700 mb-3">Delete Categories</h4>
-            <div className="space-y-2">
-              {categories.map(category => (
-                <div key={category.id} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                  <span className="font-medium">{category.name}</span>
-                  <button
-                    onClick={() => handleDeleteCategory(category.id, category.name)}
-                    className="bg-red-100 hover:bg-red-200 text-red-700 px-3 py-1 rounded-lg text-sm transition-colors"
-                  >
-                    Delete
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Category-Specific Tags */}
-        <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
-          <h3 className="text-xl font-semibold text-gray-800 mb-4">Category-Specific Tags</h3>
-          <p className="text-gray-600 mb-4">Add tags that are only available for specific categories (e.g., "cropped" for tops, "choker" for accessories)</p>
-          
-          {/* Add Category-Specific Tag */}
-          <div className="mb-6">
-            <h4 className="font-medium text-gray-700 mb-3">Add Category-Specific Tag</h4>
-            <div className="flex gap-3 mb-3">
-              <select
-                value={selectedCategoryForTag}
-                onChange={(e) => setSelectedCategoryForTag(e.target.value)}
-                className="px-3 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-300 outline-none bg-white"
-              >
-                <option value="">Select Category</option>
-                {categories.map(category => (
-                  <option key={category.id} value={category.name}>{category.name}</option>
-                ))}
-              </select>
-              <select
-                value={selectedTagTypeForCategory}
-                onChange={(e) => setSelectedTagTypeForCategory(e.target.value)}
-                className="px-3 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-300 outline-none bg-white"
-              >
-                <option value="">Select Tag Type</option>
-                {tagCategories.map(tagCat => (
-                  <option key={tagCat.id} value={tagCat.name}>{tagCat.name}</option>
-                ))}
-              </select>
-              <input
-                type="text"
-                value={newCategorySpecificTag}
-                onChange={(e) => setNewCategorySpecificTag(e.target.value)}
-                placeholder="Tag name (e.g., cropped, choker)"
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-300 outline-none"
-              />
-              <button
-                onClick={handleAddCategorySpecificTag}
-                className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-xl transition-colors"
-              >
-                Add
-              </button>
-            </div>
-          </div>
-
-          {/* Display Category-Specific Tags */}
-          <div>
-            <h4 className="font-medium text-gray-700 mb-3">Current Category-Specific Tags</h4>
-            {Object.keys(categorySpecificTags).length === 0 ? (
-              <p className="text-gray-500 italic">No category-specific tags yet</p>
-            ) : (
-              <div className="space-y-3">
-                {Object.entries(categorySpecificTags).map(([key, tags]) => {
-                  const [category, tagType] = key.split('-');
-                  return (
-                    <div key={key} className="p-3 bg-gray-50 rounded-lg">
-                      <h5 className="font-medium text-gray-800 mb-2">
-                        {category} - {tagType}
-                      </h5>
-                      <div className="flex flex-wrap gap-2">
-                        {tags.map(tag => (
-                          <span
-                            key={tag}
-                            className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-800"
-                          >
-                            {tag}
-                            <button
-                              onClick={() => handleRemoveCategorySpecificTag(category, tagType, tag)}
-                              className="ml-2 text-red-600 hover:text-red-800"
-                            >
-                              ×
-                            </button>
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-    );
-  };
+  // Stats Page Component
   const StatsPage = () => (
     <div className="space-y-8">
       <div className="text-center">
@@ -829,6 +816,50 @@ const App = () => {
           ))}
         </div>
       )}
+    </div>
+  );
+
+  // New Tag Selection Component for Forms
+  const TagSelector = ({ selectedTags, onTagChange, category }) => (
+    <div className="space-y-4">
+      {tagCategories.map(tagCat => {
+        const availableTags = getAvailableTagsForCategory(category, tagCat.name);
+        if (availableTags.length === 0) return null;
+
+        return (
+          <div key={tagCat.id}>
+            <h5 className="font-medium text-gray-700 mb-2 capitalize">{tagCat.name}</h5>
+            <div className="flex flex-wrap gap-2">
+              {availableTags.map(tag => {
+                const isSelected = selectedTags[tagCat.name]?.includes(tag.name);
+                return (
+                  <button
+                    key={tag.id}
+                    type="button"
+                    onClick={() => {
+                      const currentTags = selectedTags[tagCat.name] || [];
+                      let newTags;
+                      if (isSelected) {
+                        newTags = currentTags.filter(t => t !== tag.name);
+                      } else {
+                        newTags = [...currentTags, tag.name];
+                      }
+                      onTagChange(tagCat.name, newTags);
+                    }}
+                    className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
+                      isSelected 
+                        ? 'bg-pink-500 text-white' 
+                        : 'bg-gray-100 text-gray-700 hover:bg-pink-100'
+                    }`}
+                  >
+                    {tag.name}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 
@@ -1343,55 +1374,19 @@ const App = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Tags</label>
-                  <div className="flex gap-2 mb-2">
-                    <select
-                      value={newTag.type}
-                      onChange={(e) => setNewTag({ ...newTag, type: e.target.value })}
-                      className="px-3 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-300 focus:border-pink-300 outline-none bg-white text-sm"
-                    >
-                      <option value="">Select Type</option>
-                      {tagCategories.map(tagCat => (
-                        <option key={tagCat.id} value={tagCat.name}>
-                          {tagCat.name}
-                        </option>
-                      ))}
-                    </select>
-                    <input
-                      type="text"
-                      value={newTag.value}
-                      onChange={(e) => setNewTag({ ...newTag, value: e.target.value })}
-                      placeholder="Enter tag"
-                      className="flex-1 px-3 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-300 focus:border-pink-300 outline-none text-sm"
-                      onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddTag())}
+                  <label className="block text-sm font-medium text-gray-700 mb-3">Tags</label>
+                  {formData.category && (
+                    <TagSelector
+                      selectedTags={formData.tags}
+                      onTagChange={(tagType, tags) => {
+                        setFormData({
+                          ...formData,
+                          tags: { ...formData.tags, [tagType]: tags }
+                        });
+                      }}
+                      category={formData.category}
                     />
-                    <button
-                      type="button"
-                      onClick={handleAddTag}
-                      className="bg-gradient-to-r from-pink-400 to-rose-500 hover:from-pink-500 hover:to-rose-600 text-white px-4 py-2 rounded-xl text-sm transition-all duration-200"
-                    >
-                      Add
-                    </button>
-                  </div>
-                  <div className="flex flex-wrap gap-1">
-                    {Object.entries(formData.tags).map(([type, tags]) =>
-                      tags.map(tag => (
-                        <span
-                          key={`${type}-${tag}`}
-                          className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-pink-100 text-pink-800"
-                        >
-                          {tag}
-                          <button
-                            type="button"
-                            onClick={() => handleRemoveTag(type, tag)}
-                            className="ml-1 text-xs hover:text-red-600"
-                          >
-                            ×
-                          </button>
-                        </span>
-                      ))
-                    )}
-                  </div>
+                  )}
                 </div>
 
                 <div>
@@ -1490,55 +1485,19 @@ const App = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Tags</label>
-                  <div className="flex gap-2 mb-2">
-                    <select
-                      value={newTag.type}
-                      onChange={(e) => setNewTag({ ...newTag, type: e.target.value })}
-                      className="px-3 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-300 focus:border-pink-300 outline-none bg-white text-sm"
-                    >
-                      <option value="">Select Type</option>
-                      {tagCategories.map(tagCat => (
-                        <option key={tagCat.id} value={tagCat.name}>
-                          {tagCat.name}
-                        </option>
-                      ))}
-                    </select>
-                    <input
-                      type="text"
-                      value={newTag.value}
-                      onChange={(e) => setNewTag({ ...newTag, value: e.target.value })}
-                      placeholder="Enter tag"
-                      className="flex-1 px-3 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-300 focus:border-pink-300 outline-none text-sm"
-                      onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddTag())}
+                  <label className="block text-sm font-medium text-gray-700 mb-3">Tags</label>
+                  {editingItem.category && (
+                    <TagSelector
+                      selectedTags={editingItem.tags}
+                      onTagChange={(tagType, tags) => {
+                        setEditingItem({
+                          ...editingItem,
+                          tags: { ...editingItem.tags, [tagType]: tags }
+                        });
+                      }}
+                      category={editingItem.category}
                     />
-                    <button
-                      type="button"
-                      onClick={handleAddTag}
-                      className="bg-gradient-to-r from-pink-400 to-rose-500 hover:from-pink-500 hover:to-rose-600 text-white px-4 py-2 rounded-xl text-sm transition-all duration-200"
-                    >
-                      Add
-                    </button>
-                  </div>
-                  <div className="flex flex-wrap gap-1">
-                    {Object.entries(editingItem.tags || {}).map(([type, tags]) =>
-                      tags.map(tag => (
-                        <span
-                          key={`${type}-${tag}`}
-                          className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-pink-100 text-pink-800"
-                        >
-                          {tag}
-                          <button
-                            type="button"
-                            onClick={() => handleRemoveTag(type, tag)}
-                            className="ml-1 text-xs hover:text-red-600"
-                          >
-                            ×
-                          </button>
-                        </span>
-                      ))
-                    )}
-                  </div>
+                  )}
                 </div>
 
                 <div>
