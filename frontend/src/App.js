@@ -746,6 +746,78 @@ const App = () => {
     );
   };
 
+  // Subcategories Page Component
+  const SubcategoriesPage = () => (
+    <div className="space-y-8">
+      <div className="text-center">
+        <button
+          onClick={() => {
+            setCurrentPage('home');
+            setSelectedSubcategoryParent(null);
+          }}
+          className="text-pink-500 hover:text-pink-600 mb-4 inline-flex items-center"
+        >
+          ← Back to Categories
+        </button>
+        <h2 className="text-2xl font-bold text-gray-800 mb-2">
+          {selectedSubcategoryParent?.charAt(0).toUpperCase() + selectedSubcategoryParent?.slice(1)} Subcategories
+        </h2>
+        <p className="text-gray-600">Select a subcategory to view your items</p>
+      </div>
+      
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+        {/* All Subcategory Items Card */}
+        <div
+          onClick={() => {
+            setSelectedCategory(selectedSubcategoryParent);
+            setCurrentPage('catalog');
+          }}
+          className="category-card cursor-pointer group"
+        >
+          <div className="aspect-square bg-gradient-to-br from-pink-200 to-rose-300 rounded-2xl flex items-center justify-center mb-3 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 p-6">
+            <img
+              src={getCategoryIcon(selectedSubcategoryParent)}
+              alt={`All ${selectedSubcategoryParent}`}
+              className="w-16 h-16 object-contain filter grayscale hover:grayscale-0 transition-all duration-300"
+            />
+          </div>
+          <h3 className="font-semibold text-gray-800 text-center">All {selectedSubcategoryParent}</h3>
+          <p className="text-sm text-gray-500 text-center">
+            {clothingItems.filter(item => item.category === selectedSubcategoryParent).length} items
+          </p>
+        </div>
+
+        {/* Subcategory Cards */}
+        {subcategories[selectedSubcategoryParent]?.map(subcategory => {
+          const subcategoryItems = clothingItems.filter(item => 
+            item.category === selectedSubcategoryParent && 
+            item.subcategory === subcategory.name
+          );
+          return (
+            <div
+              key={subcategory.id}
+              onClick={() => {
+                setSelectedCategory(`${selectedSubcategoryParent}-${subcategory.name}`);
+                setCurrentPage('catalog');
+              }}
+              className="category-card cursor-pointer group"
+            >
+              <div className="aspect-square bg-gradient-to-br from-purple-100 to-pink-200 rounded-2xl flex items-center justify-center mb-3 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 p-6">
+                <img
+                  src={getCategoryIcon('accessories')}
+                  alt={subcategory.name}
+                  className="w-16 h-16 object-contain filter grayscale hover:grayscale-0 transition-all duration-300"
+                />
+              </div>
+              <h3 className="font-semibold text-gray-800 text-center">{subcategory.name}</h3>
+              <p className="text-sm text-gray-500 text-center">{subcategoryItems.length} items</p>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+
   // Home Page Component
   const HomePage = () => (
     <div className="space-y-8">
