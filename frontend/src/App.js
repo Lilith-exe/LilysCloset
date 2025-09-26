@@ -354,10 +354,12 @@ const App = () => {
   const handleDeleteItem = async (itemId) => {
     if (window.confirm('Are you sure you want to delete this item?')) {
       try {
-        await axios.delete(`${API}/clothing-items/${itemId}`);
-        fetchClothingItems();
-        fetchStats();
+        const response = await axios.delete(`${API}/clothing-items/${itemId}`);
+        console.log('Delete response:', response);
+        await fetchClothingItems();
+        await fetchStats();
         setSelectedItem(null);
+        alert('Item deleted successfully');
       } catch (error) {
         console.error('Error deleting item:', error);
         alert('Error deleting item. Please try again.');
