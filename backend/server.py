@@ -67,6 +67,28 @@ class TagCategory(BaseModel):
 class TagCategoryCreate(BaseModel):
     name: str
 
+class Tag(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
+    tag_type: str
+    categories: List[str] = Field(default_factory=list)  # Categories this tag is available for
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class TagCreate(BaseModel):
+    name: str
+    tag_type: str
+    categories: List[str] = Field(default_factory=list)
+
+class Subcategory(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
+    parent_category: str
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class SubcategoryCreate(BaseModel):
+    name: str
+    parent_category: str
+
 class StatsResponse(BaseModel):
     total_items: int
     categories: Dict[str, int]
