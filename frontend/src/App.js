@@ -1125,7 +1125,7 @@ const App = () => {
                 
                 {/* Crop overlay */}
                 <div
-                  className="absolute border-2 border-pink-500 bg-pink-500/20 cursor-move"
+                  className="absolute border-2 border-pink-500 bg-pink-500/20 cursor-move select-none"
                   style={{
                     left: cropPosition.x,
                     top: cropPosition.y,
@@ -1137,8 +1137,11 @@ const App = () => {
                     const startY = e.clientY - cropPosition.y;
                     
                     const handleMouseMove = (e) => {
-                      const newX = Math.max(0, Math.min(e.clientX - startX, (imageRef.current?.width || 0) - cropSize.width));
-                      const newY = Math.max(0, Math.min(e.clientY - startY, (imageRef.current?.height || 0) - cropSize.height));
+                      const imgRect = imageRef.current?.getBoundingClientRect();
+                      if (!imgRect) return;
+                      
+                      const newX = Math.max(0, Math.min(e.clientX - startX, imgRect.width - cropSize.width));
+                      const newY = Math.max(0, Math.min(e.clientY - startY, imgRect.height - cropSize.height));
                       setCropPosition({ x: newX, y: newY });
                     };
                     
@@ -1151,9 +1154,85 @@ const App = () => {
                     document.addEventListener('mouseup', handleMouseUp);
                   }}
                 >
-                  <div className="absolute inset-0 flex items-center justify-center text-white font-medium">
+                  <div className="absolute inset-0 flex items-center justify-center text-white font-medium text-sm">
                     Drag to position
                   </div>
+                  
+                  {/* Resize handles */}
+                  <div
+                    className="absolute -bottom-2 -right-2 w-4 h-4 bg-pink-500 border-2 border-white rounded-full cursor-se-resize"
+                    onMouseDown={(e) => {
+                      e.stopPropagation();
+                      const startX = e.clientX;
+                      const startY = e.clientY;
+                      const startSize = cropSize.width;
+                      
+                      const handleMouseMove = (e) => {
+                        const imgRect = imageRef.current?.getBoundingClientRect();
+                        if (!imgRect) return;
+                        
+                        const deltaX = e.clientX - startX;
+                        const deltaY = e.clientY - startY;
+                        const delta = Math.max(deltaX, deltaY); // Keep 1:1 ratio
+                        
+                        const newSize = Math.max(50, Math.min(
+                          startSize + delta,
+                          imgRect.width - cropPosition.x,
+                          imgRect.height - cropPosition.y,
+                          Math.min(imgRect.width, imgRect.height)
+                        ));
+                        
+                        setCropSize({ width: newSize, height: newSize });
+                      };
+                      
+                      const handleMouseUp = () => {
+                        document.removeEventListener('mousemove', handleMouseMove);
+                        document.removeEventListener('mouseup', handleMouseUp);
+                      };
+                      
+                      document.addEventListener('mousemove', handleMouseMove);
+                      document.addEventListener('mouseup', handleMouseUp);
+                    }}
+                  />
+                  
+                  <div
+                    className="absolute -top-2 -left-2 w-4 h-4 bg-pink-500 border-2 border-white rounded-full cursor-nw-resize"
+                    onMouseDown={(e) => {
+                      e.stopPropagation();
+                      const startX = e.clientX;
+                      const startY = e.clientY;
+                      const startSize = cropSize.width;
+                      const startPosX = cropPosition.x;
+                      const startPosY = cropPosition.y;
+                      
+                      const handleMouseMove = (e) => {
+                        const deltaX = startX - e.clientX;
+                        const deltaY = startY - e.clientY;
+                        const delta = Math.max(deltaX, deltaY); // Keep 1:1 ratio
+                        
+                        const newSize = Math.max(50, Math.min(
+                          startSize + delta,
+                          startPosX + startSize,
+                          startPosY + startSize
+                        ));
+                        
+                        const sizeDiff = newSize - startSize;
+                        const newX = Math.max(0, startPosX - sizeDiff);
+                        const newY = Math.max(0, startPosY - sizeDiff);
+                        
+                        setCropSize({ width: newSize, height: newSize });
+                        setCropPosition({ x: newX, y: newY });
+                      };
+                      
+                      const handleMouseUp = () => {
+                        document.removeEventListener('mousemove', handleMouseMove);
+                        document.removeEventListener('mouseup', handleMouseUp);
+                      };
+                      
+                      document.addEventListener('mousemove', handleMouseMove);
+                      document.addEventListener('mouseup', handleMouseUp);
+                    }}
+                  />
                 </div>
               </div>
 
