@@ -1120,10 +1120,22 @@ const App = () => {
                         }`}
                       >
                         {tagType === 'color' && (
-                          <div 
-                            className="w-3 h-3 rounded-sm mr-2 border border-gray-300 shrink-0"
-                            style={{ backgroundColor: getColorHex(tag) }}
-                          ></div>
+                          <>
+                            {tag.toLowerCase() === 'rainbow' ? (
+                              <div 
+                                className="w-3 h-3 rounded-sm mr-2 border border-gray-300 shrink-0"
+                                style={{ 
+                                  background: 'linear-gradient(90deg, #ff0000, #ff8000, #ffff00, #80ff00, #00ff00, #00ff80, #00ffff, #0080ff, #0000ff, #8000ff, #ff00ff, #ff0080)',
+                                  backgroundSize: '100% 100%'
+                                }}
+                              ></div>
+                            ) : (
+                              <div 
+                                className="w-3 h-3 rounded-sm mr-2 border border-gray-300 shrink-0"
+                                style={{ backgroundColor: getColorHex(tag) }}
+                              ></div>
+                            )}
+                          </>
                         )}
                         <span className="truncate">{tag}</span>
                       </button>
