@@ -1194,6 +1194,7 @@ const App = () => {
         {/* Page Content */}
         <div className="flex-1 p-6">
           {currentPage === 'home' && <HomePage />}
+          {currentPage === 'subcategories' && <SubcategoriesPage />}
           {currentPage === 'stats' && <StatsPage />}
           {currentPage === 'settings' && <SettingsPage />}
           
