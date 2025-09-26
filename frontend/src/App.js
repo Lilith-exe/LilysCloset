@@ -493,10 +493,12 @@ const App = () => {
           }}
           className="category-card cursor-pointer group"
         >
-          <div className={`aspect-square rounded-2xl flex items-center justify-center mb-3 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 ${getCategoryIcon('all')}`}>
-            <div className="w-12 h-12 bg-white/30 rounded-lg backdrop-blur-sm flex items-center justify-center">
-              <div className="w-6 h-6 bg-white rounded-full"></div>
-            </div>
+          <div className="aspect-square bg-gradient-to-br from-pink-200 to-rose-300 rounded-2xl flex items-center justify-center mb-3 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 p-6">
+            <img
+              src={getCategoryIcon('all')}
+              alt="All Items"
+              className="w-16 h-16 object-contain filter grayscale hover:grayscale-0 transition-all duration-300"
+            />
           </div>
           <h3 className="font-semibold text-gray-800 text-center">All Items</h3>
           <p className="text-sm text-gray-500 text-center">{clothingItems.length} items</p>
@@ -514,10 +516,12 @@ const App = () => {
               }}
               className="category-card cursor-pointer group"
             >
-              <div className={`aspect-square rounded-2xl flex items-center justify-center mb-3 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 ${getCategoryIcon(category.name)}`}>
-                <div className="w-12 h-12 bg-white/30 rounded-lg backdrop-blur-sm flex items-center justify-center">
-                  <div className="w-6 h-6 bg-white rounded-sm transform rotate-45 group-hover:rotate-12 transition-transform"></div>
-                </div>
+              <div className="aspect-square bg-gradient-to-br from-pink-100 to-rose-200 rounded-2xl flex items-center justify-center mb-3 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 p-6">
+                <img
+                  src={getCategoryIcon(category.name)}
+                  alt={category.name}
+                  className="w-16 h-16 object-contain filter grayscale hover:grayscale-0 transition-all duration-300"
+                />
               </div>
               <h3 className="font-semibold text-gray-800 text-center">{category.name}</h3>
               <p className="text-sm text-gray-500 text-center">{categoryItems.length} items</p>
