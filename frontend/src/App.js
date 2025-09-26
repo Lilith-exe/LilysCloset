@@ -853,8 +853,13 @@ const App = () => {
             <div
               key={category.id}
               onClick={() => {
-                setSelectedCategory(category.name);
-                setCurrentPage('catalog');
+                if (category.name.toLowerCase() === 'accessories') {
+                  setSelectedSubcategoryParent('accessories');
+                  setCurrentPage('subcategories');
+                } else {
+                  setSelectedCategory(category.name);
+                  setCurrentPage('catalog');
+                }
               }}
               className="category-card cursor-pointer group"
             >
