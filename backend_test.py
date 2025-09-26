@@ -908,6 +908,9 @@ class ClothingCatalogTester:
             self.test_category_management()
             self.test_tagging_system()
             self.test_search_and_filter()
+            self.test_custom_tag_categories_api()
+            self.test_enhanced_search_api()
+            self.test_statistics_api()
             
             success = self.print_summary()
             return success
