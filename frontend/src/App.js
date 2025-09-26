@@ -436,7 +436,24 @@ const App = () => {
     tagCategories.forEach(tagCat => {
       const categoryTags = getAvailableTagsForCategory(selectedCategory, tagCat.name);
       if (categoryTags.length > 0) {
-        allTags[tagCat.name] = categoryTags.map(tag => tag.name).sort();
+        let tagNames = categoryTags.map(tag => tag.name);
+        
+        // Special sorting for color tags in rainbow order
+        if (tagCat.name === 'color') {
+          const colorOrder = getColorOrder();
+          tagNames = tagNames.sort((a, b) => {
+            const indexA = colorOrder.indexOf(a.toLowerCase());
+            const indexB = colorOrder.indexOf(b.toLowerCase());
+            if (indexA !== -1 && indexB !== -1) return indexA - indexB;
+            if (indexA !== -1) return -1;
+            if (indexB !== -1) return 1;
+            return a.localeCompare(b);
+          });
+        } else {
+          tagNames = tagNames.sort();
+        }
+        
+        allTags[tagCat.name] = tagNames;
       }
     });
     
