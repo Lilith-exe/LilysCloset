@@ -41,8 +41,12 @@ class ClothingCatalogTester:
             "clothing_crud": {"passed": 0, "failed": 0, "details": []},
             "category_management": {"passed": 0, "failed": 0, "details": []},
             "tagging_system": {"passed": 0, "failed": 0, "details": []},
-            "search_filter": {"passed": 0, "failed": 0, "details": []}
+            "search_filter": {"passed": 0, "failed": 0, "details": []},
+            "custom_tag_categories": {"passed": 0, "failed": 0, "details": []},
+            "enhanced_search": {"passed": 0, "failed": 0, "details": []},
+            "statistics_api": {"passed": 0, "failed": 0, "details": []}
         }
+        self.created_tag_categories = []
 
     def log_result(self, category: str, test_name: str, passed: bool, details: str = ""):
         """Log test result"""
