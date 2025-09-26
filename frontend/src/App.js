@@ -110,21 +110,21 @@ const App = () => {
     }
     
     // Apply tag filters with AND/OR logic
-    const tagFilters = Object.entries(selectedTags).filter(([_, tagValues]) => tagValues.length > 0);
+    const selectedTagsList = Object.entries(selectedTags).flatMap(([tagType, tagValues]) => 
+      tagValues.map(tagValue => ({ tagType, tagValue }))
+    );
     
-    if (tagFilters.length > 0) {
+    if (selectedTagsList.length > 0) {
       filtered = filtered.filter(item => {
         if (filterMode === 'and') {
-          // AND mode: item must have tags in ALL selected tag categories and match at least one value in each
-          return tagFilters.every(([tagType, tagValues]) => 
-            item.tags[tagType] && item.tags[tagType].length > 0 &&
-            tagValues.some(tagValue => item.tags[tagType].includes(tagValue))
+          // AND mode: item must have ALL selected individual tags
+          return selectedTagsList.every(({ tagType, tagValue }) => 
+            item.tags[tagType] && item.tags[tagType].includes(tagValue)
           );
         } else {
-          // OR mode: item must match ANY selected tag filter
-          return tagFilters.some(([tagType, tagValues]) => 
-            item.tags[tagType] && item.tags[tagType].length > 0 &&
-            tagValues.some(tagValue => item.tags[tagType].includes(tagValue))
+          // OR mode: item must have at least ONE of the selected tags
+          return selectedTagsList.some(({ tagType, tagValue }) => 
+            item.tags[tagType] && item.tags[tagType].includes(tagValue)
           );
         }
       });
