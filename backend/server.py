@@ -225,6 +225,68 @@ async def delete_category(category_id: str):
         logging.error(f"Error deleting category: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
+# Tag Categories Routes
+@api_router.post("/tag-categories", response_model=TagCategory)
+async def create_tag_category(tag_category: TagCategoryCreate):
+    try:
+        # Check if tag category already exists
+        existing = await db.tag_categories.find_one({"name": tag_category.name})
+        if existing:
+            raise HTTPException(status_code=400, detail="Tag category already exists")
+        
+        tag_category_obj = TagCategory(**tag_category.dict())
+        tag_category_data = prepare_for_mongo(tag_category_obj.dict())
+        
+        await db.tag_categories.insert_one(tag_category_data)
+        return tag_category_obj
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"Error creating tag category: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.get("/tag-categories", response_model=List[TagCategory])
+async def get_tag_categories():
+    try:
+        tag_categories = await db.tag_categories.find().sort("name", 1).to_list(length=None)
+        # Always include default tag categories if they don't exist
+        default_categories = ["color", "theme", "features"]
+        existing_names = [tc["name"].lower() for tc in tag_categories]
+        
+        for default_cat in default_categories:
+            if default_cat not in existing_names:
+                # Create default category
+                default_tag_cat = TagCategory(name=default_cat)
+                default_data = prepare_for_mongo(default_tag_cat.dict())
+                await db.tag_categories.insert_one(default_data)
+                tag_categories.append(default_data)
+        
+        return [TagCategory(**parse_from_mongo(tc)) for tc in tag_categories]
+    except Exception as e:
+        logging.error(f"Error getting tag categories: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.delete("/tag-categories/{tag_category_id}")
+async def delete_tag_category(tag_category_id: str):
+    try:
+        # Don't allow deletion of default categories
+        tag_cat = await db.tag_categories.find_one({"id": tag_category_id})
+        if not tag_cat:
+            raise HTTPException(status_code=404, detail="Tag category not found")
+        
+        if tag_cat["name"].lower() in ["color", "theme", "features"]:
+            raise HTTPException(status_code=400, detail="Cannot delete default tag categories")
+        
+        result = await db.tag_categories.delete_one({"id": tag_category_id})
+        if result.deleted_count == 0:
+            raise HTTPException(status_code=404, detail="Tag category not found")
+        return {"message": "Tag category deleted successfully"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"Error deleting tag category: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 # Search and Filter Routes
 @api_router.get("/clothing-items/search/{query}")
 async def search_clothing_items(query: str):
@@ -235,15 +297,19 @@ async def search_clothing_items(query: str):
             if item:
                 return [ClothingItem(**parse_from_mongo(item))]
         
+        # Get all tag categories for dynamic search
+        tag_categories = await db.tag_categories.find().to_list(length=None)
+        tag_searches = []
+        for tag_cat in tag_categories:
+            tag_searches.append({f"tags.{tag_cat['name']}": {"$regex": query, "$options": "i"}})
+        
         # Search by name, category, or tag values
         search_filter = {
             "$or": [
                 {"name": {"$regex": query, "$options": "i"}},
                 {"category": {"$regex": query, "$options": "i"}},
                 {"notes": {"$regex": query, "$options": "i"}},
-                {"tags.color": {"$regex": query, "$options": "i"}},
-                {"tags.theme": {"$regex": query, "$options": "i"}},
-                {"tags.features": {"$regex": query, "$options": "i"}}
+                *tag_searches
             ]
         }
         
@@ -251,6 +317,45 @@ async def search_clothing_items(query: str):
         return [ClothingItem(**parse_from_mongo(item)) for item in items]
     except Exception as e:
         logging.error(f"Error searching clothing items: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+# Stats Route
+@api_router.get("/stats", response_model=StatsResponse)
+async def get_stats():
+    try:
+        # Get total items count
+        total_items = await db.clothing_items.count_documents({})
+        
+        # Get category counts
+        category_pipeline = [
+            {"$group": {"_id": "$category", "count": {"$sum": 1}}},
+            {"$sort": {"count": -1}}
+        ]
+        category_stats = await db.clothing_items.aggregate(category_pipeline).to_list(length=None)
+        categories = {item["_id"]: item["count"] for item in category_stats}
+        
+        # Get tag counts
+        tag_stats = {}
+        tag_categories = await db.tag_categories.find().to_list(length=None)
+        
+        for tag_cat in tag_categories:
+            tag_name = tag_cat["name"]
+            # Aggregate tags for this category
+            tag_pipeline = [
+                {"$unwind": f"$tags.{tag_name}"},
+                {"$group": {"_id": f"$tags.{tag_name}", "count": {"$sum": 1}}},
+                {"$sort": {"count": -1}}
+            ]
+            tag_results = await db.clothing_items.aggregate(tag_pipeline).to_list(length=None)
+            tag_stats[tag_name] = {item["_id"]: item["count"] for item in tag_results}
+        
+        return StatsResponse(
+            total_items=total_items,
+            categories=categories,
+            tags=tag_stats
+        )
+    except Exception as e:
+        logging.error(f"Error getting stats: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 # Test route
