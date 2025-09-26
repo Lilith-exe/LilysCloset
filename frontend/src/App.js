@@ -762,6 +762,13 @@ const App = () => {
               </button>
               <div className="flex space-x-3 ml-auto">
                 <button
+                  onClick={() => setCurrentPage('settings')}
+                  className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-xl font-medium transition-all duration-200 shadow-sm hover:shadow-md"
+                  title="Settings"
+                >
+                  ⚙️ Settings
+                </button>
+                <button
                   onClick={() => setShowCategoryForm(true)}
                   className="bg-pink-100 hover:bg-pink-200 text-pink-700 px-4 py-2 rounded-xl font-medium transition-all duration-200 shadow-sm hover:shadow-md"
                 >
