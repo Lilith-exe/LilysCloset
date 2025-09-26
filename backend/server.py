@@ -247,7 +247,108 @@ async def delete_category(category_id: str):
         logging.error(f"Error deleting category: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
-# Tag Categories Routes
+# Tags Management Routes
+@api_router.post("/tags", response_model=Tag)
+async def create_tag(tag: TagCreate):
+    try:
+        existing = await db.tags.find_one({"name": tag.name, "tag_type": tag.tag_type})
+        if existing:
+            raise HTTPException(status_code=400, detail="Tag already exists in this tag type")
+        
+        tag_obj = Tag(**tag.dict())
+        tag_data = prepare_for_mongo(tag_obj.dict())
+        
+        await db.tags.insert_one(tag_data)
+        return tag_obj
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"Error creating tag: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.get("/tags", response_model=List[Tag])
+async def get_tags():
+    try:
+        tags = await db.tags.find().sort("tag_type", 1).to_list(length=None)
+        return [Tag(**parse_from_mongo(tag)) for tag in tags]
+    except Exception as e:
+        logging.error(f"Error getting tags: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.get("/tags/{tag_type}")
+async def get_tags_by_type(tag_type: str, category: Optional[str] = None):
+    try:
+        query = {"tag_type": tag_type}
+        
+        # If category specified, only return tags available for that category
+        if category and category != "all":
+            query["$or"] = [
+                {"categories": []},  # Global tags (no category restriction)
+                {"categories": {"$in": [category]}}  # Category-specific tags
+            ]
+        
+        tags = await db.tags.find(query).sort("name", 1).to_list(length=None)
+        return [Tag(**parse_from_mongo(tag)) for tag in tags]
+    except Exception as e:
+        logging.error(f"Error getting tags by type: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.delete("/tags/{tag_id}")
+async def delete_tag(tag_id: str):
+    try:
+        result = await db.tags.delete_one({"id": tag_id})
+        if result.deleted_count == 0:
+            raise HTTPException(status_code=404, detail="Tag not found")
+        return {"message": "Tag deleted successfully"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"Error deleting tag: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+# Subcategories Routes
+@api_router.post("/subcategories", response_model=Subcategory)
+async def create_subcategory(subcategory: SubcategoryCreate):
+    try:
+        existing = await db.subcategories.find_one({
+            "name": subcategory.name,
+            "parent_category": subcategory.parent_category
+        })
+        if existing:
+            raise HTTPException(status_code=400, detail="Subcategory already exists in this category")
+        
+        subcategory_obj = Subcategory(**subcategory.dict())
+        subcategory_data = prepare_for_mongo(subcategory_obj.dict())
+        
+        await db.subcategories.insert_one(subcategory_data)
+        return subcategory_obj
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"Error creating subcategory: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.get("/subcategories/{parent_category}")
+async def get_subcategories(parent_category: str):
+    try:
+        subcategories = await db.subcategories.find({"parent_category": parent_category}).sort("name", 1).to_list(length=None)
+        return [Subcategory(**parse_from_mongo(sub)) for sub in subcategories]
+    except Exception as e:
+        logging.error(f"Error getting subcategories: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.delete("/subcategories/{subcategory_id}")
+async def delete_subcategory(subcategory_id: str):
+    try:
+        result = await db.subcategories.delete_one({"id": subcategory_id})
+        if result.deleted_count == 0:
+            raise HTTPException(status_code=404, detail="Subcategory not found")
+        return {"message": "Subcategory deleted successfully"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"Error deleting subcategory: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 @api_router.post("/tag-categories", response_model=TagCategory)
 async def create_tag_category(tag_category: TagCategoryCreate):
     try:
