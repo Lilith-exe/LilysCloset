@@ -840,7 +840,7 @@ const App = () => {
 
       {/* Image Crop Modal */}
       {showCropModal && originalImage && (
-        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-60">
+        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-[9999]">
           <div className="bg-white rounded-2xl max-w-2xl w-full">
             <div className="p-6">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">Crop Your Image</h2>
