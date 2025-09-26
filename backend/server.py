@@ -59,6 +59,19 @@ class Category(BaseModel):
 class CategoryCreate(BaseModel):
     name: str
 
+class TagCategory(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class TagCategoryCreate(BaseModel):
+    name: str
+
+class StatsResponse(BaseModel):
+    total_items: int
+    categories: Dict[str, int]
+    tags: Dict[str, Dict[str, int]]
+
 # Helper functions
 def prepare_for_mongo(data):
     if isinstance(data, dict):
