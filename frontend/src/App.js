@@ -727,11 +727,7 @@ const App = () => {
                   <div key={sub.id} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
                     <span className="font-medium">{sub.name}</span>
                     <button
-                      onClick={() => {
-                        if (window.confirm(`Delete ${sub.name} subcategory?`)) {
-                          // Handle delete subcategory
-                        }
-                      }}
+                      onClick={() => handleDeleteSubcategory(sub.id, sub.name)}
                       className="bg-red-100 hover:bg-red-200 text-red-700 px-3 py-1 rounded-lg text-sm transition-colors"
                     >
                       Delete
