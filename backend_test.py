@@ -473,6 +473,17 @@ class ClothingCatalogTester:
                     print(f"⚠️ Failed to delete category {category_id}: {response.status_code}")
             except Exception as e:
                 print(f"⚠️ Error deleting category {category_id}: {e}")
+        
+        # Delete created tag categories (except defaults)
+        for tag_category_id in self.created_tag_categories:
+            try:
+                response = self.session.delete(f"{API_URL}/tag-categories/{tag_category_id}")
+                if response.status_code == 200:
+                    print(f"✅ Deleted tag category: {tag_category_id}")
+                else:
+                    print(f"⚠️ Failed to delete tag category {tag_category_id}: {response.status_code}")
+            except Exception as e:
+                print(f"⚠️ Error deleting tag category {tag_category_id}: {e}")
 
     def print_summary(self):
         """Print test summary"""
