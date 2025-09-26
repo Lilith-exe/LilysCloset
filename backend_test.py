@@ -448,6 +448,380 @@ class ClothingCatalogTester:
         except Exception as e:
             self.log_result("search_filter", "Search by notes (regex)", False, str(e))
 
+    def test_custom_tag_categories_api(self):
+        """Test Custom Tag Categories API"""
+        print("\n🏷️ Testing Custom Tag Categories API...")
+        
+        # Test 1: Get default tag categories (should auto-create color, theme, features)
+        try:
+            response = self.session.get(f"{API_URL}/tag-categories")
+            if response.status_code == 200:
+                tag_categories = response.json()
+                if isinstance(tag_categories, list):
+                    # Check for default categories
+                    category_names = [tc["name"].lower() for tc in tag_categories]
+                    defaults_present = all(default in category_names for default in ["color", "theme", "features"])
+                    
+                    if defaults_present:
+                        self.log_result("custom_tag_categories", "Auto-create default tag categories", True)
+                    else:
+                        self.log_result("custom_tag_categories", "Auto-create default tag categories", False, f"Missing defaults. Found: {category_names}")
+                else:
+                    self.log_result("custom_tag_categories", "Get tag categories", False, "Invalid response format")
+            else:
+                self.log_result("custom_tag_categories", "Get tag categories", False, f"Status: {response.status_code}")
+        except Exception as e:
+            self.log_result("custom_tag_categories", "Get tag categories", False, str(e))
+
+        # Test 2: Create custom tag category
+        custom_tag_category = {"name": "material"}
+        
+        try:
+            response = self.session.post(f"{API_URL}/tag-categories", json=custom_tag_category)
+            if response.status_code == 200:
+                created_tag_category = response.json()
+                self.created_tag_categories.append(created_tag_category["id"])
+                
+                if created_tag_category["name"] == custom_tag_category["name"]:
+                    self.log_result("custom_tag_categories", "Create custom tag category (material)", True)
+                else:
+                    self.log_result("custom_tag_categories", "Create custom tag category (material)", False, "Name mismatch")
+            else:
+                self.log_result("custom_tag_categories", "Create custom tag category (material)", False, f"Status: {response.status_code}, Response: {response.text}")
+        except Exception as e:
+            self.log_result("custom_tag_categories", "Create custom tag category (material)", False, str(e))
+
+        # Test 3: Create another custom tag category
+        custom_tag_category2 = {"name": "season"}
+        
+        try:
+            response = self.session.post(f"{API_URL}/tag-categories", json=custom_tag_category2)
+            if response.status_code == 200:
+                created_tag_category2 = response.json()
+                self.created_tag_categories.append(created_tag_category2["id"])
+                
+                if created_tag_category2["name"] == custom_tag_category2["name"]:
+                    self.log_result("custom_tag_categories", "Create custom tag category (season)", True)
+                else:
+                    self.log_result("custom_tag_categories", "Create custom tag category (season)", False, "Name mismatch")
+            else:
+                self.log_result("custom_tag_categories", "Create custom tag category (season)", False, f"Status: {response.status_code}")
+        except Exception as e:
+            self.log_result("custom_tag_categories", "Create custom tag category (season)", False, str(e))
+
+        # Test 4: Prevent duplicate tag categories
+        try:
+            response = self.session.post(f"{API_URL}/tag-categories", json=custom_tag_category)
+            if response.status_code == 400:
+                self.log_result("custom_tag_categories", "Prevent duplicate tag categories", True)
+            else:
+                self.log_result("custom_tag_categories", "Prevent duplicate tag categories", False, f"Expected 400, got {response.status_code}")
+        except Exception as e:
+            self.log_result("custom_tag_categories", "Prevent duplicate tag categories", False, str(e))
+
+        # Test 5: List all tag categories including custom ones
+        try:
+            response = self.session.get(f"{API_URL}/tag-categories")
+            if response.status_code == 200:
+                tag_categories = response.json()
+                if isinstance(tag_categories, list):
+                    category_names = [tc["name"].lower() for tc in tag_categories]
+                    # Should have defaults + custom ones
+                    expected_categories = ["color", "theme", "features", "material", "season"]
+                    all_present = all(cat in category_names for cat in expected_categories)
+                    
+                    if all_present:
+                        self.log_result("custom_tag_categories", "List all tag categories including custom", True)
+                    else:
+                        self.log_result("custom_tag_categories", "List all tag categories including custom", False, f"Missing categories. Found: {category_names}")
+                else:
+                    self.log_result("custom_tag_categories", "List all tag categories including custom", False, "Invalid response format")
+            else:
+                self.log_result("custom_tag_categories", "List all tag categories including custom", False, f"Status: {response.status_code}")
+        except Exception as e:
+            self.log_result("custom_tag_categories", "List all tag categories including custom", False, str(e))
+
+        # Test 6: Try to delete default tag category (should fail)
+        try:
+            # Get a default category ID
+            response = self.session.get(f"{API_URL}/tag-categories")
+            if response.status_code == 200:
+                tag_categories = response.json()
+                default_category = next((tc for tc in tag_categories if tc["name"].lower() == "color"), None)
+                
+                if default_category:
+                    response = self.session.delete(f"{API_URL}/tag-categories/{default_category['id']}")
+                    if response.status_code == 400:
+                        self.log_result("custom_tag_categories", "Prevent deletion of default categories", True)
+                    else:
+                        self.log_result("custom_tag_categories", "Prevent deletion of default categories", False, f"Expected 400, got {response.status_code}")
+                else:
+                    self.log_result("custom_tag_categories", "Prevent deletion of default categories", False, "Could not find default category")
+            else:
+                self.log_result("custom_tag_categories", "Prevent deletion of default categories", False, "Could not get tag categories")
+        except Exception as e:
+            self.log_result("custom_tag_categories", "Prevent deletion of default categories", False, str(e))
+
+        # Test 7: Delete custom tag category (should succeed)
+        if self.created_tag_categories:
+            try:
+                tag_category_id = self.created_tag_categories[0]  # Delete the first one we created
+                response = self.session.delete(f"{API_URL}/tag-categories/{tag_category_id}")
+                if response.status_code == 200:
+                    self.log_result("custom_tag_categories", "Delete custom tag category", True)
+                    # Remove from our list so cleanup doesn't try to delete it again
+                    self.created_tag_categories.remove(tag_category_id)
+                else:
+                    self.log_result("custom_tag_categories", "Delete custom tag category", False, f"Status: {response.status_code}")
+            except Exception as e:
+                self.log_result("custom_tag_categories", "Delete custom tag category", False, str(e))
+
+    def test_enhanced_search_api(self):
+        """Test Enhanced Search API with custom tag categories"""
+        print("\n🔍 Testing Enhanced Search API...")
+        
+        # First, create an item with custom tags
+        item_with_custom_tags = {
+            "name": "Cotton Summer Dress",
+            "category": "Dresses",
+            "image": SAMPLE_BASE64_IMAGE,
+            "tags": {
+                "color": ["white", "cream"],
+                "theme": ["casual", "summer"],
+                "features": ["sleeveless", "midi-length"],
+                "material": ["cotton", "breathable"],
+                "season": ["summer", "spring"]
+            },
+            "notes": "Light cotton dress perfect for warm weather"
+        }
+        
+        created_item_id = None
+        try:
+            response = self.session.post(f"{API_URL}/clothing-items", json=item_with_custom_tags)
+            if response.status_code == 200:
+                created_item = response.json()
+                created_item_id = created_item["id"]
+                self.created_items.append(created_item_id)
+                self.log_result("enhanced_search", "Create item with custom tags", True)
+            else:
+                self.log_result("enhanced_search", "Create item with custom tags", False, f"Status: {response.status_code}")
+                return
+        except Exception as e:
+            self.log_result("enhanced_search", "Create item with custom tags", False, str(e))
+            return
+
+        # Test 1: Search by custom tag category "material"
+        try:
+            response = self.session.get(f"{API_URL}/clothing-items/search/cotton")
+            if response.status_code == 200:
+                results = response.json()
+                if isinstance(results, list):
+                    # Check if our item with cotton material is found
+                    cotton_found = any(
+                        item["id"] == created_item_id and 
+                        "material" in item.get("tags", {}) and 
+                        "cotton" in item["tags"]["material"]
+                        for item in results
+                    )
+                    
+                    if cotton_found:
+                        self.log_result("enhanced_search", "Search by custom tag (material: cotton)", True)
+                    else:
+                        self.log_result("enhanced_search", "Search by custom tag (material: cotton)", False, "Cotton material not found in search results")
+                else:
+                    self.log_result("enhanced_search", "Search by custom tag (material: cotton)", False, "Invalid response format")
+            else:
+                self.log_result("enhanced_search", "Search by custom tag (material: cotton)", False, f"Status: {response.status_code}")
+        except Exception as e:
+            self.log_result("enhanced_search", "Search by custom tag (material: cotton)", False, str(e))
+
+        # Test 2: Search by custom tag category "season"
+        try:
+            response = self.session.get(f"{API_URL}/clothing-items/search/summer")
+            if response.status_code == 200:
+                results = response.json()
+                if isinstance(results, list):
+                    # Check if our item with summer season is found
+                    summer_found = any(
+                        item["id"] == created_item_id and 
+                        "season" in item.get("tags", {}) and 
+                        "summer" in item["tags"]["season"]
+                        for item in results
+                    )
+                    
+                    if summer_found:
+                        self.log_result("enhanced_search", "Search by custom tag (season: summer)", True)
+                    else:
+                        self.log_result("enhanced_search", "Search by custom tag (season: summer)", False, "Summer season not found in search results")
+                else:
+                    self.log_result("enhanced_search", "Search by custom tag (season: summer)", False, "Invalid response format")
+            else:
+                self.log_result("enhanced_search", "Search by custom tag (season: summer)", False, f"Status: {response.status_code}")
+        except Exception as e:
+            self.log_result("enhanced_search", "Search by custom tag (season: summer)", False, str(e))
+
+        # Test 3: Verify search works across all tag types dynamically
+        try:
+            response = self.session.get(f"{API_URL}/clothing-items/search/breathable")
+            if response.status_code == 200:
+                results = response.json()
+                if isinstance(results, list):
+                    # Check if our item with breathable material is found
+                    breathable_found = any(
+                        item["id"] == created_item_id and 
+                        "material" in item.get("tags", {}) and 
+                        "breathable" in item["tags"]["material"]
+                        for item in results
+                    )
+                    
+                    if breathable_found:
+                        self.log_result("enhanced_search", "Dynamic search across custom tag types", True)
+                    else:
+                        self.log_result("enhanced_search", "Dynamic search across custom tag types", False, "Breathable material not found in search results")
+                else:
+                    self.log_result("enhanced_search", "Dynamic search across custom tag types", False, "Invalid response format")
+            else:
+                self.log_result("enhanced_search", "Dynamic search across custom tag types", False, f"Status: {response.status_code}")
+        except Exception as e:
+            self.log_result("enhanced_search", "Dynamic search across custom tag types", False, str(e))
+
+    def test_statistics_api(self):
+        """Test Statistics API"""
+        print("\n📊 Testing Statistics API...")
+        
+        # First, ensure we have some test data by creating a few items
+        test_items = [
+            {
+                "name": "Blue Jeans",
+                "category": "Bottoms",
+                "image": SAMPLE_BASE64_IMAGE,
+                "tags": {
+                    "color": ["blue", "denim"],
+                    "theme": ["casual"],
+                    "features": ["pockets"],
+                    "material": ["denim", "cotton"],
+                    "season": ["all-season"]
+                },
+                "notes": "Classic blue jeans"
+            },
+            {
+                "name": "Red Sweater",
+                "category": "Tops",
+                "image": SAMPLE_BASE64_IMAGE,
+                "tags": {
+                    "color": ["red", "burgundy"],
+                    "theme": ["casual", "cozy"],
+                    "features": ["long-sleeve"],
+                    "material": ["wool", "warm"],
+                    "season": ["winter", "fall"]
+                },
+                "notes": "Warm red sweater"
+            }
+        ]
+        
+        # Create test items
+        stats_test_items = []
+        for item in test_items:
+            try:
+                response = self.session.post(f"{API_URL}/clothing-items", json=item)
+                if response.status_code == 200:
+                    created_item = response.json()
+                    stats_test_items.append(created_item["id"])
+                    self.created_items.append(created_item["id"])
+            except Exception as e:
+                print(f"Warning: Could not create test item for stats: {e}")
+
+        # Test 1: Get statistics endpoint
+        try:
+            response = self.session.get(f"{API_URL}/stats")
+            if response.status_code == 200:
+                stats = response.json()
+                
+                # Verify response structure
+                required_fields = ["total_items", "categories", "tags"]
+                fields_present = all(field in stats for field in required_fields)
+                
+                if fields_present:
+                    self.log_result("statistics_api", "Statistics endpoint returns correct structure", True)
+                else:
+                    self.log_result("statistics_api", "Statistics endpoint returns correct structure", False, f"Missing fields. Got: {list(stats.keys())}")
+                
+                # Test 2: Verify total_items count
+                if isinstance(stats.get("total_items"), int) and stats["total_items"] >= 0:
+                    self.log_result("statistics_api", "Total items count is valid", True)
+                else:
+                    self.log_result("statistics_api", "Total items count is valid", False, f"Invalid total_items: {stats.get('total_items')}")
+                
+                # Test 3: Verify categories breakdown
+                categories = stats.get("categories", {})
+                if isinstance(categories, dict):
+                    # Check if we have some categories with counts
+                    has_valid_categories = all(isinstance(count, int) and count > 0 for count in categories.values())
+                    if categories and has_valid_categories:
+                        self.log_result("statistics_api", "Categories breakdown with item counts", True)
+                    else:
+                        self.log_result("statistics_api", "Categories breakdown with item counts", False, f"Invalid categories: {categories}")
+                else:
+                    self.log_result("statistics_api", "Categories breakdown with item counts", False, "Categories is not a dict")
+                
+                # Test 4: Verify tags breakdown across all tag types
+                tags = stats.get("tags", {})
+                if isinstance(tags, dict):
+                    # Check for default tag types
+                    expected_tag_types = ["color", "theme", "features"]
+                    default_types_present = any(tag_type in tags for tag_type in expected_tag_types)
+                    
+                    # Check for custom tag types if they exist
+                    custom_types_present = any(tag_type in tags for tag_type in ["material", "season"])
+                    
+                    if default_types_present:
+                        self.log_result("statistics_api", "Tags breakdown includes default tag types", True)
+                    else:
+                        self.log_result("statistics_api", "Tags breakdown includes default tag types", False, f"Missing default types. Got: {list(tags.keys())}")
+                    
+                    if custom_types_present:
+                        self.log_result("statistics_api", "Tags breakdown includes custom tag types", True)
+                    else:
+                        self.log_result("statistics_api", "Tags breakdown includes custom tag types", False, f"No custom types found. Got: {list(tags.keys())}")
+                    
+                    # Verify tag counts structure
+                    valid_tag_structure = all(
+                        isinstance(tag_values, dict) and 
+                        all(isinstance(count, int) and count > 0 for count in tag_values.values())
+                        for tag_values in tags.values()
+                    )
+                    
+                    if valid_tag_structure:
+                        self.log_result("statistics_api", "Tag counts have valid structure", True)
+                    else:
+                        self.log_result("statistics_api", "Tag counts have valid structure", False, "Invalid tag count structure")
+                        
+                else:
+                    self.log_result("statistics_api", "Tags breakdown structure", False, "Tags is not a dict")
+                    
+            else:
+                self.log_result("statistics_api", "Statistics endpoint accessibility", False, f"Status: {response.status_code}, Response: {response.text}")
+        except Exception as e:
+            self.log_result("statistics_api", "Statistics endpoint accessibility", False, str(e))
+
+        # Test 5: Test with various data scenarios (empty database scenario would be tested in isolation)
+        # For now, we test with the data we have
+        try:
+            response = self.session.get(f"{API_URL}/stats")
+            if response.status_code == 200:
+                stats = response.json()
+                
+                # Verify that stats reflect our test data
+                total_items = stats.get("total_items", 0)
+                if total_items >= len(stats_test_items):  # Should be at least our test items
+                    self.log_result("statistics_api", "Statistics reflect actual data", True)
+                else:
+                    self.log_result("statistics_api", "Statistics reflect actual data", False, f"Expected at least {len(stats_test_items)} items, got {total_items}")
+            else:
+                self.log_result("statistics_api", "Statistics data accuracy test", False, f"Status: {response.status_code}")
+        except Exception as e:
+            self.log_result("statistics_api", "Statistics data accuracy test", False, str(e))
+
     def cleanup(self):
         """Clean up created test data"""
         print("\n🧹 Cleaning up test data...")
