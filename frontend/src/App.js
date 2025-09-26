@@ -5,32 +5,32 @@ import './App.css';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-// Sleek CSS-based icons for categories
+// Sleek AI-generated icons for categories
 const getCategoryIcon = (categoryName) => {
-  const iconStyles = {
-    'all': 'bg-gradient-to-br from-pink-400 to-rose-500',
-    'tops': 'bg-gradient-to-br from-blue-400 to-indigo-500', 
-    'bottoms': 'bg-gradient-to-br from-green-400 to-emerald-500',
-    'dresses': 'bg-gradient-to-br from-purple-400 to-violet-500',
-    'skirts': 'bg-gradient-to-br from-pink-300 to-rose-400',
-    'shorts': 'bg-gradient-to-br from-yellow-400 to-orange-500',
-    'jackets': 'bg-gradient-to-br from-gray-400 to-slate-500',
-    'coats': 'bg-gradient-to-br from-gray-500 to-slate-600',
-    'shoes': 'bg-gradient-to-br from-brown-400 to-amber-600',
-    'accessories': 'bg-gradient-to-br from-cyan-400 to-teal-500',
-    'jewelry': 'bg-gradient-to-br from-yellow-300 to-amber-400',
-    'bags': 'bg-gradient-to-br from-red-400 to-pink-500',
-    'hats': 'bg-gradient-to-br from-indigo-400 to-purple-500',
-    'scarves': 'bg-gradient-to-br from-teal-400 to-cyan-500',
-    'lingerie': 'bg-gradient-to-br from-pink-200 to-rose-300',
-    'activewear': 'bg-gradient-to-br from-lime-400 to-green-500',
-    'swimwear': 'bg-gradient-to-br from-sky-400 to-blue-500',
-    'sleepwear': 'bg-gradient-to-br from-lavender-400 to-purple-300',
-    'outerwear': 'bg-gradient-to-br from-slate-400 to-gray-500'
+  const iconUrls = {
+    'all': 'https://cdn-icons-png.flaticon.com/128/7183/7183097.png', // Hanger
+    'tops': 'https://cdn-icons-png.flaticon.com/128/7183/7183139.png', // Shirt
+    'bottoms': 'https://cdn-icons-png.flaticon.com/128/7183/7183148.png', // Pants/Shorts
+    'dresses': 'https://images.unsplash.com/photo-1537274942065-eda9d00a6293?w=128&h=128&fit=crop&crop=center', // Dress outline
+    'skirts': 'https://cdn-icons-png.flaticon.com/128/7183/7183158.png', // Skirt
+    'shorts': 'https://cdn-icons-png.flaticon.com/128/7183/7183148.png', // Shorts
+    'jackets': 'https://cdn-icons-png.flaticon.com/128/7183/7183193.png', // Vest/Jacket
+    'coats': 'https://cdn-icons-png.flaticon.com/128/7183/7183193.png', // Coat
+    'shoes': 'https://cdn-icons-png.flaticon.com/128/7183/7183163.png', // Sneaker
+    'accessories': 'https://cdn-icons-png.flaticon.com/128/7183/7183049.png', // Belt/Accessories
+    'jewelry': 'https://cdn-icons-png.flaticon.com/128/7183/7183125.png', // Necklace
+    'bags': 'https://cdn-icons-png.flaticon.com/128/7183/7183082.png', // Bag/Purse
+    'hats': 'https://cdn-icons-png.flaticon.com/128/7183/7183072.png', // Cap
+    'scarves': 'https://cdn-icons-png.flaticon.com/128/7183/7183049.png', // Scarf/Belt
+    'lingerie': 'https://cdn-icons-png.flaticon.com/128/7183/7183068.png', // Lingerie
+    'activewear': 'https://cdn-icons-png.flaticon.com/128/7183/7183172.png', // T-shirt
+    'swimwear': 'https://cdn-icons-png.flaticon.com/128/7183/7183068.png', // Swimwear
+    'sleepwear': 'https://cdn-icons-png.flaticon.com/128/7183/7183172.png', // Sleepwear
+    'outerwear': 'https://cdn-icons-png.flaticon.com/128/7183/7183193.png' // Outerwear
   };
   
   const key = categoryName.toLowerCase();
-  return iconStyles[key] || 'bg-gradient-to-br from-gray-400 to-slate-500';
+  return iconUrls[key] || 'https://cdn-icons-png.flaticon.com/128/7183/7183097.png'; // Default to hanger
 };
 
 // Color mapping for color tags
