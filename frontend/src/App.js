@@ -115,15 +115,15 @@ const App = () => {
     if (tagFilters.length > 0) {
       filtered = filtered.filter(item => {
         if (filterMode === 'and') {
-          // AND mode: item must match ALL selected tag filters
+          // AND mode: item must have tags in ALL selected tag categories and match at least one value in each
           return tagFilters.every(([tagType, tagValues]) => 
-            item.tags[tagType] && 
+            item.tags[tagType] && item.tags[tagType].length > 0 &&
             tagValues.some(tagValue => item.tags[tagType].includes(tagValue))
           );
         } else {
           // OR mode: item must match ANY selected tag filter
           return tagFilters.some(([tagType, tagValues]) => 
-            item.tags[tagType] && 
+            item.tags[tagType] && item.tags[tagType].length > 0 &&
             tagValues.some(tagValue => item.tags[tagType].includes(tagValue))
           );
         }
