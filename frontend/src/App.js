@@ -418,7 +418,27 @@ const App = () => {
     setSelectedTags(newSelectedTags);
   };
 
-  const getAllTags = () => {
+  const getAvailableTagsForCategory = (category, tagType) => {
+    const key = `${category}-${tagType}`;
+    return categorySpecificTags[key] || [];
+  };
+
+  const getAllAvailableTags = (category, tagType) => {
+    // Get all tags from existing items
+    const existingTags = new Set();
+    clothingItems.forEach(item => {
+      if (item.tags[tagType]) {
+        item.tags[tagType].forEach(tag => existingTags.add(tag));
+      }
+    });
+    
+    // Get category-specific tags
+    const categorySpecific = getAvailableTagsForCategory(category, tagType);
+    
+    // Combine and return unique tags
+    const allTags = [...Array.from(existingTags), ...categorySpecific];
+    return [...new Set(allTags)].sort();
+  };
     const allTags = {};
     clothingItems.forEach(item => {
       Object.entries(item.tags).forEach(([type, tags]) => {
