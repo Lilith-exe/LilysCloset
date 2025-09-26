@@ -53,8 +53,9 @@ const App = () => {
   const [clothingItems, setClothingItems] = useState([]);
   const [categories, setCategories] = useState([]);
   const [tagCategories, setTagCategories] = useState([]);
+  const [availableTags, setAvailableTags] = useState([]);
+  const [subcategories, setSubcategories] = useState({});
   const [stats, setStats] = useState(null);
-  const [categorySpecificTags, setCategorySpecificTags] = useState({});
   
   // UI States
   const [showAddForm, setShowAddForm] = useState(false);
