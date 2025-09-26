@@ -554,6 +554,19 @@ const App = () => {
       }
     };
 
+    const handleDeleteCategory = async (categoryId, categoryName) => {
+      if (window.confirm(`Are you sure you want to delete the "${categoryName}" category? This will not delete items in this category.`)) {
+        try {
+          await axios.delete(`${API}/categories/${categoryId}`);
+          fetchCategories();
+          alert('Category deleted successfully');
+        } catch (error) {
+          console.error('Error deleting category:', error);
+          alert('Error deleting category');
+        }
+      }
+    };
+
     const handleDeleteSubcategory = async (subcategoryId, subcategoryName) => {
       if (window.confirm(`Delete ${subcategoryName} subcategory?`)) {
         try {
