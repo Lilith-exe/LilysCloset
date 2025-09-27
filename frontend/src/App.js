@@ -1187,15 +1187,18 @@ const App = () => {
                           onClick={() => {
                             console.log('Clicking category:', category.name);
                             setSelectedCategory(category.name);
+                            // Always expand accessories when clicked to show subcategories  
                             if (category.name.toLowerCase() === 'accessories') {
                               console.log('Accessories clicked - expanding subcategories');
                               setAccessoriesExpanded(true);
+                              // Fetch subcategories to ensure they're loaded
+                              fetchSubcategories('accessories');
                             } else {
                               setAccessoriesExpanded(false);
                             }
                           }}
                           className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
-                            selectedCategory === category.name
+                            selectedCategory === category.name || selectedCategory.startsWith(`${category.name.toLowerCase()}-`)
                               ? 'bg-pink-100 text-pink-800 font-medium'
                               : 'text-gray-600 hover:bg-pink-50'
                           }`}
