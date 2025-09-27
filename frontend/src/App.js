@@ -613,14 +613,18 @@ const App = () => {
     };
 
     const handleDeleteSubcategory = async (subcategoryId, subcategoryName) => {
+      console.log('Deleting subcategory:', subcategoryName, 'ID:', subcategoryId);
+      
       if (window.confirm(`Delete ${subcategoryName} subcategory?`)) {
         try {
-          await axios.delete(`${API}/subcategories/${subcategoryId}`);
-          fetchSubcategories('accessories');
+          const response = await axios.delete(`${API}/subcategories/${subcategoryId}`);
+          console.log('Subcategory delete response:', response.data);
+          
+          await fetchSubcategories('accessories');
           alert('Subcategory deleted successfully');
         } catch (error) {
           console.error('Error deleting subcategory:', error);
-          alert('Error deleting subcategory');
+          alert(`Error deleting subcategory: ${error.response?.data?.detail || error.message}`);
         }
       }
     };
