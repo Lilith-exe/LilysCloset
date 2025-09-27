@@ -1778,8 +1778,10 @@ const App = () => {
                   <select
                     value={editingItem.category}
                     onChange={(e) => {
+                      console.log('Edit Item - Category selected:', e.target.value);
                       setEditingItem({ ...editingItem, category: e.target.value, subcategory: '' });
-                      if (e.target.value === 'accessories') {
+                      if (e.target.value.toLowerCase() === 'accessories') {
+                        console.log('Edit Item - Accessories selected, fetching subcategories');
                         fetchSubcategories('accessories');
                       }
                     }}
