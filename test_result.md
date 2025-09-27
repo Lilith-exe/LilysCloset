@@ -279,11 +279,11 @@ frontend:
 
   - task: "Accessories Subcategory Functionality"
     implemented: true
-    working: "NA"
+    working: false
     file: "/app/frontend/src/App.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
@@ -291,6 +291,9 @@ frontend:
       - working: "NA"
         agent: "user"
         comment: "User reports: The accessories collapsible menu doesn't show subcategories in the sidebar, and there's no way to assign items to subcategories when creating items. Need to test both sidebar display and form functionality."
+      - working: false
+        agent: "testing"
+        comment: "❌ CRITICAL ISSUES FOUND: 1) SIDEBAR SUBCATEGORIES NOT SHOWING: Console shows subcategories data is fetched (6 subcategories) but sidebar logic requires BOTH selectedCategory='accessories' AND accessoriesExpanded=true. Currently clicking accessories sets selectedCategory but doesn't expand subcategories. 2) ADD ITEM FORM SUBCATEGORY DROPDOWN MISSING: Form has subcategory dropdown code (lines 1635-1652) but it only appears when formData.category === 'accessories'. However, category selection in form is failing - cannot select 'accessories' option. Backend API working correctly, returning 6 subcategories. Frontend display logic has conditional rendering issues."
 
 metadata:
   created_by: "main_agent"
