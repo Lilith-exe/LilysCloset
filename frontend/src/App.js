@@ -1186,6 +1186,8 @@ const App = () => {
                           onClick={() => {
                             setSelectedCategory(category.name);
                             if (category.name.toLowerCase() === 'accessories') {
+                              console.log('Clicking accessories, current expanded state:', accessoriesExpanded);
+                              console.log('Subcategories data:', subcategories.accessories);
                               setAccessoriesExpanded(!accessoriesExpanded);
                             }
                           }}
