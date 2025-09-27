@@ -575,17 +575,21 @@ const App = () => {
     const handleDeleteTag = async (tagId) => {
       console.log('Deleting tag with ID:', tagId);
       
-      if (window.confirm('Are you sure you want to delete this tag?')) {
-        try {
-          const response = await axios.delete(`${API}/tags/${tagId}`);
-          console.log('Tag delete response:', response.data);
-          
-          await fetchAvailableTags();
-          alert('Tag deleted successfully');
-        } catch (error) {
-          console.error('Error deleting tag:', error);
-          alert(`Error deleting tag: ${error.response?.data?.detail || error.message}`);
-        }
+      const confirmed = window.confirm('Are you sure you want to delete this tag?');
+      
+      if (confirmed) {
+        setTimeout(async () => {
+          try {
+            const response = await axios.delete(`${API}/tags/${tagId}`);
+            console.log('Tag delete response:', response.data);
+            
+            await fetchAvailableTags();
+            alert('Tag deleted successfully');
+          } catch (error) {
+            console.error('Error deleting tag:', error);
+            alert(`Error deleting tag: ${error.response?.data?.detail || error.message}`);
+          }
+        }, 100);
       }
     };
 
@@ -606,34 +610,42 @@ const App = () => {
     const handleDeleteCategory = async (categoryId, categoryName) => {
       console.log('Deleting category:', categoryName, 'ID:', categoryId);
       
-      if (window.confirm(`Are you sure you want to delete the "${categoryName}" category? This will not delete items in this category.`)) {
-        try {
-          const response = await axios.delete(`${API}/categories/${categoryId}`);
-          console.log('Category delete response:', response.data);
-          
-          await fetchCategories();
-          alert('Category deleted successfully');
-        } catch (error) {
-          console.error('Error deleting category:', error);
-          alert(`Error deleting category: ${error.response?.data?.detail || error.message}`);
-        }
+      const confirmed = window.confirm(`Are you sure you want to delete the "${categoryName}" category? This will not delete items in this category.`);
+      
+      if (confirmed) {
+        setTimeout(async () => {
+          try {
+            const response = await axios.delete(`${API}/categories/${categoryId}`);
+            console.log('Category delete response:', response.data);
+            
+            await fetchCategories();
+            alert('Category deleted successfully');
+          } catch (error) {
+            console.error('Error deleting category:', error);
+            alert(`Error deleting category: ${error.response?.data?.detail || error.message}`);
+          }
+        }, 100);
       }
     };
 
     const handleDeleteSubcategory = async (subcategoryId, subcategoryName) => {
       console.log('Deleting subcategory:', subcategoryName, 'ID:', subcategoryId);
       
-      if (window.confirm(`Delete ${subcategoryName} subcategory?`)) {
-        try {
-          const response = await axios.delete(`${API}/subcategories/${subcategoryId}`);
-          console.log('Subcategory delete response:', response.data);
-          
-          await fetchSubcategories('accessories');
-          alert('Subcategory deleted successfully');
-        } catch (error) {
-          console.error('Error deleting subcategory:', error);
-          alert(`Error deleting subcategory: ${error.response?.data?.detail || error.message}`);
-        }
+      const confirmed = window.confirm(`Delete ${subcategoryName} subcategory?`);
+      
+      if (confirmed) {
+        setTimeout(async () => {
+          try {
+            const response = await axios.delete(`${API}/subcategories/${subcategoryId}`);
+            console.log('Subcategory delete response:', response.data);
+            
+            await fetchSubcategories('accessories');
+            alert('Subcategory deleted successfully');
+          } catch (error) {
+            console.error('Error deleting subcategory:', error);
+            alert(`Error deleting subcategory: ${error.response?.data?.detail || error.message}`);
+          }
+        }, 100);
       }
     };
 
