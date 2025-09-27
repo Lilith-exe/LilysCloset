@@ -1262,7 +1262,12 @@ const App = () => {
             <div className="space-y-6">
               <div className="flex justify-between items-center">
                 <h2 className="text-2xl font-bold text-gray-800">
-                  {selectedCategory === 'all' ? 'All Items' : selectedCategory}
+                  {selectedCategory === 'all' 
+                    ? 'All Items' 
+                    : selectedCategory.startsWith('accessories-')
+                      ? `Accessories - ${selectedCategory.replace('accessories-', '')}`
+                      : selectedCategory
+                  }
                 </h2>
                 <p className="text-gray-600">{filteredItems.length} items</p>
               </div>
