@@ -345,6 +345,7 @@ metadata:
 
 test_plan:
   current_focus:
+    - "Accessories Subcategory Functionality"
     - "Delete Functionality"
     - "Custom Tag Category Management"
   stuck_tasks:
