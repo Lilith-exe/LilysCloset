@@ -825,6 +825,229 @@ class ClothingCatalogTester:
         except Exception as e:
             self.log_result("statistics_api", "Statistics data accuracy test", False, str(e))
 
+    def test_accessories_subcategory_functionality(self):
+        """Test Accessories Subcategory Functionality comprehensively"""
+        print("\n👜 Testing Accessories Subcategory Functionality...")
+        
+        # First, ensure we have the accessories category
+        accessories_category = {"name": "accessories"}
+        try:
+            response = self.session.post(f"{API_URL}/categories", json=accessories_category)
+            if response.status_code == 200:
+                created_category = response.json()
+                self.created_categories.append(created_category["id"])
+            elif response.status_code == 400:
+                # Category already exists, which is fine
+                pass
+        except Exception as e:
+            print(f"Warning: Could not ensure accessories category exists: {e}")
+
+        # Test 1: Create accessories subcategories
+        accessories_subcategories = [
+            {"name": "Jewelry", "parent_category": "accessories"},
+            {"name": "Bags", "parent_category": "accessories"},
+            {"name": "Scarves", "parent_category": "accessories"},
+            {"name": "Belts", "parent_category": "accessories"},
+            {"name": "Watches", "parent_category": "accessories"},
+            {"name": "Sunglasses", "parent_category": "accessories"}
+        ]
+        
+        created_subcategory_ids = []
+        for subcategory in accessories_subcategories:
+            try:
+                response = self.session.post(f"{API_URL}/subcategories", json=subcategory)
+                if response.status_code == 200:
+                    created_subcategory = response.json()
+                    created_subcategory_ids.append(created_subcategory["id"])
+                    self.created_subcategories.append(created_subcategory["id"])
+                elif response.status_code == 400:
+                    # Subcategory already exists, get its ID
+                    get_response = self.session.get(f"{API_URL}/subcategories/accessories")
+                    if get_response.status_code == 200:
+                        existing_subcategories = get_response.json()
+                        existing_subcategory = next((sub for sub in existing_subcategories if sub["name"] == subcategory["name"]), None)
+                        if existing_subcategory:
+                            created_subcategory_ids.append(existing_subcategory["id"])
+            except Exception as e:
+                print(f"Warning: Could not create subcategory {subcategory['name']}: {e}")
+        
+        if len(created_subcategory_ids) >= 6:
+            self.log_result("accessories_subcategory", "Create 6 accessories subcategories", True)
+        else:
+            self.log_result("accessories_subcategory", "Create 6 accessories subcategories", False, f"Only created {len(created_subcategory_ids)} subcategories")
+
+        # Test 2: GET /api/subcategories/accessories (should return 6 subcategories)
+        try:
+            response = self.session.get(f"{API_URL}/subcategories/accessories")
+            if response.status_code == 200:
+                subcategories = response.json()
+                if isinstance(subcategories, list) and len(subcategories) >= 6:
+                    # Verify expected subcategories are present
+                    subcategory_names = [sub["name"] for sub in subcategories]
+                    expected_names = ["Jewelry", "Bags", "Scarves", "Belts", "Watches", "Sunglasses"]
+                    all_present = all(name in subcategory_names for name in expected_names)
+                    
+                    if all_present:
+                        self.log_result("accessories_subcategory", "GET /api/subcategories/accessories returns 6 subcategories", True)
+                    else:
+                        self.log_result("accessories_subcategory", "GET /api/subcategories/accessories returns 6 subcategories", False, f"Missing subcategories. Found: {subcategory_names}")
+                else:
+                    self.log_result("accessories_subcategory", "GET /api/subcategories/accessories returns 6 subcategories", False, f"Expected 6+ subcategories, got {len(subcategories) if isinstance(subcategories, list) else 'invalid format'}")
+            else:
+                self.log_result("accessories_subcategory", "GET /api/subcategories/accessories returns 6 subcategories", False, f"Status: {response.status_code}, Response: {response.text}")
+        except Exception as e:
+            self.log_result("accessories_subcategory", "GET /api/subcategories/accessories returns 6 subcategories", False, str(e))
+
+        # Test 3: Create clothing item with category="accessories" and subcategory="Jewelry"
+        jewelry_item = {
+            "name": "Diamond Stud Earrings",
+            "category": "accessories",
+            "subcategory": "Jewelry",
+            "image": SAMPLE_BASE64_IMAGE,
+            "tags": {
+                "color": ["silver", "clear"],
+                "theme": ["elegant", "formal"],
+                "features": ["hypoallergenic", "sparkly"]
+            },
+            "notes": "Beautiful diamond stud earrings perfect for special occasions"
+        }
+        
+        jewelry_item_id = None
+        try:
+            response = self.session.post(f"{API_URL}/clothing-items", json=jewelry_item)
+            if response.status_code == 200:
+                created_item = response.json()
+                jewelry_item_id = created_item["id"]
+                self.created_items.append(jewelry_item_id)
+                
+                # Verify subcategory is properly stored
+                if (created_item["category"] == "accessories" and 
+                    created_item["subcategory"] == "Jewelry"):
+                    self.log_result("accessories_subcategory", "Create item with category=accessories and subcategory=Jewelry", True)
+                else:
+                    self.log_result("accessories_subcategory", "Create item with category=accessories and subcategory=Jewelry", False, f"Category: {created_item.get('category')}, Subcategory: {created_item.get('subcategory')}")
+            else:
+                self.log_result("accessories_subcategory", "Create item with category=accessories and subcategory=Jewelry", False, f"Status: {response.status_code}, Response: {response.text}")
+        except Exception as e:
+            self.log_result("accessories_subcategory", "Create item with category=accessories and subcategory=Jewelry", False, str(e))
+
+        # Test 4: Create clothing item with category="accessories" and subcategory="Bags"
+        bag_item = {
+            "name": "Leather Crossbody Bag",
+            "category": "accessories",
+            "subcategory": "Bags",
+            "image": SAMPLE_BASE64_IMAGE,
+            "tags": {
+                "color": ["brown", "tan"],
+                "theme": ["casual", "everyday"],
+                "features": ["adjustable-strap", "multiple-compartments"]
+            },
+            "notes": "Versatile leather crossbody bag for daily use"
+        }
+        
+        bag_item_id = None
+        try:
+            response = self.session.post(f"{API_URL}/clothing-items", json=bag_item)
+            if response.status_code == 200:
+                created_item = response.json()
+                bag_item_id = created_item["id"]
+                self.created_items.append(bag_item_id)
+                
+                # Verify subcategory is properly stored
+                if (created_item["category"] == "accessories" and 
+                    created_item["subcategory"] == "Bags"):
+                    self.log_result("accessories_subcategory", "Create item with category=accessories and subcategory=Bags", True)
+                else:
+                    self.log_result("accessories_subcategory", "Create item with category=accessories and subcategory=Bags", False, f"Category: {created_item.get('category')}, Subcategory: {created_item.get('subcategory')}")
+            else:
+                self.log_result("accessories_subcategory", "Create item with category=accessories and subcategory=Bags", False, f"Status: {response.status_code}, Response: {response.text}")
+        except Exception as e:
+            self.log_result("accessories_subcategory", "Create item with category=accessories and subcategory=Bags", False, str(e))
+
+        # Test 5: Update an existing item to assign it a subcategory
+        if jewelry_item_id:
+            update_data = {
+                "subcategory": "Watches"  # Change from Jewelry to Watches
+            }
+            
+            try:
+                response = self.session.put(f"{API_URL}/clothing-items/{jewelry_item_id}", json=update_data)
+                if response.status_code == 200:
+                    updated_item = response.json()
+                    if updated_item["subcategory"] == "Watches":
+                        self.log_result("accessories_subcategory", "Update existing item to assign subcategory", True)
+                    else:
+                        self.log_result("accessories_subcategory", "Update existing item to assign subcategory", False, f"Expected subcategory 'Watches', got '{updated_item.get('subcategory')}'")
+                else:
+                    self.log_result("accessories_subcategory", "Update existing item to assign subcategory", False, f"Status: {response.status_code}")
+            except Exception as e:
+                self.log_result("accessories_subcategory", "Update existing item to assign subcategory", False, str(e))
+
+        # Test 6: Verify subcategory field is properly stored and retrieved
+        if bag_item_id:
+            try:
+                response = self.session.get(f"{API_URL}/clothing-items/{bag_item_id}")
+                if response.status_code == 200:
+                    retrieved_item = response.json()
+                    if (retrieved_item.get("subcategory") == "Bags" and 
+                        retrieved_item.get("category") == "accessories"):
+                        self.log_result("accessories_subcategory", "Verify subcategory field is properly stored and retrieved", True)
+                    else:
+                        self.log_result("accessories_subcategory", "Verify subcategory field is properly stored and retrieved", False, f"Category: {retrieved_item.get('category')}, Subcategory: {retrieved_item.get('subcategory')}")
+                else:
+                    self.log_result("accessories_subcategory", "Verify subcategory field is properly stored and retrieved", False, f"Status: {response.status_code}")
+            except Exception as e:
+                self.log_result("accessories_subcategory", "Verify subcategory field is properly stored and retrieved", False, str(e))
+
+        # Test 7: Test filtering by subcategory when using category filtering
+        # First, get all accessories items
+        try:
+            response = self.session.get(f"{API_URL}/clothing-items")
+            if response.status_code == 200:
+                all_items = response.json()
+                accessories_items = [item for item in all_items if item.get("category") == "accessories"]
+                
+                if len(accessories_items) >= 2:  # We created at least 2 accessories items
+                    # Check if we can filter by subcategory
+                    jewelry_items = [item for item in accessories_items if item.get("subcategory") == "Watches"]  # Updated item should be Watches
+                    bag_items = [item for item in accessories_items if item.get("subcategory") == "Bags"]
+                    
+                    if len(jewelry_items) >= 1 and len(bag_items) >= 1:
+                        self.log_result("accessories_subcategory", "Filter items by subcategory within accessories category", True)
+                    else:
+                        self.log_result("accessories_subcategory", "Filter items by subcategory within accessories category", False, f"Jewelry items: {len(jewelry_items)}, Bag items: {len(bag_items)}")
+                else:
+                    self.log_result("accessories_subcategory", "Filter items by subcategory within accessories category", False, f"Only found {len(accessories_items)} accessories items")
+            else:
+                self.log_result("accessories_subcategory", "Filter items by subcategory within accessories category", False, f"Status: {response.status_code}")
+        except Exception as e:
+            self.log_result("accessories_subcategory", "Filter items by subcategory within accessories category", False, str(e))
+
+        # Test 8: Test search functionality with subcategory items
+        try:
+            response = self.session.get(f"{API_URL}/clothing-items/search/leather")
+            if response.status_code == 200:
+                search_results = response.json()
+                if isinstance(search_results, list):
+                    # Check if our leather bag is found
+                    leather_bag_found = any(
+                        item.get("id") == bag_item_id and 
+                        item.get("subcategory") == "Bags" and
+                        "leather" in item.get("name", "").lower()
+                        for item in search_results
+                    )
+                    
+                    if leather_bag_found:
+                        self.log_result("accessories_subcategory", "Search functionality works with subcategory items", True)
+                    else:
+                        self.log_result("accessories_subcategory", "Search functionality works with subcategory items", False, "Leather bag with subcategory not found in search results")
+                else:
+                    self.log_result("accessories_subcategory", "Search functionality works with subcategory items", False, "Invalid search response format")
+            else:
+                self.log_result("accessories_subcategory", "Search functionality works with subcategory items", False, f"Status: {response.status_code}")
+        except Exception as e:
+            self.log_result("accessories_subcategory", "Search functionality works with subcategory items", False, str(e))
+
     def cleanup(self):
         """Clean up created test data"""
         print("\n🧹 Cleaning up test data...")
