@@ -128,14 +128,17 @@ const App = () => {
     
     if (selectedCategory !== 'all') {
       if (selectedCategory.startsWith('accessories-')) {
-        // Handle subcategory filtering
+        // Handle subcategory filtering - use case-insensitive comparison
         const subcategoryName = selectedCategory.replace('accessories-', '');
         filtered = filtered.filter(item => 
-          item.category === 'accessories' && item.subcategory === subcategoryName
+          item.category && item.category.toLowerCase() === 'accessories' && 
+          item.subcategory === subcategoryName
         );
       } else {
-        // Handle regular category filtering
-        filtered = filtered.filter(item => item.category === selectedCategory);
+        // Handle regular category filtering - use case-insensitive comparison
+        filtered = filtered.filter(item => 
+          item.category && item.category.toLowerCase() === selectedCategory.toLowerCase()
+        );
       }
     }
     
