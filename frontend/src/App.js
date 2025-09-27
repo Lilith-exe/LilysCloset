@@ -197,11 +197,8 @@ const App = () => {
       const response = await axios.get(`${API}/categories`);
       setCategories(response.data);
       
-      // Fetch subcategories for accessories
-      const accessoriesCategory = response.data.find(cat => cat.name.toLowerCase() === 'accessories');
-      if (accessoriesCategory) {
-        fetchSubcategories('accessories');
-      }
+      // Always fetch subcategories for accessories when categories are loaded
+      fetchSubcategories('accessories');
     } catch (error) {
       console.error('Error fetching categories:', error);
     }
