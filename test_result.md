@@ -279,9 +279,9 @@ frontend:
 
   - task: "Accessories Subcategory Functionality"
     implemented: true
-    working: true
+    working: false
     file: "/app/frontend/src/App.js"
-    stuck_count: 0
+    stuck_count: 1
     priority: "high"
     needs_retesting: false
     status_history:
@@ -300,6 +300,9 @@ frontend:
       - working: true
         agent: "testing"
         comment: "✅ COMPREHENSIVE ACCESSORIES SUBCATEGORY BACKEND TESTING PASSED: All 8 backend tests passed (100% success rate). Verified: 1) GET /api/subcategories/accessories returns 6 subcategories (Bags, Belts, Chokers, Harnesses, Hats, Jewelry) as expected from console logs. 2) CRUD operations with subcategories work perfectly - created items with category='accessories' and subcategory='Jewelry'/'Bags', updated existing item subcategory assignment, verified proper storage/retrieval. 3) Search/Filter by subcategory fully functional - items can be filtered by subcategory within accessories category, search functionality works with subcategory items. Backend subcategory functionality is solid and ready for frontend integration. Issue is purely frontend display/form logic, not backend API."
+      - working: false
+        agent: "testing"
+        comment: "❌ COMPREHENSIVE FRONTEND TESTING REVEALS MIXED RESULTS: 1) ✅ SIDEBAR SUBCATEGORIES NOW WORKING: Successfully tested sidebar functionality - clicking 'Accessories' in catalog sidebar properly expands and shows all 6 subcategories (Bags, Belts, Chokers, Harnesses, Hats, Jewelry). Subcategory filtering works correctly, can click individual subcategories like 'Jewelry' and see filtered results. Console shows proper API calls and data fetching. 2) ✅ NAVIGATION FLOW WORKING: Home → Accessories card click properly navigates to subcategories page showing all 6 subcategory cards. 3) ❌ CRITICAL ADD ITEM FORM ISSUE: Category dropdown contains 'Accessories' option and can be selected successfully, BUT subcategory dropdown does NOT appear after selecting 'Accessories'. Form shows only 1 select element before and after selection, indicating subcategory dropdown is not being rendered. This breaks the Add Item workflow for accessories. Backend APIs working perfectly, issue is frontend conditional rendering logic in Add Item form."
 
 metadata:
   created_by: "main_agent"
