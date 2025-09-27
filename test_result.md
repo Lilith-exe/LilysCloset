@@ -277,6 +277,21 @@ frontend:
         agent: "testing"
         comment: "✅ Statistics page loads correctly and displays data properly. Shows total items (4), category breakdown, and tag usage statistics in well-formatted cards. No issues found with statistics functionality."
 
+  - task: "Accessories Subcategory Functionality"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Implemented accessories subcategory support with collapsible sidebar menu, subcategory dropdown in Add Item form, and subcategory filtering. Added debug logging and subcategory management."
+      - working: "NA"
+        agent: "user"
+        comment: "User reports: The accessories collapsible menu doesn't show subcategories in the sidebar, and there's no way to assign items to subcategories when creating items. Need to test both sidebar display and form functionality."
+
 metadata:
   created_by: "main_agent"
   version: "2.0"
