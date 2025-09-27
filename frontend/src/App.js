@@ -1208,10 +1208,9 @@ const App = () => {
                           </div>
                         </button>
                         
-                        {/* Accessories Subcategories - show when accessories category is selected and expanded */}
+                        {/* Accessories Subcategories - show when accessories category is selected */}
                         {category.name.toLowerCase() === 'accessories' && 
-                         selectedCategory === 'accessories' && 
-                         accessoriesExpanded && (
+                         selectedCategory === 'accessories' && (
                           <div className="ml-4 mt-2 space-y-2 border-l-2 border-pink-100 pl-3">
                             <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Subcategories</p>
                             {subcategories.accessories && subcategories.accessories.length > 0 ? (
