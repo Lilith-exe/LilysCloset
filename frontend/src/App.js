@@ -112,6 +112,13 @@ const App = () => {
     fetchTagCategories();
     fetchAvailableTags();
     fetchStats();
+    
+    // Initialize expanded state for tag types
+    const initialTagTypes = {};
+    ['color', 'theme', 'features', 'material'].forEach(type => {
+      initialTagTypes[type] = true; // Start expanded
+    });
+    setExpandedTagTypes(initialTagTypes);
   }, []);
 
   // Filter items when search query, category, or tags change
