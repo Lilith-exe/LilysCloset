@@ -49,6 +49,7 @@ class ClothingCatalogTester:
             "accessories_subcategory": {"passed": 0, "failed": 0, "details": []}
         }
         self.created_tag_categories = []
+        self.created_subcategories = []
 
     def log_result(self, category: str, test_name: str, passed: bool, details: str = ""):
         """Log test result"""
