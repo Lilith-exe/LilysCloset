@@ -1142,68 +1142,98 @@ const App = () => {
           {/* Categories Filter */}
           {currentPage === 'catalog' && (
             <div className="mb-6">
-              <h3 className="font-semibold text-gray-800 mb-3">Categories</h3>
-              <div className="space-y-2">
-                <button
-                  onClick={() => setSelectedCategory('all')}
-                  className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
-                    selectedCategory === 'all'
-                      ? 'bg-pink-100 text-pink-800 font-medium'
-                      : 'text-gray-600 hover:bg-pink-50'
-                  }`}
-                >
-                  All Items ({clothingItems.length})
-                </button>
-                {categories.map(category => {
-                  const count = clothingItems.filter(item => item.category === category.name).length;
-                  return (
-                    <button
-                      key={category.id}
-                      onClick={() => setSelectedCategory(category.name)}
-                      className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
-                        selectedCategory === category.name
-                          ? 'bg-pink-100 text-pink-800 font-medium'
-                          : 'text-gray-600 hover:bg-pink-50'
-                      }`}
-                    >
-                      {category.name} ({count})
-                    </button>
-                  );
-                })}
-                
-                {/* Accessories Subcategories - show when accessories category is selected */}
-                {selectedCategory === 'accessories' && subcategories.accessories && (
-                  <div className="ml-4 mt-2 space-y-2">
-                    <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Subcategories</p>
-                    {subcategories.accessories.map(subcategory => {
-                      const subcatItems = clothingItems.filter(item => 
-                        item.category === 'accessories' && item.subcategory === subcategory.name
-                      );
-                      return (
+              <button
+                onClick={() => setCategoriesExpanded(!categoriesExpanded)}
+                className="flex items-center justify-between w-full font-semibold text-gray-800 mb-3 hover:text-pink-600 transition-colors"
+              >
+                <span>Categories</span>
+                <span className={`transition-transform ${categoriesExpanded ? 'rotate-90' : ''}`}>▶</span>
+              </button>
+              
+              {categoriesExpanded && (
+                <div className="space-y-2">
+                  <button
+                    onClick={() => setSelectedCategory('all')}
+                    className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
+                      selectedCategory === 'all'
+                        ? 'bg-pink-100 text-pink-800 font-medium'
+                        : 'text-gray-600 hover:bg-pink-50'
+                    }`}
+                  >
+                    All Items ({clothingItems.length})
+                  </button>
+                  {categories.map(category => {
+                    const count = clothingItems.filter(item => item.category === category.name).length;
+                    return (
+                      <div key={category.id}>
                         <button
-                          key={subcategory.id}
-                          onClick={() => setSelectedCategory(`accessories-${subcategory.name}`)}
+                          onClick={() => {
+                            setSelectedCategory(category.name);
+                            if (category.name.toLowerCase() === 'accessories') {
+                              setAccessoriesExpanded(!accessoriesExpanded);
+                            }
+                          }}
                           className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
-                            selectedCategory === `accessories-${subcategory.name}`
-                              ? 'bg-purple-100 text-purple-800 font-medium'
-                              : 'text-gray-600 hover:bg-purple-50'
+                            selectedCategory === category.name
+                              ? 'bg-pink-100 text-pink-800 font-medium'
+                              : 'text-gray-600 hover:bg-pink-50'
                           }`}
                         >
-                          {subcategory.name} ({subcatItems.length})
+                          <div className="flex items-center justify-between">
+                            <span>{category.name} ({count})</span>
+                            {category.name.toLowerCase() === 'accessories' && subcategories.accessories && (
+                              <span className={`transition-transform text-xs ${accessoriesExpanded ? 'rotate-90' : ''}`}>▶</span>
+                            )}
+                          </div>
                         </button>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
+                        
+                        {/* Accessories Subcategories - show when accessories category is selected and expanded */}
+                        {category.name.toLowerCase() === 'accessories' && 
+                         selectedCategory === 'accessories' && 
+                         accessoriesExpanded && 
+                         subcategories.accessories && (
+                          <div className="ml-4 mt-2 space-y-2 border-l-2 border-pink-100 pl-3">
+                            <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Subcategories</p>
+                            {subcategories.accessories.map(subcategory => {
+                              const subcatItems = clothingItems.filter(item => 
+                                item.category === 'accessories' && item.subcategory === subcategory.name
+                              );
+                              return (
+                                <button
+                                  key={subcategory.id}
+                                  onClick={() => setSelectedCategory(`accessories-${subcategory.name}`)}
+                                  className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
+                                    selectedCategory === `accessories-${subcategory.name}`
+                                      ? 'bg-purple-100 text-purple-800 font-medium'
+                                      : 'text-gray-600 hover:bg-purple-50'
+                                  }`}
+                                >
+                                  {subcategory.name} ({subcatItems.length})
+                                </button>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           )}
 
           {/* Tags Filter */}
           {currentPage === 'catalog' && (
             <div>
-              <h3 className="font-semibold text-gray-800 mb-3">Tags</h3>
-              {Object.entries(getAllTags()).map(([tagType, tags]) => (
+              <button
+                onClick={() => setTagsExpanded(!tagsExpanded)}
+                className="flex items-center justify-between w-full font-semibold text-gray-800 mb-3 hover:text-pink-600 transition-colors"
+              >
+                <span>Tags</span>
+                <span className={`transition-transform ${tagsExpanded ? 'rotate-90' : ''}`}>▶</span>
+              </button>
+              
+              {tagsExpanded && Object.entries(getAllTags()).map(([tagType, tags]) => (
                 <div key={tagType} className="mb-4">
                   <h4 className="text-sm font-medium text-gray-700 mb-2 capitalize">{tagType}</h4>
                   <div className="space-y-1">
