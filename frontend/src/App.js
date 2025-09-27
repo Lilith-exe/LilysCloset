@@ -81,6 +81,7 @@ const App = () => {
   const [categoriesExpanded, setCategoriesExpanded] = useState(true);
   const [tagsExpanded, setTagsExpanded] = useState(true);
   const [accessoriesExpanded, setAccessoriesExpanded] = useState(false);
+  const [expandedTagTypes, setExpandedTagTypes] = useState({});
   
   // Image cropping states
   const [originalImage, setOriginalImage] = useState(null);
