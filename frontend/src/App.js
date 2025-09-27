@@ -1644,7 +1644,7 @@ const App = () => {
                 </div>
 
                 {/* Subcategory - only show for accessories */}
-                {formData.category === 'accessories' && (
+                {formData.category && formData.category.toLowerCase() === 'accessories' && (
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Subcategory</label>
                     <select
