@@ -943,7 +943,9 @@ const App = () => {
 
         {/* Category Cards */}
         {categories.map(category => {
-          const categoryItems = clothingItems.filter(item => item.category === category.name);
+          const categoryItems = clothingItems.filter(item => 
+            item.category && item.category.toLowerCase() === category.name.toLowerCase()
+          );
           return (
             <div
               key={category.id}
