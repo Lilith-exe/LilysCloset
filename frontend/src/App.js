@@ -174,6 +174,13 @@ const App = () => {
     setFilteredItems(filtered);
   }, [clothingItems, searchQuery, selectedCategory, selectedTags, filterMode]);
 
+  const toggleTagType = (tagType) => {
+    setExpandedTagTypes(prev => ({
+      ...prev,
+      [tagType]: !prev[tagType]
+    }));
+  };
+
   const fetchClothingItems = async () => {
     try {
       console.log('Fetching clothing items from:', `${API}/clothing-items`);
