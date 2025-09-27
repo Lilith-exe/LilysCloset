@@ -115,7 +115,16 @@ const App = () => {
     let filtered = clothingItems;
     
     if (selectedCategory !== 'all') {
-      filtered = filtered.filter(item => item.category === selectedCategory);
+      if (selectedCategory.startsWith('accessories-')) {
+        // Handle subcategory filtering
+        const subcategoryName = selectedCategory.replace('accessories-', '');
+        filtered = filtered.filter(item => 
+          item.category === 'accessories' && item.subcategory === subcategoryName
+        );
+      } else {
+        // Handle regular category filtering
+        filtered = filtered.filter(item => item.category === selectedCategory);
+      }
     }
     
     // Apply tag filters with AND/OR logic
