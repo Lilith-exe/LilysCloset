@@ -78,6 +78,9 @@ const App = () => {
   const [selectedTags, setSelectedTags] = useState({});
   const [filterMode, setFilterMode] = useState('and'); // 'and' or 'or'
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [categoriesExpanded, setCategoriesExpanded] = useState(true);
+  const [tagsExpanded, setTagsExpanded] = useState(true);
+  const [accessoriesExpanded, setAccessoriesExpanded] = useState(false);
   
   // Image cropping states
   const [originalImage, setOriginalImage] = useState(null);
