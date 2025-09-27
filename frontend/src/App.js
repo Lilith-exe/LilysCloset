@@ -1202,28 +1202,31 @@ const App = () => {
                         {/* Accessories Subcategories - show when accessories category is selected and expanded */}
                         {category.name.toLowerCase() === 'accessories' && 
                          selectedCategory === 'accessories' && 
-                         accessoriesExpanded && 
-                         subcategories.accessories && (
+                         accessoriesExpanded && (
                           <div className="ml-4 mt-2 space-y-2 border-l-2 border-pink-100 pl-3">
                             <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Subcategories</p>
-                            {subcategories.accessories.map(subcategory => {
-                              const subcatItems = clothingItems.filter(item => 
-                                item.category === 'accessories' && item.subcategory === subcategory.name
-                              );
-                              return (
-                                <button
-                                  key={subcategory.id}
-                                  onClick={() => setSelectedCategory(`accessories-${subcategory.name}`)}
-                                  className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
-                                    selectedCategory === `accessories-${subcategory.name}`
-                                      ? 'bg-purple-100 text-purple-800 font-medium'
-                                      : 'text-gray-600 hover:bg-purple-50'
-                                  }`}
-                                >
-                                  {subcategory.name} ({subcatItems.length})
-                                </button>
-                              );
-                            })}
+                            {subcategories.accessories && subcategories.accessories.length > 0 ? (
+                              subcategories.accessories.map(subcategory => {
+                                const subcatItems = clothingItems.filter(item => 
+                                  item.category === 'accessories' && item.subcategory === subcategory.name
+                                );
+                                return (
+                                  <button
+                                    key={subcategory.id}
+                                    onClick={() => setSelectedCategory(`accessories-${subcategory.name}`)}
+                                    className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
+                                      selectedCategory === `accessories-${subcategory.name}`
+                                        ? 'bg-purple-100 text-purple-800 font-medium'
+                                        : 'text-gray-600 hover:bg-purple-50'
+                                    }`}
+                                  >
+                                    {subcategory.name} ({subcatItems.length})
+                                  </button>
+                                );
+                              })
+                            ) : (
+                              <p className="text-xs text-gray-400 italic">No subcategories yet</p>
+                            )}
                           </div>
                         )}
                       </div>
