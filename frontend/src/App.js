@@ -878,7 +878,7 @@ const App = () => {
           </div>
           <h3 className="font-semibold text-gray-800 text-center">All {selectedSubcategoryParent}</h3>
           <p className="text-sm text-gray-500 text-center">
-            {clothingItems.filter(item => item.category === selectedSubcategoryParent).length} items
+            {clothingItems.filter(item => item.category && item.category.toLowerCase() === selectedSubcategoryParent?.toLowerCase()).length} items
           </p>
         </div>
 
