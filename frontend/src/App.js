@@ -1185,11 +1185,13 @@ const App = () => {
                       <div key={category.id}>
                         <button
                           onClick={() => {
+                            console.log('Clicking category:', category.name);
                             setSelectedCategory(category.name);
                             if (category.name.toLowerCase() === 'accessories') {
-                              console.log('Clicking accessories, current expanded state:', accessoriesExpanded);
-                              console.log('Subcategories data:', subcategories.accessories);
-                              setAccessoriesExpanded(!accessoriesExpanded);
+                              console.log('Accessories clicked - expanding subcategories');
+                              setAccessoriesExpanded(true);
+                            } else {
+                              setAccessoriesExpanded(false);
                             }
                           }}
                           className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
