@@ -565,14 +565,18 @@ const App = () => {
     };
 
     const handleDeleteTag = async (tagId) => {
+      console.log('Deleting tag with ID:', tagId);
+      
       if (window.confirm('Are you sure you want to delete this tag?')) {
         try {
-          await axios.delete(`${API}/tags/${tagId}`);
-          fetchAvailableTags();
+          const response = await axios.delete(`${API}/tags/${tagId}`);
+          console.log('Tag delete response:', response.data);
+          
+          await fetchAvailableTags();
           alert('Tag deleted successfully');
         } catch (error) {
           console.error('Error deleting tag:', error);
-          alert('Error deleting tag');
+          alert(`Error deleting tag: ${error.response?.data?.detail || error.message}`);
         }
       }
     };
