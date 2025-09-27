@@ -885,7 +885,7 @@ const App = () => {
         {/* Subcategory Cards */}
         {subcategories[selectedSubcategoryParent]?.map(subcategory => {
           const subcategoryItems = clothingItems.filter(item => 
-            item.category === selectedSubcategoryParent && 
+            item.category && item.category.toLowerCase() === selectedSubcategoryParent?.toLowerCase() && 
             item.subcategory === subcategory.name
           );
           return (
