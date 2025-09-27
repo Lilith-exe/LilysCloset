@@ -249,15 +249,18 @@ frontend:
 
   - task: "Custom Tag Category Management"
     implemented: true
-    working: "NA"
+    working: false
     file: "/app/frontend/src/App.js"
-    stuck_count: 0
+    stuck_count: 1
     priority: "high"
     needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Implemented 'Add Tag Type' functionality allowing users to create custom tag categories (like 'material'). Dynamic tag selection in add item form and dynamic tag filters in sidebar."
+      - working: false
+        agent: "testing"
+        comment: "❌ CRITICAL ISSUE: Settings page delete functionality broken. Found 28 delete buttons in Settings page for tags, categories, and subcategories. Console shows delete functions being called (e.g., 'Deleting tag with ID: ff1e71f6-94ac-4511-a6c7-47af0d7a7e37') but NO HTTP DELETE requests sent to backend. No confirmation dialogs appear. Same root cause as item deletion - frontend functions fail before making API calls."
 
   - task: "Statistics Page"
     implemented: true
