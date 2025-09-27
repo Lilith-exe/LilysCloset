@@ -1208,7 +1208,10 @@ const App = () => {
                             }
                           }}
                           className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
-                            selectedCategory === category.name || selectedCategory.startsWith(`${category.name.toLowerCase()}-`)
+                            selectedCategory && (
+                              selectedCategory.toLowerCase() === category.name.toLowerCase() || 
+                              selectedCategory.startsWith(`${category.name.toLowerCase()}-`)
+                            )
                               ? 'bg-pink-100 text-pink-800 font-medium'
                               : 'text-gray-600 hover:bg-pink-50'
                           }`}
