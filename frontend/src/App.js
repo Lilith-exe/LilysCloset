@@ -999,13 +999,6 @@ const App = () => {
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-rose-50 flex">
       {/* Sidebar */}
       <div className={`${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 fixed lg:relative z-30 w-80 h-screen bg-white/90 backdrop-blur-lg border-r border-pink-100 transition-transform duration-300 overflow-y-auto flex flex-col`}>
-        {/* Title above sidebar */}
-        <div className="p-6 border-b border-pink-100">
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-pink-400 to-rose-500 bg-clip-text text-transparent lily-font">
-            Lily's Closet
-          </h1>
-        </div>
-        
         <div className="p-6 flex-1">
           {/* Navigation */}
           <div className="space-y-2 mb-6">
@@ -1113,6 +1106,31 @@ const App = () => {
                     </button>
                   );
                 })}
+                
+                {/* Accessories Subcategories - show when accessories category is selected */}
+                {selectedCategory === 'accessories' && subcategories.accessories && (
+                  <div className="ml-4 mt-2 space-y-2">
+                    <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Subcategories</p>
+                    {subcategories.accessories.map(subcategory => {
+                      const subcatItems = clothingItems.filter(item => 
+                        item.category === 'accessories' && item.subcategory === subcategory.name
+                      );
+                      return (
+                        <button
+                          key={subcategory.id}
+                          onClick={() => setSelectedCategory(`accessories-${subcategory.name}`)}
+                          className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
+                            selectedCategory === `accessories-${subcategory.name}`
+                              ? 'bg-purple-100 text-purple-800 font-medium'
+                              : 'text-gray-600 hover:bg-purple-50'
+                          }`}
+                        >
+                          {subcategory.name} ({subcatItems.length})
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
             </div>
           )}
@@ -1178,17 +1196,22 @@ const App = () => {
         <header className="bg-white/80 backdrop-blur-lg shadow-sm border-b border-pink-100 sticky top-0 z-40">
           <div className="px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center py-6">
-              <button
-                onClick={() => setSidebarOpen(!sidebarOpen)}
-                className="lg:hidden p-2 rounded-lg hover:bg-pink-100 transition-colors"
-              >
-                <div className="space-y-1">
-                  <div className="w-6 h-0.5 bg-gray-600"></div>
-                  <div className="w-6 h-0.5 bg-gray-600"></div>
-                  <div className="w-6 h-0.5 bg-gray-600"></div>
-                </div>
-              </button>
-              <div className="flex space-x-3 ml-auto">
+              <div className="flex items-center space-x-4">
+                <button
+                  onClick={() => setSidebarOpen(!sidebarOpen)}
+                  className="lg:hidden p-2 rounded-lg hover:bg-pink-100 transition-colors"
+                >
+                  <div className="space-y-1">
+                    <div className="w-6 h-0.5 bg-gray-600"></div>
+                    <div className="w-6 h-0.5 bg-gray-600"></div>
+                    <div className="w-6 h-0.5 bg-gray-600"></div>
+                  </div>
+                </button>
+                <h1 className="text-4xl font-bold bg-gradient-to-r from-pink-400 to-rose-500 bg-clip-text text-transparent lily-font">
+                  Lily's Closet
+                </h1>
+              </div>
+              <div className="flex space-x-3">
                 <button
                   onClick={() => setCurrentPage('settings')}
                   className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-xl font-medium transition-all duration-200 shadow-sm hover:shadow-md"
