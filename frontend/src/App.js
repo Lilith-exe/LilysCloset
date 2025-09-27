@@ -1303,7 +1303,7 @@ const App = () => {
       {/* Overlay for mobile */}
       {sidebarOpen && (
         <div
-          className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-20"
+          className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
           onClick={() => setSidebarOpen(false)}
         ></div>
       )}
