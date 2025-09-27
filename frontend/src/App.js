@@ -1226,7 +1226,7 @@ const App = () => {
                         
                         {/* Accessories Subcategories - show when accessories category is selected OR expanded */}
                         {category.name.toLowerCase() === 'accessories' && 
-                         (selectedCategory === 'accessories' || selectedCategory.startsWith('accessories-') || accessoriesExpanded) && (
+                         (selectedCategory && (selectedCategory.toLowerCase() === 'accessories' || selectedCategory.startsWith('accessories-')) || accessoriesExpanded) && (
                           <div className="ml-4 mt-2 space-y-2 border-l-2 border-pink-100 pl-3">
                             <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Subcategories</p>
                             {subcategories.accessories && subcategories.accessories.length > 0 ? (
