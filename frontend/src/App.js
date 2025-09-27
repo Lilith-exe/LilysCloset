@@ -200,6 +200,13 @@ const App = () => {
       
       // Always fetch subcategories for accessories when categories are loaded
       fetchSubcategories('accessories');
+      
+      // If accessories category exists, also fetch subcategories immediately
+      const hasAccessories = response.data.some(cat => cat.name.toLowerCase() === 'accessories');
+      if (hasAccessories) {
+        console.log('Accessories category found, ensuring subcategories are loaded');
+        fetchSubcategories('accessories');
+      }
     } catch (error) {
       console.error('Error fetching categories:', error);
     }
