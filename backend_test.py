@@ -1148,6 +1148,7 @@ class ClothingCatalogTester:
             self.test_custom_tag_categories_api()
             self.test_enhanced_search_api()
             self.test_statistics_api()
+            self.test_accessories_subcategory_functionality()
             
             success = self.print_summary()
             return success
