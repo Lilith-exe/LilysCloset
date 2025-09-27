@@ -335,6 +335,7 @@ const App = () => {
       setFormData({
         name: '',
         category: '',
+        subcategory: '',
         image: '',
         tags: {},
         notes: ''
