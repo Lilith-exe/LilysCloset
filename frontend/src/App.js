@@ -370,39 +370,45 @@ const App = () => {
       return;
     }
 
-    if (window.confirm('Are you sure you want to delete this item?')) {
-      try {
-        console.log('Making delete request to:', `${API}/clothing-items/${itemId}`);
-        
-        const response = await axios.delete(`${API}/clothing-items/${itemId}`);
-        console.log('Delete response:', response.data);
-        
-        // Force refresh the items list
-        console.log('Refreshing items list...');
-        await fetchClothingItems();
-        
-        // Update stats
-        await fetchStats();
-        
-        // Close the modal
-        setSelectedItem(null);
-        
-        console.log('Item deleted successfully');
-        alert('Item deleted successfully!');
-        
-      } catch (error) {
-        console.error('Delete error:', error);
-        console.error('Error response:', error.response?.data);
-        
-        if (error.response?.status === 404) {
-          alert('Item not found - it may have already been deleted');
-          // Still refresh in case it was deleted elsewhere
+    // Use setTimeout to avoid window.confirm blocking axios calls
+    const confirmed = window.confirm('Are you sure you want to delete this item?');
+    
+    if (confirmed) {
+      // Use setTimeout to ensure confirm dialog is fully closed before making request
+      setTimeout(async () => {
+        try {
+          console.log('Making delete request to:', `${API}/clothing-items/${itemId}`);
+          
+          const response = await axios.delete(`${API}/clothing-items/${itemId}`);
+          console.log('Delete response:', response.data);
+          
+          // Force refresh the items list
+          console.log('Refreshing items list...');
           await fetchClothingItems();
+          
+          // Update stats
+          await fetchStats();
+          
+          // Close the modal
           setSelectedItem(null);
-        } else {
-          alert(`Error deleting item: ${error.response?.data?.detail || error.message}`);
+          
+          console.log('Item deleted successfully');
+          alert('Item deleted successfully!');
+          
+        } catch (error) {
+          console.error('Delete error:', error);
+          console.error('Error response:', error.response?.data);
+          
+          if (error.response?.status === 404) {
+            alert('Item not found - it may have already been deleted');
+            // Still refresh in case it was deleted elsewhere
+            await fetchClothingItems();
+            setSelectedItem(null);
+          } else {
+            alert(`Error deleting item: ${error.response?.data?.detail || error.message}`);
+          }
         }
-      }
+      }, 100);
     }
   };
 
