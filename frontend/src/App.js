@@ -165,7 +165,9 @@ const App = () => {
 
   const fetchClothingItems = async () => {
     try {
+      console.log('Fetching clothing items from:', `${API}/clothing-items`);
       const response = await axios.get(`${API}/clothing-items`);
+      console.log('Fetched clothing items:', response.data.length, 'items');
       setClothingItems(response.data);
     } catch (error) {
       console.error('Error fetching clothing items:', error);
