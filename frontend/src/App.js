@@ -361,24 +361,44 @@ const App = () => {
   };
 
   const handleDeleteItem = async (itemId) => {
+    console.log('Delete button clicked for item ID:', itemId);
+    
+    if (!itemId) {
+      alert('Error: No item ID provided');
+      return;
+    }
+
     if (window.confirm('Are you sure you want to delete this item?')) {
       try {
-        console.log('Deleting item with ID:', itemId);
+        console.log('Making delete request to:', `${API}/clothing-items/${itemId}`);
+        
         const response = await axios.delete(`${API}/clothing-items/${itemId}`);
         console.log('Delete response:', response.data);
         
-        if (response.status === 200) {
-          await fetchClothingItems();
-          await fetchStats();
-          setSelectedItem(null);
-          alert('Item deleted successfully!');
-        }
+        // Force refresh the items list
+        console.log('Refreshing items list...');
+        await fetchClothingItems();
+        
+        // Update stats
+        await fetchStats();
+        
+        // Close the modal
+        setSelectedItem(null);
+        
+        console.log('Item deleted successfully');
+        alert('Item deleted successfully!');
+        
       } catch (error) {
-        console.error('Error deleting item:', error.response || error);
+        console.error('Delete error:', error);
+        console.error('Error response:', error.response?.data);
+        
         if (error.response?.status === 404) {
-          alert('Item not found or already deleted');
+          alert('Item not found - it may have already been deleted');
+          // Still refresh in case it was deleted elsewhere
+          await fetchClothingItems();
+          setSelectedItem(null);
         } else {
-          alert('Error deleting item. Please try again.');
+          alert(`Error deleting item: ${error.response?.data?.detail || error.message}`);
         }
       }
     }
