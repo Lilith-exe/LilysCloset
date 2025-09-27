@@ -1250,40 +1250,49 @@ const App = () => {
               
               {tagsExpanded && Object.entries(getAllTags()).map(([tagType, tags]) => (
                 <div key={tagType} className="mb-4">
-                  <h4 className="text-sm font-medium text-gray-700 mb-2 capitalize">{tagType}</h4>
-                  <div className="space-y-1">
-                    {tags.map(tag => (
-                      <button
-                        key={tag}
-                        onClick={() => handleTagFilter(tagType, tag)}
-                        className={`flex items-center w-full text-left px-3 py-1 rounded-lg text-sm transition-colors ${
-                          selectedTags[tagType]?.includes(tag)
-                            ? 'bg-purple-100 text-purple-800 font-medium'
-                            : 'text-gray-600 hover:bg-purple-50'
-                        }`}
-                      >
-                        {tagType === 'color' && (
-                          <>
-                            {tag.toLowerCase() === 'rainbow' ? (
-                              <div 
-                                className="w-3 h-3 rounded-sm mr-2 border border-gray-300 shrink-0"
-                                style={{ 
-                                  background: 'linear-gradient(90deg, #ff0000, #ff8000, #ffff00, #80ff00, #00ff00, #00ff80, #00ffff, #0080ff, #0000ff, #8000ff, #ff00ff, #ff0080)',
-                                  backgroundSize: '100% 100%'
-                                }}
-                              ></div>
-                            ) : (
-                              <div 
-                                className="w-3 h-3 rounded-sm mr-2 border border-gray-300 shrink-0"
-                                style={{ backgroundColor: getColorHex(tag) }}
-                              ></div>
-                            )}
-                          </>
-                        )}
-                        <span className="truncate">{tag}</span>
-                      </button>
-                    ))}
-                  </div>
+                  <button
+                    onClick={() => toggleTagType(tagType)}
+                    className="flex items-center justify-between w-full text-sm font-medium text-gray-700 mb-2 hover:text-purple-600 transition-colors"
+                  >
+                    <span className="capitalize">{tagType}</span>
+                    <span className={`transition-transform text-xs ${expandedTagTypes[tagType] ? 'rotate-90' : ''}`}>▶</span>
+                  </button>
+                  
+                  {expandedTagTypes[tagType] && (
+                    <div className="space-y-1 ml-2 border-l-2 border-gray-100 pl-3">
+                      {tags.map(tag => (
+                        <button
+                          key={tag}
+                          onClick={() => handleTagFilter(tagType, tag)}
+                          className={`flex items-center w-full text-left px-3 py-1 rounded-lg text-sm transition-colors ${
+                            selectedTags[tagType]?.includes(tag)
+                              ? 'bg-purple-100 text-purple-800 font-medium'
+                              : 'text-gray-600 hover:bg-purple-50'
+                          }`}
+                        >
+                          {tagType === 'color' && (
+                            <>
+                              {tag.toLowerCase() === 'rainbow' ? (
+                                <div 
+                                  className="w-3 h-3 rounded-sm mr-2 border border-gray-300 shrink-0"
+                                  style={{ 
+                                    background: 'linear-gradient(90deg, #ff0000, #ff8000, #ffff00, #80ff00, #00ff00, #00ff80, #00ffff, #0080ff, #0000ff, #8000ff, #ff00ff, #ff0080)',
+                                    backgroundSize: '100% 100%'
+                                  }}
+                                ></div>
+                              ) : (
+                                <div 
+                                  className="w-3 h-3 rounded-sm mr-2 border border-gray-300 shrink-0"
+                                  style={{ backgroundColor: getColorHex(tag) }}
+                                ></div>
+                              )}
+                            </>
+                          )}
+                          <span className="truncate">{tag}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
