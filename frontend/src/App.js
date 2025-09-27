@@ -1646,11 +1646,7 @@ const App = () => {
                 </div>
 
                 {/* Subcategory - only show for accessories */}
-                {(() => {
-                  const shouldShow = formData.category && formData.category.toLowerCase() === 'accessories';
-                  console.log('Add Item - Should show subcategory dropdown:', shouldShow, 'formData.category:', formData.category, 'subcategories.accessories:', subcategories.accessories?.length);
-                  return shouldShow;
-                })() && (
+                {formData.category && formData.category.toLowerCase() === 'accessories' && (
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Subcategory</label>
                     <select
