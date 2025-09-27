@@ -283,7 +283,7 @@ frontend:
     file: "/app/frontend/src/App.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
       - working: "NA"
         agent: "main"
@@ -294,6 +294,9 @@ frontend:
       - working: false
         agent: "testing"
         comment: "❌ CRITICAL ISSUES FOUND: 1) SIDEBAR SUBCATEGORIES NOT SHOWING: Console shows subcategories data is fetched (6 subcategories) but sidebar logic requires BOTH selectedCategory='accessories' AND accessoriesExpanded=true. Currently clicking accessories sets selectedCategory but doesn't expand subcategories. 2) ADD ITEM FORM SUBCATEGORY DROPDOWN MISSING: Form has subcategory dropdown code (lines 1635-1652) but it only appears when formData.category === 'accessories'. However, category selection in form is failing - cannot select 'accessories' option. Backend API working correctly, returning 6 subcategories. Frontend display logic has conditional rendering issues."
+      - working: "NA"
+        agent: "main"
+        comment: "Starting comprehensive fix for accessories subcategory functionality. Issues identified: 1) Sidebar display logic not working properly 2) Form category selection issues 3) Navigation flow problems between home/catalog pages. Will fix sidebar conditional rendering, form state management, and ensure consistent subcategory support across all workflows."
 
 metadata:
   created_by: "main_agent"
