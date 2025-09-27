@@ -98,6 +98,7 @@ const App = () => {
   const [formData, setFormData] = useState({
     name: '',
     category: '',
+    subcategory: '',
     image: '',
     tags: {},
     notes: ''
