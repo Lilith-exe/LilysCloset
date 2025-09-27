@@ -1626,8 +1626,10 @@ const App = () => {
                   <select
                     value={formData.category}
                     onChange={(e) => {
+                      console.log('Add Item - Category selected:', e.target.value);
                       setFormData({ ...formData, category: e.target.value, subcategory: '' });
-                      if (e.target.value === 'accessories') {
+                      if (e.target.value.toLowerCase() === 'accessories') {
+                        console.log('Add Item - Accessories selected, fetching subcategories');
                         fetchSubcategories('accessories');
                       }
                     }}
