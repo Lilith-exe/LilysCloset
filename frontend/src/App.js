@@ -1190,7 +1190,9 @@ const App = () => {
                     All Items ({clothingItems.length})
                   </button>
                   {categories.map(category => {
-                    const count = clothingItems.filter(item => item.category === category.name).length;
+                    const count = clothingItems.filter(item => 
+                      item.category && item.category.toLowerCase() === category.name.toLowerCase()
+                    ).length;
                     return (
                       <div key={category.id}>
                         <button
