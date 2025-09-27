@@ -1084,6 +1084,17 @@ class ClothingCatalogTester:
                     print(f"⚠️ Failed to delete tag category {tag_category_id}: {response.status_code}")
             except Exception as e:
                 print(f"⚠️ Error deleting tag category {tag_category_id}: {e}")
+        
+        # Delete created subcategories
+        for subcategory_id in self.created_subcategories:
+            try:
+                response = self.session.delete(f"{API_URL}/subcategories/{subcategory_id}")
+                if response.status_code == 200:
+                    print(f"✅ Deleted subcategory: {subcategory_id}")
+                else:
+                    print(f"⚠️ Failed to delete subcategory {subcategory_id}: {response.status_code}")
+            except Exception as e:
+                print(f"⚠️ Error deleting subcategory {subcategory_id}: {e}")
 
     def print_summary(self):
         """Print test summary"""
