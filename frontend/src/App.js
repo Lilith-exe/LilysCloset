@@ -225,7 +225,9 @@ const App = () => {
 
   const fetchSubcategories = async (parentCategory) => {
     try {
+      console.log('Fetching subcategories for:', parentCategory);
       const response = await axios.get(`${API}/subcategories/${parentCategory}`);
+      console.log('Subcategories response:', response.data);
       setSubcategories(prev => ({ ...prev, [parentCategory]: response.data }));
     } catch (error) {
       console.error('Error fetching subcategories:', error);
