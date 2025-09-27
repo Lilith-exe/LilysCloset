@@ -234,15 +234,18 @@ frontend:
 
   - task: "Delete Functionality"
     implemented: true
-    working: "NA"
+    working: false
     file: "/app/frontend/src/App.js"
-    stuck_count: 0
+    stuck_count: 1
     priority: "high"
     needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Implemented delete button in item detail modal with confirmation dialog. Integrates with backend DELETE endpoint and refreshes data after successful deletion."
+      - working: false
+        agent: "testing"
+        comment: "❌ CRITICAL ISSUE: Delete functionality completely broken. JavaScript functions are called (console shows 'Delete button clicked for item ID: 9bc746f3-f3aa-4dfa-8721-3d5867b726df') but NO HTTP DELETE requests are sent to backend. Backend logs confirm zero DELETE requests received. Modal stays open, items not removed from catalog. Issue affects both item deletion and settings page tag/category deletion. Root cause: Frontend delete functions fail before making API calls."
 
   - task: "Custom Tag Category Management"
     implemented: true
