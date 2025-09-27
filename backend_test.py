@@ -44,7 +44,9 @@ class ClothingCatalogTester:
             "search_filter": {"passed": 0, "failed": 0, "details": []},
             "custom_tag_categories": {"passed": 0, "failed": 0, "details": []},
             "enhanced_search": {"passed": 0, "failed": 0, "details": []},
-            "statistics_api": {"passed": 0, "failed": 0, "details": []}
+            "statistics_api": {"passed": 0, "failed": 0, "details": []},
+            "subcategory_management": {"passed": 0, "failed": 0, "details": []},
+            "accessories_subcategory": {"passed": 0, "failed": 0, "details": []}
         }
         self.created_tag_categories = []
 
