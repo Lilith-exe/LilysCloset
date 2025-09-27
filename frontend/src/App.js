@@ -1613,7 +1613,12 @@ const App = () => {
                   <label className="block text-sm font-medium text-gray-700 mb-2">Category *</label>
                   <select
                     value={formData.category}
-                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                    onChange={(e) => {
+                      setFormData({ ...formData, category: e.target.value, subcategory: '' });
+                      if (e.target.value === 'accessories') {
+                        fetchSubcategories('accessories');
+                      }
+                    }}
                     className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-300 focus:border-pink-300 outline-none bg-white"
                     required
                   >
@@ -1625,6 +1630,25 @@ const App = () => {
                     ))}
                   </select>
                 </div>
+
+                {/* Subcategory - only show for accessories */}
+                {formData.category === 'accessories' && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Subcategory</label>
+                    <select
+                      value={formData.subcategory}
+                      onChange={(e) => setFormData({ ...formData, subcategory: e.target.value })}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-300 focus:border-pink-300 outline-none bg-white"
+                    >
+                      <option value="">Select Subcategory (Optional)</option>
+                      {subcategories.accessories?.map(subcategory => (
+                        <option key={subcategory.id} value={subcategory.name}>
+                          {subcategory.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Image *</label>
