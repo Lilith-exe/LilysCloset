@@ -1232,7 +1232,8 @@ const App = () => {
                             {subcategories.accessories && subcategories.accessories.length > 0 ? (
                               subcategories.accessories.map(subcategory => {
                                 const subcatItems = clothingItems.filter(item => 
-                                  item.category === 'accessories' && item.subcategory === subcategory.name
+                                  item.category && item.category.toLowerCase() === 'accessories' && 
+                                  item.subcategory === subcategory.name
                                 );
                                 return (
                                   <button
