@@ -362,6 +362,7 @@ const App = () => {
       await axios.put(`${API}/clothing-items/${editingItem.id}`, {
         name: editingItem.name,
         category: editingItem.category,
+        subcategory: editingItem.subcategory,
         image: editingItem.image,
         tags: editingItem.tags,
         notes: editingItem.notes
