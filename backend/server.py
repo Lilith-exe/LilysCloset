@@ -31,6 +31,7 @@ class ClothingItem(BaseModel):
     inventory_number: int
     name: str
     category: str
+    subcategory: Optional[str] = None  # For accessories subcategories
     image: str  # base64 encoded image
     tags: Dict[str, List[str]] = Field(default_factory=dict)  # {"color": ["red", "blue"], "theme": ["casual"], "features": ["pockets"]}
     notes: str = ""
@@ -40,6 +41,7 @@ class ClothingItem(BaseModel):
 class ClothingItemCreate(BaseModel):
     name: str
     category: str
+    subcategory: Optional[str] = None
     image: str  # base64 encoded image
     tags: Dict[str, List[str]] = Field(default_factory=dict)
     notes: str = ""
@@ -47,6 +49,7 @@ class ClothingItemCreate(BaseModel):
 class ClothingItemUpdate(BaseModel):
     name: Optional[str] = None
     category: Optional[str] = None
+    subcategory: Optional[str] = None
     image: Optional[str] = None
     tags: Optional[Dict[str, List[str]]] = None
     notes: Optional[str] = None
