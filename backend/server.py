@@ -57,10 +57,12 @@ class ClothingItemUpdate(BaseModel):
 class Category(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     name: str
+    custom_icon: Optional[str] = None  # base64 encoded image
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 class CategoryCreate(BaseModel):
     name: str
+    custom_icon: Optional[str] = None
 
 class TagCategory(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
