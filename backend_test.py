@@ -1049,6 +1049,203 @@ class ClothingCatalogTester:
         except Exception as e:
             self.log_result("accessories_subcategory", "Search functionality works with subcategory items", False, str(e))
 
+    def test_custom_icon_upload_functionality(self):
+        """Test Custom Icon Upload functionality for Categories and Subcategories"""
+        print("\n🎨 Testing Custom Icon Upload Functionality...")
+        
+        # Sample base64 icon for testing
+        SAMPLE_ICON = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=="
+        
+        # First, create a test category for icon upload testing
+        test_category = {"name": "Dresses"}
+        category_id = None
+        
+        try:
+            response = self.session.post(f"{API_URL}/categories", json=test_category)
+            if response.status_code == 200:
+                created_category = response.json()
+                category_id = created_category["id"]
+                self.created_categories.append(category_id)
+            elif response.status_code == 400:
+                # Category already exists, get its ID
+                response = self.session.get(f"{API_URL}/categories")
+                if response.status_code == 200:
+                    categories = response.json()
+                    existing_category = next((cat for cat in categories if cat["name"] == "Dresses"), None)
+                    if existing_category:
+                        category_id = existing_category["id"]
+        except Exception as e:
+            print(f"Warning: Could not ensure test category exists: {e}")
+
+        # Test 1: Category Icon Upload - PUT /api/categories/{category_id} with custom_icon
+        if category_id:
+            try:
+                update_data = {"custom_icon": SAMPLE_ICON}
+                response = self.session.put(f"{API_URL}/categories/{category_id}", json=update_data)
+                
+                if response.status_code == 200:
+                    updated_category = response.json()
+                    if updated_category.get("custom_icon") == SAMPLE_ICON:
+                        self.log_result("custom_icon_upload", "Category icon upload with base64 image", True)
+                    else:
+                        self.log_result("custom_icon_upload", "Category icon upload with base64 image", False, "Custom icon not stored correctly")
+                else:
+                    self.log_result("custom_icon_upload", "Category icon upload with base64 image", False, f"Status: {response.status_code}, Response: {response.text}")
+            except Exception as e:
+                self.log_result("custom_icon_upload", "Category icon upload with base64 image", False, str(e))
+
+        # Test 2: Verify Category Icon Retrieval - GET /api/categories should return custom_icon
+        if category_id:
+            try:
+                response = self.session.get(f"{API_URL}/categories")
+                if response.status_code == 200:
+                    categories = response.json()
+                    test_category = next((cat for cat in categories if cat["id"] == category_id), None)
+                    
+                    if test_category and test_category.get("custom_icon") == SAMPLE_ICON:
+                        self.log_result("custom_icon_upload", "Category icon retrieval via GET /api/categories", True)
+                    else:
+                        self.log_result("custom_icon_upload", "Category icon retrieval via GET /api/categories", False, "Custom icon not returned correctly")
+                else:
+                    self.log_result("custom_icon_upload", "Category icon retrieval via GET /api/categories", False, f"Status: {response.status_code}")
+            except Exception as e:
+                self.log_result("custom_icon_upload", "Category icon retrieval via GET /api/categories", False, str(e))
+
+        # Test 3: Category Icon Removal - PUT /api/categories/{category_id} with custom_icon: null
+        if category_id:
+            try:
+                update_data = {"custom_icon": None}
+                response = self.session.put(f"{API_URL}/categories/{category_id}", json=update_data)
+                
+                if response.status_code == 200:
+                    updated_category = response.json()
+                    if updated_category.get("custom_icon") is None:
+                        self.log_result("custom_icon_upload", "Category icon removal (set to null)", True)
+                    else:
+                        self.log_result("custom_icon_upload", "Category icon removal (set to null)", False, f"Custom icon not removed, got: {updated_category.get('custom_icon')}")
+                else:
+                    self.log_result("custom_icon_upload", "Category icon removal (set to null)", False, f"Status: {response.status_code}")
+            except Exception as e:
+                self.log_result("custom_icon_upload", "Category icon removal (set to null)", False, str(e))
+
+        # Test 4: Create a test subcategory for icon upload testing
+        subcategory_id = None
+        test_subcategory = {"name": "Jewelry", "parent_category": "accessories"}
+        
+        try:
+            response = self.session.post(f"{API_URL}/subcategories", json=test_subcategory)
+            if response.status_code == 200:
+                created_subcategory = response.json()
+                subcategory_id = created_subcategory["id"]
+                self.created_subcategories.append(subcategory_id)
+            elif response.status_code == 400:
+                # Subcategory already exists, get its ID
+                response = self.session.get(f"{API_URL}/subcategories/accessories")
+                if response.status_code == 200:
+                    subcategories = response.json()
+                    existing_subcategory = next((sub for sub in subcategories if sub["name"] == "Jewelry"), None)
+                    if existing_subcategory:
+                        subcategory_id = existing_subcategory["id"]
+        except Exception as e:
+            print(f"Warning: Could not ensure test subcategory exists: {e}")
+
+        # Test 5: Subcategory Icon Upload - PUT /api/subcategories/{subcategory_id} with custom_icon
+        if subcategory_id:
+            try:
+                update_data = {"custom_icon": SAMPLE_ICON}
+                response = self.session.put(f"{API_URL}/subcategories/{subcategory_id}", json=update_data)
+                
+                if response.status_code == 200:
+                    updated_subcategory = response.json()
+                    if updated_subcategory.get("custom_icon") == SAMPLE_ICON:
+                        self.log_result("custom_icon_upload", "Subcategory icon upload with base64 image", True)
+                    else:
+                        self.log_result("custom_icon_upload", "Subcategory icon upload with base64 image", False, "Custom icon not stored correctly")
+                else:
+                    self.log_result("custom_icon_upload", "Subcategory icon upload with base64 image", False, f"Status: {response.status_code}, Response: {response.text}")
+            except Exception as e:
+                self.log_result("custom_icon_upload", "Subcategory icon upload with base64 image", False, str(e))
+
+        # Test 6: Verify Subcategory Icon Retrieval - GET /api/subcategories/{parent} should return custom_icon
+        if subcategory_id:
+            try:
+                response = self.session.get(f"{API_URL}/subcategories/accessories")
+                if response.status_code == 200:
+                    subcategories = response.json()
+                    test_subcategory = next((sub for sub in subcategories if sub["id"] == subcategory_id), None)
+                    
+                    if test_subcategory and test_subcategory.get("custom_icon") == SAMPLE_ICON:
+                        self.log_result("custom_icon_upload", "Subcategory icon retrieval via GET /api/subcategories", True)
+                    else:
+                        self.log_result("custom_icon_upload", "Subcategory icon retrieval via GET /api/subcategories", False, "Custom icon not returned correctly")
+                else:
+                    self.log_result("custom_icon_upload", "Subcategory icon retrieval via GET /api/subcategories", False, f"Status: {response.status_code}")
+            except Exception as e:
+                self.log_result("custom_icon_upload", "Subcategory icon retrieval via GET /api/subcategories", False, str(e))
+
+        # Test 7: Subcategory Icon Removal - PUT /api/subcategories/{subcategory_id} with custom_icon: null
+        if subcategory_id:
+            try:
+                update_data = {"custom_icon": None}
+                response = self.session.put(f"{API_URL}/subcategories/{subcategory_id}", json=update_data)
+                
+                if response.status_code == 200:
+                    updated_subcategory = response.json()
+                    if updated_subcategory.get("custom_icon") is None:
+                        self.log_result("custom_icon_upload", "Subcategory icon removal (set to null)", True)
+                    else:
+                        self.log_result("custom_icon_upload", "Subcategory icon removal (set to null)", False, f"Custom icon not removed, got: {updated_subcategory.get('custom_icon')}")
+                else:
+                    self.log_result("custom_icon_upload", "Subcategory icon removal (set to null)", False, f"Status: {response.status_code}")
+            except Exception as e:
+                self.log_result("custom_icon_upload", "Subcategory icon removal (set to null)", False, str(e))
+
+        # Test 8: Verify existing functionality still works after icon operations
+        if category_id:
+            try:
+                # Test category creation still works
+                test_category_2 = {"name": "Test Category for Icon Validation"}
+                response = self.session.post(f"{API_URL}/categories", json=test_category_2)
+                
+                if response.status_code == 200:
+                    created_category_2 = response.json()
+                    self.created_categories.append(created_category_2["id"])
+                    
+                    # Verify new category has null custom_icon by default
+                    if created_category_2.get("custom_icon") is None:
+                        self.log_result("custom_icon_upload", "New categories have null custom_icon by default", True)
+                    else:
+                        self.log_result("custom_icon_upload", "New categories have null custom_icon by default", False, f"Expected null, got: {created_category_2.get('custom_icon')}")
+                else:
+                    self.log_result("custom_icon_upload", "Category creation still works after icon operations", False, f"Status: {response.status_code}")
+            except Exception as e:
+                self.log_result("custom_icon_upload", "Category creation still works after icon operations", False, str(e))
+
+        # Test 9: Test with invalid category/subcategory IDs
+        try:
+            invalid_id = "invalid-category-id-12345"
+            update_data = {"custom_icon": SAMPLE_ICON}
+            response = self.session.put(f"{API_URL}/categories/{invalid_id}", json=update_data)
+            
+            if response.status_code == 404:
+                self.log_result("custom_icon_upload", "Proper 404 error for invalid category ID", True)
+            else:
+                self.log_result("custom_icon_upload", "Proper 404 error for invalid category ID", False, f"Expected 404, got {response.status_code}")
+        except Exception as e:
+            self.log_result("custom_icon_upload", "Proper 404 error for invalid category ID", False, str(e))
+
+        try:
+            invalid_id = "invalid-subcategory-id-12345"
+            update_data = {"custom_icon": SAMPLE_ICON}
+            response = self.session.put(f"{API_URL}/subcategories/{invalid_id}", json=update_data)
+            
+            if response.status_code == 404:
+                self.log_result("custom_icon_upload", "Proper 404 error for invalid subcategory ID", True)
+            else:
+                self.log_result("custom_icon_upload", "Proper 404 error for invalid subcategory ID", False, f"Expected 404, got {response.status_code}")
+        except Exception as e:
+            self.log_result("custom_icon_upload", "Proper 404 error for invalid subcategory ID", False, str(e))
+
     def cleanup(self):
         """Clean up created test data"""
         print("\n🧹 Cleaning up test data...")
