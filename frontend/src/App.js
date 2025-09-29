@@ -1885,11 +1885,11 @@ const App = () => {
                 {/* Subcategory - only show for accessories */}
                 {formData.category && formData.category.toLowerCase() === 'accessories' && (
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Subcategory</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Subcategory</label>
                     <select
                       value={formData.subcategory}
                       onChange={(e) => setFormData({ ...formData, subcategory: e.target.value })}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-300 focus:border-pink-300 outline-none bg-white"
+                      className="w-full px-4 py-3 border border-gray-300 dark:border-neutral-600 rounded-xl focus:ring-2 focus:ring-pink-300 focus:border-pink-300 outline-none bg-white dark:bg-neutral-700 text-gray-900 dark:text-gray-100"
                     >
                       <option value="">Select Subcategory (Optional)</option>
                       {subcategories.accessories?.map(subcategory => (
@@ -1902,7 +1902,7 @@ const App = () => {
                 )}
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Image *</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Image *</label>
                   <div className="flex gap-2 mb-3">
                     <button
                       type="button"
