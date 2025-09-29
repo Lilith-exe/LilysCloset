@@ -11,7 +11,7 @@ const getCategoryIcon = (categoryName) => {
     'all': 'https://cdn-icons-png.flaticon.com/128/7183/7183097.png', // Hanger
     'tops': 'https://cdn-icons-png.flaticon.com/128/7183/7183139.png', // Shirt
     'bottoms': 'https://cdn-icons-png.flaticon.com/128/7183/7183148.png', // Pants/Shorts
-    'dresses': 'https://images.unsplash.com/photo-1537274942065-eda9d00a6293?w=128&h=128&fit=crop&crop=center', // Dress outline
+    'dresses': 'https://cdn-icons-png.flaticon.com/128/7183/7183153.png', // Dress
     'skirts': 'https://cdn-icons-png.flaticon.com/128/7183/7183158.png', // Skirt
     'shorts': 'https://cdn-icons-png.flaticon.com/128/7183/7183148.png', // Shorts
     'jackets': 'https://cdn-icons-png.flaticon.com/128/7183/7183193.png', // Vest/Jacket
