@@ -1257,9 +1257,9 @@ const App = () => {
                           )}
                         </>
                       )}
-                      <span className="text-gray-700">{tag}</span>
+                      <span className="text-gray-700 dark:text-gray-300">{tag}</span>
                     </div>
-                    <span className="font-semibold text-purple-600">{count}</span>
+                    <span className="font-semibold text-purple-600 dark:text-purple-400">{count}</span>
                   </div>
                 ))}
               </div>
