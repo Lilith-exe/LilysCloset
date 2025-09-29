@@ -806,7 +806,7 @@ const App = () => {
         <div className="bg-white dark:bg-neutral-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-neutral-700">
           <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4">Appearance</h3>
           
-          <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+          <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-neutral-700 rounded-lg">
             <div>
               <h4 className="font-medium text-gray-700 dark:text-gray-200">Dark Mode</h4>
               <p className="text-sm text-gray-500 dark:text-gray-400">Toggle between light and dark themes</p>
