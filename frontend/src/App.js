@@ -1946,7 +1946,7 @@ const App = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-3">Tags</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Tags</label>
                   {formData.category && (
                     <TagSelector
                       selectedTags={formData.tags}
@@ -1962,12 +1962,12 @@ const App = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Notes</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Notes</label>
                   <textarea
                     value={formData.notes}
                     onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                     rows="3"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-300 focus:border-pink-300 outline-none"
+                    className="w-full px-4 py-3 border border-gray-300 dark:border-neutral-600 rounded-xl focus:ring-2 focus:ring-pink-300 focus:border-pink-300 outline-none bg-white dark:bg-neutral-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
                   />
                 </div>
 
@@ -1975,13 +1975,13 @@ const App = () => {
                   <button
                     type="button"
                     onClick={() => setShowAddForm(false)}
-                    className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-3 px-4 rounded-xl font-medium transition-colors"
+                    className="flex-1 bg-gray-100 hover:bg-gray-200 dark:bg-neutral-700 dark:hover:bg-neutral-600 text-gray-700 dark:text-gray-300 py-3 px-4 rounded-xl font-medium transition-colors"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="flex-1 bg-gradient-to-r from-pink-400 to-rose-500 hover:from-pink-500 hover:to-rose-600 text-white py-3 px-4 rounded-xl font-medium transition-all duration-200"
+                    className="flex-1 bg-gradient-to-r from-pink-400 to-rose-500 hover:from-pink-500 hover:to-rose-600 dark:from-neutral-700 dark:to-neutral-600 dark:hover:from-neutral-600 dark:hover:to-neutral-500 text-white dark:text-pink-400 py-3 px-4 rounded-xl font-medium transition-all duration-200"
                   >
                     Add Item
                   </button>
