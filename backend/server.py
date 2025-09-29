@@ -88,11 +88,13 @@ class Subcategory(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     name: str
     parent_category: str
+    custom_icon: Optional[str] = None  # base64 encoded image, inherits from parent if None
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 class SubcategoryCreate(BaseModel):
     name: str
     parent_category: str
+    custom_icon: Optional[str] = None
 
 class StatsResponse(BaseModel):
     total_items: int
