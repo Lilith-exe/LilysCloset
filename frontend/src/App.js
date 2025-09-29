@@ -898,7 +898,7 @@ const App = () => {
         >
           <div className="aspect-square bg-gradient-to-br from-pink-200 to-rose-300 rounded-2xl flex items-center justify-center mb-3 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 p-6">
             <img
-              src={getCategoryIcon(selectedSubcategoryParent)}
+              src={getCategoryIcon(selectedSubcategoryParent, categories.find(cat => cat.name.toLowerCase() === selectedSubcategoryParent?.toLowerCase())?.custom_icon)}
               alt={`All ${selectedSubcategoryParent}`}
               className="w-16 h-16 object-contain filter grayscale hover:grayscale-0 transition-all duration-300"
             />
