@@ -887,11 +887,11 @@ const App = () => {
                   {availableTags
                     .filter(tag => tag.tag_type === tagCat.name)
                     .map(tag => (
-                      <div key={tag.id} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                      <div key={tag.id} className="flex justify-between items-center p-3 bg-gray-50 dark:bg-neutral-700 rounded-lg">
                         <div>
-                          <span className="font-medium">{tag.name}</span>
+                          <span className="font-medium text-gray-900 dark:text-gray-100">{tag.name}</span>
                           {tag.categories.length > 0 && (
-                            <span className="text-sm text-gray-500 ml-2">
+                            <span className="text-sm text-gray-500 dark:text-gray-400 ml-2">
                               ({tag.categories.join(', ')})
                             </span>
                           )}
