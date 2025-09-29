@@ -706,6 +706,68 @@ const App = () => {
       }
     };
 
+    // Category Icon Upload Handlers
+    const handleCategoryIconUpload = async (categoryId, event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        try {
+          const base64Image = e.target.result;
+          await axios.put(`${API}/categories/${categoryId}`, {
+            custom_icon: base64Image
+          });
+          fetchCategories(); // Refresh categories
+        } catch (error) {
+          console.error('Error uploading category icon:', error);
+        }
+      };
+      reader.readAsDataURL(file);
+    };
+
+    const handleRemoveCategoryIcon = async (categoryId) => {
+      try {
+        await axios.put(`${API}/categories/${categoryId}`, {
+          custom_icon: null
+        });
+        fetchCategories(); // Refresh categories
+      } catch (error) {
+        console.error('Error removing category icon:', error);
+      }
+    };
+
+    // Subcategory Icon Upload Handlers
+    const handleSubcategoryIconUpload = async (subcategoryId, event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        try {
+          const base64Image = e.target.result;
+          await axios.put(`${API}/subcategories/${subcategoryId}`, {
+            custom_icon: base64Image
+          });
+          fetchSubcategories('accessories'); // Refresh subcategories
+        } catch (error) {
+          console.error('Error uploading subcategory icon:', error);
+        }
+      };
+      reader.readAsDataURL(file);
+    };
+
+    const handleRemoveSubcategoryIcon = async (subcategoryId) => {
+      try {
+        await axios.put(`${API}/subcategories/${subcategoryId}`, {
+          custom_icon: null
+        });
+        fetchSubcategories('accessories'); // Refresh subcategories
+      } catch (error) {
+        console.error('Error removing subcategory icon:', error);
+      }
+    };
+
     return (
       <div className="space-y-8">
         <div className="text-center">
