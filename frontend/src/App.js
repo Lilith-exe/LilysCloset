@@ -1346,7 +1346,7 @@ const App = () => {
               className={`w-full text-left px-4 py-3 rounded-xl font-medium transition-all duration-200 ${
                 currentPage === 'stats' 
                   ? 'bg-gradient-to-r from-pink-400 to-rose-500 text-white shadow-lg' 
-                  : 'text-gray-700 hover:bg-pink-50'
+                  : 'text-gray-700 dark:text-gray-200 hover:bg-pink-50 dark:hover:bg-gray-700'
               }`}
             >
               📊 Statistics
@@ -1356,7 +1356,7 @@ const App = () => {
               className={`w-full text-left px-4 py-3 rounded-xl font-medium transition-all duration-200 ${
                 currentPage === 'settings' 
                   ? 'bg-gradient-to-r from-pink-400 to-rose-500 text-white shadow-lg' 
-                  : 'text-gray-700 hover:bg-pink-50'
+                  : 'text-gray-700 dark:text-gray-200 hover:bg-pink-50 dark:hover:bg-gray-700'
               }`}
             >
               ⚙️ Settings
