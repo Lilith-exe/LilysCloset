@@ -801,19 +801,61 @@ const App = () => {
         <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
           <h3 className="text-xl font-semibold text-gray-800 mb-4">Category Management</h3>
           
-          {/* Delete Categories */}
+          {/* Manage Categories */}
           <div>
-            <h4 className="font-medium text-gray-700 mb-3">Delete Categories</h4>
-            <div className="space-y-2">
+            <h4 className="font-medium text-gray-700 mb-3">Manage Categories</h4>
+            <div className="space-y-3">
               {categories.map(category => (
-                <div key={category.id} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                  <span className="font-medium">{category.name}</span>
-                  <button
-                    onClick={() => handleDeleteCategory(category.id, category.name)}
-                    className="bg-red-100 hover:bg-red-200 text-red-700 px-3 py-1 rounded-lg text-sm transition-colors"
-                  >
-                    Delete
-                  </button>
+                <div key={category.id} className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
+                  {/* Category Icon Preview */}
+                  <div className="flex-shrink-0">
+                    <img
+                      src={getCategoryIcon(category.name, category.custom_icon)}
+                      alt={category.name}
+                      className="w-12 h-12 object-contain rounded-lg border border-gray-200 bg-white p-1"
+                    />
+                  </div>
+                  
+                  {/* Category Name */}
+                  <div className="flex-grow">
+                    <span className="font-medium text-gray-800">{category.name}</span>
+                    {category.custom_icon && (
+                      <span className="text-xs text-green-600 block">Custom icon uploaded</span>
+                    )}
+                  </div>
+                  
+                  {/* Icon Upload */}
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => handleCategoryIconUpload(category.id, e)}
+                      className="hidden"
+                      id={`category-icon-${category.id}`}
+                    />
+                    <label
+                      htmlFor={`category-icon-${category.id}`}
+                      className="bg-blue-100 hover:bg-blue-200 text-blue-700 px-3 py-1 rounded-lg text-sm cursor-pointer transition-colors"
+                    >
+                      {category.custom_icon ? 'Change Icon' : 'Upload Icon'}
+                    </label>
+                    
+                    {category.custom_icon && (
+                      <button
+                        onClick={() => handleRemoveCategoryIcon(category.id)}
+                        className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1 rounded-lg text-sm transition-colors"
+                      >
+                        Reset to Default
+                      </button>
+                    )}
+                    
+                    <button
+                      onClick={() => handleDeleteCategory(category.id, category.name)}
+                      className="bg-red-100 hover:bg-red-200 text-red-700 px-3 py-1 rounded-lg text-sm transition-colors"
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
