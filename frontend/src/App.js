@@ -1080,10 +1080,10 @@ const App = () => {
         >
           ← Back to Categories
         </button>
-        <h2 className="text-2xl font-bold text-gray-800 mb-2">
+        <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-2">
           {selectedSubcategoryParent?.charAt(0).toUpperCase() + selectedSubcategoryParent?.slice(1)} Subcategories
         </h2>
-        <p className="text-gray-600">Select a subcategory to view your items</p>
+        <p className="text-gray-600 dark:text-gray-300">Select a subcategory to view your items</p>
       </div>
       
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8 gap-4" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))' }}>
