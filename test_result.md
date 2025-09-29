@@ -364,6 +364,21 @@ metadata:
         agent: "testing"
         comment: "✅ COMPREHENSIVE SUBCATEGORY MANAGEMENT TESTING PASSED: All 10 subcategory management tests passed (100% success rate). Verified: Create accessories subcategories (Jewelry, Bags, Scarves, Belts), list subcategories by parent category, prevent duplicates, create subcategories for different parents, delete subcategories, proper 404 error handling. Subcategory system fully functional."
 
+  - task: "Custom Icon Upload for Categories and Subcategories"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Implemented custom icon upload functionality for categories and subcategories. Added custom_icon field to Category and Subcategory models. Updated PUT /api/categories/{category_id} and PUT /api/subcategories/{subcategory_id} endpoints to handle custom_icon field with base64 image data. Supports icon upload, retrieval, and removal (set to null)."
+      - working: true
+        agent: "testing"
+        comment: "✅ COMPREHENSIVE CUSTOM ICON UPLOAD TESTING PASSED: All 9 custom icon upload tests passed (100% success rate). Verified: 1) Category icon upload with base64 image via PUT /api/categories/{id}, 2) Category icon retrieval via GET /api/categories, 3) Category icon removal (set to null), 4) Subcategory icon upload with base64 image via PUT /api/subcategories/{id}, 5) Subcategory icon retrieval via GET /api/subcategories/{parent}, 6) Subcategory icon removal (set to null), 7) New categories/subcategories have null custom_icon by default, 8) Proper 404 error handling for invalid IDs, 9) Existing functionality still works after icon operations. Custom icon upload functionality is fully implemented and working perfectly."
+
 test_plan:
   current_focus:
     - "Delete Functionality"
