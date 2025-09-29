@@ -1566,7 +1566,7 @@ const App = () => {
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
         {/* Header */}
-        <header className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg shadow-sm border-b border-pink-100 dark:border-gray-700 sticky top-0 z-40">
+        <header className="bg-white/80 dark:bg-neutral-800/80 backdrop-blur-lg shadow-sm border-b border-pink-100 dark:border-neutral-700 sticky top-0 z-40">
           <div className="px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center py-6">
               <div className="flex items-center space-x-4">
