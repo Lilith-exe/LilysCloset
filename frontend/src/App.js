@@ -1315,7 +1315,7 @@ const App = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-rose-50 dark:from-neutral-900 dark:via-neutral-800 dark:to-neutral-700 flex">
+    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-pink-25 to-rose-50 dark:from-neutral-900 dark:via-neutral-850 dark:to-neutral-800 flex" style={{backgroundImage: 'linear-gradient(135deg, rgb(253 242 248) 0%, rgb(255 247 251) 50%, rgb(255 241 242) 100%), linear-gradient(135deg, rgb(23 23 23) 0%, rgb(38 38 38) 50%, rgb(64 64 64) 100%)'}}>
       {/* Sidebar */}
       <div className={`${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 fixed lg:relative z-50 w-80 h-screen bg-white/90 dark:bg-neutral-800/90 backdrop-blur-lg border-r border-pink-100 dark:border-neutral-700 transition-transform duration-300 overflow-y-auto flex flex-col`}>
         <div className="p-6 flex-1">
