@@ -134,6 +134,32 @@ const App = () => {
   const [newCategory, setNewCategory] = useState('');
   const [newTagCategory, setNewTagCategory] = useState('');
 
+  // Dark mode persistence
+  useEffect(() => {
+    // Load dark mode preference from localStorage
+    const savedDarkMode = localStorage.getItem('darkMode');
+    if (savedDarkMode === 'true') {
+      setDarkMode(true);
+      document.documentElement.classList.add('dark');
+    }
+  }, []);
+
+  // Toggle dark mode function
+  const toggleDarkMode = () => {
+    const newDarkMode = !darkMode;
+    setDarkMode(newDarkMode);
+    
+    // Update localStorage
+    localStorage.setItem('darkMode', newDarkMode.toString());
+    
+    // Update document class
+    if (newDarkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  };
+
   // Load data on component mount
   useEffect(() => {
     fetchClothingItems();
