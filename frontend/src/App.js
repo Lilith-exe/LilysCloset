@@ -1642,7 +1642,7 @@ const App = () => {
                   <div
                     key={item.id}
                     onClick={() => setSelectedItem(item)}
-                    className="bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer border border-gray-100 overflow-hidden group transform hover:-translate-y-1"
+                    className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer border border-gray-100 dark:border-gray-700 overflow-hidden group transform hover:-translate-y-1"
                   >
                     {renderThumbnailImage(
                       item.image,
