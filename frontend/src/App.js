@@ -1580,7 +1580,7 @@ const App = () => {
                     <div className="w-6 h-0.5 bg-gray-600"></div>
                   </div>
                 </button>
-                <h1 className="text-4xl font-bold bg-gradient-to-r from-pink-400 to-rose-500 bg-clip-text text-transparent lily-font">
+                <h1 className="text-5xl font-bold bg-gradient-to-r from-pink-400 to-rose-500 bg-clip-text text-transparent lily-font">
                   Lily's Closet
                 </h1>
               </div>
