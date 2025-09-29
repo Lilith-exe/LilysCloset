@@ -406,6 +406,7 @@ frontend:
 
 test_plan:
   current_focus:
+    - "Dark Mode Toggle and Theming"
     - "Delete Functionality"
     - "Custom Tag Category Management"
   stuck_tasks:
