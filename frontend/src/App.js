@@ -981,7 +981,7 @@ const App = () => {
           
           {/* Add Subcategory */}
           <div className="mb-6">
-            <h4 className="font-medium text-gray-700 mb-3">Add Accessories Subcategory</h4>
+            <h4 className="font-medium text-gray-700 dark:text-gray-300 mb-3">Add Accessories Subcategory</h4>
             <div className="flex gap-3">
               <input
                 type="text"
