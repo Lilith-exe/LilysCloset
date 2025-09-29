@@ -1522,7 +1522,7 @@ const App = () => {
                           className={`flex items-center w-full text-left px-3 py-1 rounded-lg text-sm transition-colors ${
                             selectedTags[tagType]?.includes(tag)
                               ? 'bg-purple-100 text-purple-800 font-medium'
-                              : 'text-gray-600 hover:bg-purple-50'
+                              : 'text-gray-600 dark:text-[#FFCCCC] hover:bg-purple-50 dark:hover:bg-neutral-700'
                           }`}
                         >
                           {tagType === 'color' && (
