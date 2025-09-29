@@ -2244,17 +2244,17 @@ const App = () => {
                 
                 <div className="space-y-6">
                   <div>
-                    <h3 className="font-semibold text-gray-700 text-lg mb-2">Inventory Number</h3>
-                    <p className="text-3xl font-mono font-bold text-pink-500">#{selectedItem.inventory_number}</p>
+                    <h3 className="font-semibold text-gray-700 dark:text-gray-300 text-lg mb-2">Inventory Number</h3>
+                    <p className="text-3xl font-mono font-bold text-pink-500 dark:text-pink-400">#{selectedItem.inventory_number}</p>
                   </div>
                   
                   <div>
-                    <h3 className="font-semibold text-gray-700 text-lg mb-2">Category</h3>
-                    <p className="text-xl text-gray-900">{selectedItem.category}</p>
+                    <h3 className="font-semibold text-gray-700 dark:text-gray-300 text-lg mb-2">Category</h3>
+                    <p className="text-xl text-gray-900 dark:text-gray-100">{selectedItem.category}</p>
                   </div>
                   
                   <div>
-                    <h3 className="font-semibold text-gray-700 text-lg mb-3">Tags</h3>
+                    <h3 className="font-semibold text-gray-700 dark:text-gray-300 text-lg mb-3">Tags</h3>
                     <div className="flex flex-wrap gap-2">
                       {renderTagBadges(selectedItem.tags)}
                     </div>
@@ -2262,8 +2262,8 @@ const App = () => {
                   
                   {selectedItem.notes && (
                     <div>
-                      <h3 className="font-semibold text-gray-700 text-lg mb-2">Notes</h3>
-                      <p className="text-gray-600 whitespace-pre-wrap bg-gray-50 p-4 rounded-xl">{selectedItem.notes}</p>
+                      <h3 className="font-semibold text-gray-700 dark:text-gray-300 text-lg mb-2">Notes</h3>
+                      <p className="text-gray-600 dark:text-gray-300 whitespace-pre-wrap bg-gray-50 dark:bg-gray-700 p-4 rounded-xl">{selectedItem.notes}</p>
                     </div>
                   )}
                 </div>
