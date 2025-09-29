@@ -1633,7 +1633,7 @@ const App = () => {
                       : selectedCategory
                   }
                 </h2>
-                <p className="text-gray-600">{filteredItems.length} items</p>
+                <p className="text-gray-600 dark:text-gray-300">{filteredItems.length} items</p>
               </div>
 
               {/* Items Grid */}
