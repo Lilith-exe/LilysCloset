@@ -919,21 +919,21 @@ const App = () => {
             <h4 className="font-medium text-gray-700 mb-3">Manage Categories</h4>
             <div className="space-y-3">
               {categories.map(category => (
-                <div key={category.id} className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
+                <div key={category.id} className="flex items-center gap-4 p-4 bg-gray-50 dark:bg-neutral-700 rounded-lg">
                   {/* Category Icon Preview */}
                   <div className="flex-shrink-0">
                     <img
                       src={getCategoryIcon(category.name, category.custom_icon)}
                       alt={category.name}
-                      className="w-12 h-12 object-contain rounded-lg border border-gray-200 bg-white p-1"
+                      className="w-12 h-12 object-contain rounded-lg border border-gray-200 dark:border-neutral-600 bg-white dark:bg-neutral-600 p-1"
                     />
                   </div>
                   
                   {/* Category Name */}
                   <div className="flex-grow">
-                    <span className="font-medium text-gray-800">{category.name}</span>
+                    <span className="font-medium text-gray-800 dark:text-gray-100">{category.name}</span>
                     {category.custom_icon && (
-                      <span className="text-xs text-green-600 block">Custom icon uploaded</span>
+                      <span className="text-xs text-green-600 dark:text-green-400 block">Custom icon uploaded</span>
                     )}
                   </div>
                   
