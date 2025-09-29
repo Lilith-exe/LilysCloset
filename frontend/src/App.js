@@ -1219,13 +1219,13 @@ const App = () => {
           </div>
 
           {/* Categories */}
-          <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">Categories</h3>
+          <div className="bg-white dark:bg-neutral-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-neutral-700">
+            <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Categories</h3>
             <div className="space-y-2 max-h-40 overflow-y-auto">
               {Object.entries(stats.categories).map(([category, count]) => (
                 <div key={category} className="flex justify-between items-center">
-                  <span className="text-gray-700">{category}</span>
-                  <span className="font-semibold text-pink-600">{count}</span>
+                  <span className="text-gray-700 dark:text-gray-300">{category}</span>
+                  <span className="font-semibold text-pink-600 dark:text-pink-400">{count}</span>
                 </div>
               ))}
             </div>
@@ -1233,8 +1233,8 @@ const App = () => {
 
           {/* Tags */}
           {Object.entries(stats.tags).map(([tagType, tagCounts]) => (
-            <div key={tagType} className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4 capitalize">{tagType}</h3>
+            <div key={tagType} className="bg-white dark:bg-neutral-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-neutral-700">
+              <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4 capitalize">{tagType}</h3>
               <div className="space-y-2 max-h-40 overflow-y-auto">
                 {Object.entries(tagCounts).map(([tag, count]) => (
                   <div key={tag} className="flex justify-between items-center">
