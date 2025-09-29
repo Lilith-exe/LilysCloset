@@ -5,8 +5,8 @@ import './App.css';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-// Sleek AI-generated icons for categories
-const getCategoryIcon = (categoryName) => {
+// Default flaticon URLs for categories
+const getDefaultCategoryIcon = (categoryName) => {
   const iconUrls = {
     'all': 'https://cdn-icons-png.flaticon.com/128/7183/7183097.png', // Hanger
     'tops': 'https://cdn-icons-png.flaticon.com/128/7183/7183139.png', // Shirt
@@ -31,6 +31,33 @@ const getCategoryIcon = (categoryName) => {
   
   const key = categoryName.toLowerCase();
   return iconUrls[key] || 'https://cdn-icons-png.flaticon.com/128/7183/7183097.png'; // Default to hanger
+};
+
+// Get category icon with custom icon support
+const getCategoryIcon = (categoryName, customIcon = null) => {
+  // Return custom icon if provided
+  if (customIcon) {
+    return customIcon;
+  }
+  // Fall back to default icons
+  return getDefaultCategoryIcon(categoryName);
+};
+
+// Get subcategory icon with inheritance and custom icon support
+const getSubcategoryIcon = (subcategory, parentCategory, categories) => {
+  // Return subcategory's custom icon if provided
+  if (subcategory.custom_icon) {
+    return subcategory.custom_icon;
+  }
+  
+  // Inherit from parent category if it has a custom icon
+  const parentCategoryData = categories.find(cat => cat.name.toLowerCase() === parentCategory.toLowerCase());
+  if (parentCategoryData && parentCategoryData.custom_icon) {
+    return parentCategoryData.custom_icon;
+  }
+  
+  // Fall back to default parent category icon
+  return getDefaultCategoryIcon(parentCategory);
 };
 
 // Color mapping for color tags - rainbow order with proper colors
