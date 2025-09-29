@@ -1143,8 +1143,8 @@ const App = () => {
   const HomePage = () => (
     <div className="space-y-8">
       <div className="text-center">
-        <h2 className="text-2xl font-bold text-gray-800 mb-2">Browse by Category</h2>
-        <p className="text-gray-600">Select a category to view your items</p>
+        <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-2">Browse by Category</h2>
+        <p className="text-gray-600 dark:text-gray-300">Select a category to view your items</p>
       </div>
       
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8 gap-4" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))' }}>
