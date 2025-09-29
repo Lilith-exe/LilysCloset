@@ -1668,8 +1668,8 @@ const App = () => {
               {filteredItems.length === 0 && (
                 <div className="text-center py-12">
                   <div className="text-6xl mb-4">👗</div>
-                  <p className="text-gray-500 text-lg">No items found</p>
-                  <p className="text-gray-400 mt-2">Try adjusting your search or filters</p>
+                  <p className="text-gray-500 dark:text-gray-400 text-lg">No items found</p>
+                  <p className="text-gray-400 dark:text-gray-500 mt-2">Try adjusting your search or filters</p>
                 </div>
               )}
             </div>
