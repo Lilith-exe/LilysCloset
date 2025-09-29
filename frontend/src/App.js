@@ -595,17 +595,17 @@ const App = () => {
     );
     
     const colors = {
-      color: 'bg-pink-100 text-pink-800',
-      theme: 'bg-purple-100 text-purple-800', 
-      features: 'bg-blue-100 text-blue-800',
-      material: 'bg-green-100 text-green-800'
+      color: 'bg-pink-100 text-pink-800 dark:bg-neutral-700 dark:text-pink-400 dark:border-pink-400',
+      theme: 'bg-purple-100 text-purple-800 dark:bg-neutral-700 dark:text-purple-400 dark:border-purple-400', 
+      features: 'bg-blue-100 text-blue-800 dark:bg-neutral-700 dark:text-blue-400 dark:border-blue-400',
+      material: 'bg-green-100 text-green-800 dark:bg-neutral-700 dark:text-green-400 dark:border-green-400'
     };
     
     return allTags.map((item, index) => (
       <span 
         key={index} 
-        className={`inline-block px-2 py-1 rounded-full text-xs font-medium mr-1 mb-1 ${
-          colors[item.type] || 'bg-gray-100 text-gray-800'
+        className={`inline-block px-2 py-1 rounded-full text-xs font-medium mr-1 mb-1 border dark:border ${
+          colors[item.type] || 'bg-gray-100 text-gray-800 dark:bg-neutral-700 dark:text-gray-300 dark:border-gray-400'
         }`}
       >
         {item.tag}
