@@ -1206,8 +1206,8 @@ const App = () => {
   const StatsPage = () => (
     <div className="space-y-8">
       <div className="text-center">
-        <h2 className="text-3xl font-bold text-gray-800 mb-2">Closet Statistics</h2>
-        <p className="text-gray-600">Overview of your clothing collection</p>
+        <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-2">Closet Statistics</h2>
+        <p className="text-gray-600 dark:text-gray-300">Overview of your clothing collection</p>
       </div>
       
       {stats && (
