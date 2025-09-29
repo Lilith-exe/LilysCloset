@@ -1848,18 +1848,18 @@ const App = () => {
               <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">Add New Item</h2>
               <form onSubmit={handleSubmitItem} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Name *</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Name *</label>
                   <input
                     type="text"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-300 focus:border-pink-300 outline-none"
+                    className="w-full px-4 py-3 border border-gray-300 dark:border-neutral-600 rounded-xl focus:ring-2 focus:ring-pink-300 focus:border-pink-300 outline-none bg-white dark:bg-neutral-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Category *</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Category *</label>
                   <select
                     value={formData.category}
                     onChange={(e) => {
@@ -1870,7 +1870,7 @@ const App = () => {
                         fetchSubcategories('accessories');
                       }
                     }}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-300 focus:border-pink-300 outline-none bg-white"
+                    className="w-full px-4 py-3 border border-gray-300 dark:border-neutral-600 rounded-xl focus:ring-2 focus:ring-pink-300 focus:border-pink-300 outline-none bg-white dark:bg-neutral-700 text-gray-900 dark:text-gray-100"
                     required
                   >
                     <option value="">Select Category</option>
