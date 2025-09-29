@@ -1002,7 +1002,7 @@ const App = () => {
           {/* Current Subcategories */}
           {subcategories.accessories && (
             <div>
-              <h4 className="font-medium text-gray-700 mb-3">Current Accessories Subcategories</h4>
+              <h4 className="font-medium text-gray-700 dark:text-gray-300 mb-3">Current Accessories Subcategories</h4>
               <div className="space-y-3">
                 {subcategories.accessories.map(sub => (
                   <div key={sub.id} className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
