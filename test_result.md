@@ -392,6 +392,18 @@ frontend:
         agent: "testing"
         comment: "✅ COMPREHENSIVE CUSTOM ICON UPLOAD FRONTEND TESTING PASSED: All major functionality working correctly. VERIFIED: 1) ✅ Settings Page Navigation: Successfully navigated to Settings page with Category Management section visible. 2) ✅ Category Icon Upload: Found 13 categories with upload interface, successfully tested icon upload for Dresses category - 'Custom icon uploaded' text appeared confirming success. 3) ✅ Category Icon Reset: 'Reset to Default' button working - custom icon text disappeared after reset. 4) ✅ Subcategory Icon Upload: Found 6 subcategories in Accessories section with upload interface available. 5) ✅ Home Page Icon Display: All 14 category cards display icons correctly. 6) ✅ Subcategories Page Icon Display: Successfully navigated to Accessories Subcategories page showing 7 subcategory cards with icons. 7) ✅ Sidebar Icons: Correctly NOT showing icons in sidebar as per requirements. Minor: Subcategory 'Reset to Inherit' button not found, but upload functionality works. Overall: Custom icon upload frontend integration is working as designed."
 
+  - task: "Dark Mode Toggle and Theming"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Implemented dark mode functionality with toggle in Settings → Appearance section, localStorage persistence, dark background gradients and card styling, light text on dark backgrounds, and maintained pink accent colors. Dark mode state managed with useState and CSS classes added/removed from document.documentElement."
+
 test_plan:
   current_focus:
     - "Delete Functionality"
