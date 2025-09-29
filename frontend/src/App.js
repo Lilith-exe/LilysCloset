@@ -798,8 +798,32 @@ const App = () => {
     return (
       <div className="space-y-8">
         <div className="text-center">
-          <h2 className="text-3xl font-bold text-gray-800 mb-2">Settings</h2>
-          <p className="text-gray-600">Manage your categories, tags, and subcategories</p>
+          <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-2">Settings</h2>
+          <p className="text-gray-600 dark:text-gray-300">Manage your categories, tags, and subcategories</p>
+        </div>
+
+        {/* Appearance Settings */}
+        <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-gray-700">
+          <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4">Appearance</h3>
+          
+          <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+            <div>
+              <h4 className="font-medium text-gray-700 dark:text-gray-200">Dark Mode</h4>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Toggle between light and dark themes</p>
+            </div>
+            <button
+              onClick={toggleDarkMode}
+              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 ${
+                darkMode ? 'bg-pink-500' : 'bg-gray-300'
+              }`}
+            >
+              <span
+                className={`inline-block h-4 w-4 transform rounded-full bg-white transition ${
+                  darkMode ? 'translate-x-6' : 'translate-x-1'
+                }`}
+              />
+            </button>
+          </div>
         </div>
 
         {/* Tag Management */}
