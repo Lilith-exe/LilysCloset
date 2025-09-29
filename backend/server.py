@@ -241,6 +241,33 @@ async def get_categories():
         logging.error(f"Error getting categories: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
+@api_router.put("/categories/{category_id}")
+async def update_category(category_id: str, update_data: dict):
+    try:
+        category = await db.categories.find_one({"id": category_id})
+        if not category:
+            raise HTTPException(status_code=404, detail="Category not found")
+        
+        # Update only provided fields
+        update_dict = {}
+        if "custom_icon" in update_data:
+            update_dict["custom_icon"] = update_data["custom_icon"]
+        
+        if update_dict:
+            await db.categories.update_one(
+                {"id": category_id},
+                {"$set": update_dict}
+            )
+        
+        # Get updated category
+        updated_category = await db.categories.find_one({"id": category_id})
+        return Category(**parse_from_mongo(updated_category))
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"Error updating category: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 @api_router.delete("/categories/{category_id}")
 async def delete_category(category_id: str):
     try:
