@@ -46,7 +46,8 @@ class ClothingCatalogTester:
             "enhanced_search": {"passed": 0, "failed": 0, "details": []},
             "statistics_api": {"passed": 0, "failed": 0, "details": []},
             "subcategory_management": {"passed": 0, "failed": 0, "details": []},
-            "accessories_subcategory": {"passed": 0, "failed": 0, "details": []}
+            "accessories_subcategory": {"passed": 0, "failed": 0, "details": []},
+            "custom_icon_upload": {"passed": 0, "failed": 0, "details": []}
         }
         self.created_tag_categories = []
         self.created_subcategories = []
