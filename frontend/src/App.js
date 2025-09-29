@@ -926,7 +926,7 @@ const App = () => {
             >
               <div className="aspect-square bg-gradient-to-br from-purple-100 to-pink-200 rounded-2xl flex items-center justify-center mb-3 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 p-6">
                 <img
-                  src={getCategoryIcon('accessories')}
+                  src={getSubcategoryIcon(subcategory, selectedSubcategoryParent, categories)}
                   alt={subcategory.name}
                   className="w-16 h-16 object-contain filter grayscale hover:grayscale-0 transition-all duration-300"
                 />
