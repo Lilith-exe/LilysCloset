@@ -1587,7 +1587,7 @@ const App = () => {
               <div className="flex space-x-3">
                 <button
                   onClick={() => setCurrentPage('settings')}
-                  className="bg-gray-100 hover:bg-gray-200 dark:bg-neutral-700 dark:hover:bg-neutral-600 text-gray-700 px-4 py-2 rounded-xl font-medium transition-all duration-200 shadow-sm hover:shadow-md"
+                  className="bg-gray-100 hover:bg-gray-200 dark:bg-neutral-700 dark:hover:bg-neutral-600 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-xl font-medium transition-all duration-200 shadow-sm hover:shadow-md"
                   title="Settings"
                 >
                   ⚙️ Settings
