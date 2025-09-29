@@ -1130,8 +1130,8 @@ const App = () => {
                   className="w-16 h-16 object-contain filter grayscale hover:grayscale-0 transition-all duration-300"
                 />
               </div>
-              <h3 className="font-semibold text-gray-800 text-center">{subcategory.name}</h3>
-              <p className="text-sm text-gray-500 text-center">{subcategoryItems.length} items</p>
+              <h3 className="font-semibold text-gray-800 dark:text-gray-100 text-center">{subcategory.name}</h3>
+              <p className="text-sm text-gray-500 dark:text-gray-400 text-center">{subcategoryItems.length} items</p>
             </div>
           );
         })}
