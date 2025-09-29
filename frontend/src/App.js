@@ -1507,7 +1507,7 @@ const App = () => {
                 <div key={tagType} className="mb-4">
                   <button
                     onClick={() => toggleTagType(tagType)}
-                    className="flex items-center justify-between w-full text-sm font-medium text-gray-700 mb-2 hover:text-purple-600 transition-colors"
+                    className="flex items-center justify-between w-full text-sm font-medium text-gray-700 dark:text-[#FFCCCC] mb-2 hover:text-purple-600 dark:hover:text-pink-300 transition-colors"
                   >
                     <span className="capitalize">{tagType}</span>
                     <span className={`transition-transform text-xs ${expandedTagTypes[tagType] ? 'rotate-90' : ''}`}>▶</span>
