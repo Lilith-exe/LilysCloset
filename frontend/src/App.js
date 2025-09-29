@@ -827,8 +827,8 @@ const App = () => {
         </div>
 
         {/* Tag Management */}
-        <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
-          <h3 className="text-xl font-semibold text-gray-800 mb-4">Tag Management</h3>
+        <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-gray-700">
+          <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4">Tag Management</h3>
           
           {/* Add New Tag */}
           <div className="mb-6">
