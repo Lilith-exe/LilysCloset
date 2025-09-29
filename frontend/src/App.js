@@ -1656,7 +1656,7 @@ const App = () => {
                           #{item.inventory_number}
                         </span>
                       </div>
-                      <p className="text-sm text-gray-600 mb-3">{item.category}</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">{item.category}</p>
                       <div className="flex flex-wrap gap-1">
                         {renderTagBadges(item.tags)}
                       </div>
