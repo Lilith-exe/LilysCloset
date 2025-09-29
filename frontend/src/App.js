@@ -1317,7 +1317,7 @@ const App = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-rose-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 flex">
       {/* Sidebar */}
-      <div className={`${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 fixed lg:relative z-50 w-80 h-screen bg-white/90 backdrop-blur-lg border-r border-pink-100 transition-transform duration-300 overflow-y-auto flex flex-col`}>
+      <div className={`${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 fixed lg:relative z-50 w-80 h-screen bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg border-r border-pink-100 dark:border-gray-700 transition-transform duration-300 overflow-y-auto flex flex-col`}>
         <div className="p-6 flex-1">
           {/* Navigation */}
           <div className="space-y-2 mb-6">
