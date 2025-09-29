@@ -1076,7 +1076,7 @@ const App = () => {
             setCurrentPage('home');
             setSelectedSubcategoryParent(null);
           }}
-          className="text-pink-500 hover:text-pink-600 mb-4 inline-flex items-center"
+          className="text-pink-500 dark:text-pink-400 hover:text-pink-600 dark:hover:text-pink-300 mb-4 inline-flex items-center"
         >
           ← Back to Categories
         </button>
