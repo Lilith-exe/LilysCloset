@@ -1315,7 +1315,7 @@ const App = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-rose-25 to-rose-50 dark:from-neutral-900 dark:via-neutral-850 dark:to-neutral-800 flex">
+    <div className="min-h-screen bg-gradient-to-br from-pink-50 to-rose-100 dark:from-neutral-900 dark:to-neutral-800 flex">
       {/* Sidebar */}
       <div className={`${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 fixed lg:relative z-50 w-80 h-screen bg-white/90 dark:bg-neutral-800/90 backdrop-blur-lg border-r border-pink-100 dark:border-neutral-700 transition-transform duration-300 overflow-y-auto flex flex-col`}>
         <div className="p-6 flex-1">
