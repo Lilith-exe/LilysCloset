@@ -890,16 +890,60 @@ const App = () => {
           {subcategories.accessories && (
             <div>
               <h4 className="font-medium text-gray-700 mb-3">Current Accessories Subcategories</h4>
-              <div className="space-y-2">
+              <div className="space-y-3">
                 {subcategories.accessories.map(sub => (
-                  <div key={sub.id} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                    <span className="font-medium">{sub.name}</span>
-                    <button
-                      onClick={() => handleDeleteSubcategory(sub.id, sub.name)}
-                      className="bg-red-100 hover:bg-red-200 text-red-700 px-3 py-1 rounded-lg text-sm transition-colors"
-                    >
-                      Delete
-                    </button>
+                  <div key={sub.id} className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
+                    {/* Subcategory Icon Preview */}
+                    <div className="flex-shrink-0">
+                      <img
+                        src={getSubcategoryIcon(sub, 'accessories', categories)}
+                        alt={sub.name}
+                        className="w-12 h-12 object-contain rounded-lg border border-gray-200 bg-white p-1"
+                      />
+                    </div>
+                    
+                    {/* Subcategory Name */}
+                    <div className="flex-grow">
+                      <span className="font-medium text-gray-800">{sub.name}</span>
+                      {sub.custom_icon ? (
+                        <span className="text-xs text-green-600 block">Custom icon uploaded</span>
+                      ) : (
+                        <span className="text-xs text-gray-500 block">Inheriting from Accessories</span>
+                      )}
+                    </div>
+                    
+                    {/* Icon Upload */}
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => handleSubcategoryIconUpload(sub.id, e)}
+                        className="hidden"
+                        id={`subcategory-icon-${sub.id}`}
+                      />
+                      <label
+                        htmlFor={`subcategory-icon-${sub.id}`}
+                        className="bg-blue-100 hover:bg-blue-200 text-blue-700 px-3 py-1 rounded-lg text-sm cursor-pointer transition-colors"
+                      >
+                        {sub.custom_icon ? 'Change Icon' : 'Upload Icon'}
+                      </label>
+                      
+                      {sub.custom_icon && (
+                        <button
+                          onClick={() => handleRemoveSubcategoryIcon(sub.id)}
+                          className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1 rounded-lg text-sm transition-colors"
+                        >
+                          Reset to Inherit
+                        </button>
+                      )}
+                      
+                      <button
+                        onClick={() => handleDeleteSubcategory(sub.id, sub.name)}
+                        className="bg-red-100 hover:bg-red-200 text-red-700 px-3 py-1 rounded-lg text-sm transition-colors"
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>
