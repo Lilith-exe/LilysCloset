@@ -1600,7 +1600,7 @@ const App = () => {
                 </button>
                 <button
                   onClick={() => setShowTagCategoryForm(true)}
-                  className="bg-purple-100 hover:bg-purple-200 dark:bg-neutral-700 dark:hover:bg-neutral-600 text-purple-700 px-4 py-2 rounded-xl font-medium transition-all duration-200 shadow-sm hover:shadow-md"
+                  className="bg-purple-100 hover:bg-purple-200 dark:bg-neutral-700 dark:hover:bg-neutral-600 text-purple-700 dark:text-purple-300 px-4 py-2 rounded-xl font-medium transition-all duration-200 shadow-sm hover:shadow-md"
                 >
                   Add Tag Type
                 </button>
