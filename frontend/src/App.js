@@ -1371,7 +1371,7 @@ const App = () => {
                 placeholder="Search items..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border border-pink-200 focus:ring-2 focus:ring-pink-300 focus:border-pink-300 outline-none bg-white/80"
+                className="w-full px-4 py-3 rounded-xl border border-pink-200 dark:border-gray-600 focus:ring-2 focus:ring-pink-300 dark:focus:ring-pink-400 focus:border-pink-300 dark:focus:border-pink-400 outline-none bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
               />
             </div>
           )}
