@@ -1399,7 +1399,7 @@ const App = () => {
             <div className="mb-6">
               <button
                 onClick={() => setCategoriesExpanded(!categoriesExpanded)}
-                className="flex items-center justify-between w-full font-semibold text-gray-800 mb-3 hover:text-pink-600 transition-colors"
+                className="flex items-center justify-between w-full font-semibold text-gray-800 dark:text-[#FFCCCC] mb-3 hover:text-pink-600 dark:hover:text-pink-300 transition-colors"
               >
                 <span>Categories</span>
                 <span className={`transition-transform ${categoriesExpanded ? 'rotate-90' : ''}`}>▶</span>
@@ -1497,7 +1497,7 @@ const App = () => {
             <div>
               <button
                 onClick={() => setTagsExpanded(!tagsExpanded)}
-                className="flex items-center justify-between w-full font-semibold text-gray-800 mb-3 hover:text-pink-600 transition-colors"
+                className="flex items-center justify-between w-full font-semibold text-gray-800 dark:text-[#FFCCCC] mb-3 hover:text-pink-600 dark:hover:text-pink-300 transition-colors"
               >
                 <span>Tags</span>
                 <span className={`transition-transform ${tagsExpanded ? 'rotate-90' : ''}`}>▶</span>
