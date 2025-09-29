@@ -803,7 +803,7 @@ const App = () => {
         </div>
 
         {/* Appearance Settings */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-gray-700">
+        <div className="bg-white dark:bg-neutral-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-neutral-700">
           <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4">Appearance</h3>
           
           <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
@@ -827,7 +827,7 @@ const App = () => {
         </div>
 
         {/* Tag Management */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-gray-700">
+        <div className="bg-white dark:bg-neutral-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-neutral-700">
           <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4">Tag Management</h3>
           
           {/* Add New Tag */}
@@ -911,7 +911,7 @@ const App = () => {
         </div>
 
         {/* Category Management */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-gray-700">
+        <div className="bg-white dark:bg-neutral-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-neutral-700">
           <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4">Category Management</h3>
           
           {/* Manage Categories */}
@@ -976,7 +976,7 @@ const App = () => {
         </div>
 
         {/* Subcategory Management */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-gray-700">
+        <div className="bg-white dark:bg-neutral-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-neutral-700">
           <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4">Accessories Subcategories</h3>
           
           {/* Add Subcategory */}
