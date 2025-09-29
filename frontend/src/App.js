@@ -1587,26 +1587,26 @@ const App = () => {
               <div className="flex space-x-3">
                 <button
                   onClick={() => setCurrentPage('settings')}
-                  className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-xl font-medium transition-all duration-200 shadow-sm hover:shadow-md"
+                  className="bg-gray-100 hover:bg-gray-200 dark:bg-neutral-700 dark:hover:bg-neutral-600 text-gray-700 px-4 py-2 rounded-xl font-medium transition-all duration-200 shadow-sm hover:shadow-md"
                   title="Settings"
                 >
                   ⚙️ Settings
                 </button>
                 <button
                   onClick={() => setShowCategoryForm(true)}
-                  className="bg-pink-100 hover:bg-pink-200 text-pink-700 px-4 py-2 rounded-xl font-medium transition-all duration-200 shadow-sm hover:shadow-md"
+                  className="bg-pink-100 hover:bg-pink-200 dark:bg-neutral-700 dark:hover:bg-neutral-600 text-pink-700 px-4 py-2 rounded-xl font-medium transition-all duration-200 shadow-sm hover:shadow-md"
                 >
                   Add Category
                 </button>
                 <button
                   onClick={() => setShowTagCategoryForm(true)}
-                  className="bg-purple-100 hover:bg-purple-200 text-purple-700 px-4 py-2 rounded-xl font-medium transition-all duration-200 shadow-sm hover:shadow-md"
+                  className="bg-purple-100 hover:bg-purple-200 dark:bg-neutral-700 dark:hover:bg-neutral-600 text-purple-700 px-4 py-2 rounded-xl font-medium transition-all duration-200 shadow-sm hover:shadow-md"
                 >
                   Add Tag Type
                 </button>
                 <button
                   onClick={() => setShowAddForm(true)}
-                  className="bg-gradient-to-r from-pink-400 to-rose-500 hover:from-pink-500 hover:to-rose-600 text-white px-6 py-2 rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                  className="bg-gradient-to-r from-pink-400 to-rose-500 hover:from-pink-500 hover:to-rose-600 dark:from-neutral-700 dark:to-neutral-600 dark:hover:from-neutral-600 dark:hover:to-neutral-500 text-white dark:text-pink-400 px-6 py-2 rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                 >
                   Add Item
                 </button>
