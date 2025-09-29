@@ -2263,7 +2263,7 @@ const App = () => {
                   {selectedItem.notes && (
                     <div>
                       <h3 className="font-semibold text-gray-700 dark:text-gray-300 text-lg mb-2">Notes</h3>
-                      <p className="text-gray-600 dark:text-gray-300 whitespace-pre-wrap bg-gray-50 dark:bg-gray-700 p-4 rounded-xl">{selectedItem.notes}</p>
+                      <p className="text-gray-600 dark:text-gray-300 whitespace-pre-wrap bg-gray-50 dark:bg-neutral-700 p-4 rounded-xl">{selectedItem.notes}</p>
                     </div>
                   )}
                 </div>
