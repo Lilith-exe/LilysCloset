@@ -1594,7 +1594,7 @@ const App = () => {
                 </button>
                 <button
                   onClick={() => setShowCategoryForm(true)}
-                  className="bg-pink-100 hover:bg-pink-200 dark:bg-neutral-700 dark:hover:bg-neutral-600 text-pink-700 px-4 py-2 rounded-xl font-medium transition-all duration-200 shadow-sm hover:shadow-md"
+                  className="bg-pink-100 hover:bg-pink-200 dark:bg-neutral-700 dark:hover:bg-neutral-600 text-pink-700 dark:text-pink-300 px-4 py-2 rounded-xl font-medium transition-all duration-200 shadow-sm hover:shadow-md"
                 >
                   Add Category
                 </button>
