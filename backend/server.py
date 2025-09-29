@@ -371,6 +371,33 @@ async def get_subcategories(parent_category: str):
         logging.error(f"Error getting subcategories: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
+@api_router.put("/subcategories/{subcategory_id}")
+async def update_subcategory(subcategory_id: str, update_data: dict):
+    try:
+        subcategory = await db.subcategories.find_one({"id": subcategory_id})
+        if not subcategory:
+            raise HTTPException(status_code=404, detail="Subcategory not found")
+        
+        # Update only provided fields
+        update_dict = {}
+        if "custom_icon" in update_data:
+            update_dict["custom_icon"] = update_data["custom_icon"]
+        
+        if update_dict:
+            await db.subcategories.update_one(
+                {"id": subcategory_id},
+                {"$set": update_dict}
+            )
+        
+        # Get updated subcategory
+        updated_subcategory = await db.subcategories.find_one({"id": subcategory_id})
+        return Subcategory(**parse_from_mongo(updated_subcategory))
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"Error updating subcategory: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 @api_router.delete("/subcategories/{subcategory_id}")
 async def delete_subcategory(subcategory_id: str):
     try:
