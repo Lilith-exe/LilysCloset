@@ -1651,8 +1651,8 @@ const App = () => {
                     )}
                     <div className="p-4">
                       <div className="flex justify-between items-start mb-2">
-                        <h3 className="font-semibold text-gray-900 truncate">{item.name}</h3>
-                        <span className="text-sm font-mono text-pink-500 bg-pink-50 px-2 py-1 rounded-lg shrink-0 ml-2">
+                        <h3 className="font-semibold text-gray-900 dark:text-gray-100 truncate">{item.name}</h3>
+                        <span className="text-sm font-mono text-pink-500 dark:text-pink-400 bg-pink-50 dark:bg-pink-900/30 px-2 py-1 rounded-lg shrink-0 ml-2">
                           #{item.inventory_number}
                         </span>
                       </div>
