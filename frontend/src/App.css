@@ -9,6 +9,8 @@
   font-family: 'Love Light', cursive;
   font-weight: 400;
   letter-spacing: 0.02em;
+  overflow: visible;
+  white-space: nowrap;
 }
 
 /* Base font for the app */
