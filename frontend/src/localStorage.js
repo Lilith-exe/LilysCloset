@@ -401,7 +401,7 @@ export const backupAPI = {
 
 const SYNC_CONFIG = {
   // Change this to your GitHub repository raw URL
-  MASTER_CATALOG_URL: 'https://raw.githubusercontent.com/Lilith-exe/LilysCloset/main/catalog.json',
+  MASTER_CATALOG_URL: 'https://raw.githubusercontent.com/Lilith-exe/LilysCloset/refs/heads/main/catalog.json',
   VERSION_KEY: 'lilysCloset_catalogVersion',
   LAST_SYNC_KEY: 'lilysCloset_lastSync'
 };
