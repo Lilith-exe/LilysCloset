@@ -76,6 +76,20 @@ body {
   @apply bg-gradient-to-r from-pink-400 to-rose-500 hover:from-pink-500 hover:to-rose-600 text-white font-medium px-6 py-3 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5;
 }
 
+/* Prevent focus issues after alerts */
+input:focus, 
+textarea:focus, 
+select:focus {
+  outline: none;
+  border-color: #ec4899;
+  box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.1);
+}
+
+/* Ensure inputs remain focusable */
+input, textarea, select {
+  pointer-events: auto !important;
+}
+
 .btn-secondary {
   @apply bg-pink-100 hover:bg-pink-200 text-pink-700 font-medium px-4 py-2 rounded-xl transition-all duration-200 shadow-sm hover:shadow-md;
 }
