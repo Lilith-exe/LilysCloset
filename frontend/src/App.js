@@ -1373,6 +1373,21 @@ const App = () => {
                 📤 Export Catalog
               </button>
             </div>
+            
+            {/* Testing Tools */}
+            <div className="mt-4 pt-4 border-t border-gray-200 dark:border-neutral-600">
+              <button
+                onClick={() => {
+                  if (confirm('⚠️ This will clear ALL local data and restart the app. Are you sure?')) {
+                    localStorage.clear();
+                    window.location.reload();
+                  }
+                }}
+                className="w-full bg-red-100 hover:bg-red-200 dark:bg-red-900/30 dark:hover:bg-red-800/30 text-red-700 dark:text-red-400 px-4 py-2 rounded-xl font-medium transition-colors text-sm"
+              >
+                🧪 Reset App (Test Fresh Install)
+              </button>
+            </div>
 
             {/* Sync Status Info */}
             <div className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
