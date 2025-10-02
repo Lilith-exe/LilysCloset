@@ -1,0 +1,17 @@
+appId: com.lilith.lilyscloset
+productName: Lilys Closet
+directories:
+  output: dist
+  buildResources: public
+asar: true
+
+win:
+  target: nsis
+  icon: public/icon.ico
+
+publish:
+  provider: github
+  owner: Lilith-exe
+  repo: LilysCloset
+
+artifactName: "Lilys-Closet-Setup-${version}.exe"   # safe filename

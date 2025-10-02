@@ -5,8 +5,8 @@ const path = require("path");
 
 function createWindow() {
   const win = new BrowserWindow({
-    width: 1200,
-    height: 800,
+    width: 1920,
+    height: 1080,
     title: "Lily's Closet",
     icon: path.join(__dirname, "icon.ico"),
     webPreferences: { nodeIntegration: false, contextIsolation: true },
@@ -17,6 +17,7 @@ function createWindow() {
     win.loadURL("http://localhost:3000");
   } else {
     win.loadFile(path.join(__dirname, "../build/index.html"));
+    win.webContents.openDevTools({ mode: "detach" });
   }
 
   if (!isDev) {

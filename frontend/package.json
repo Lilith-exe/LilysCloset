@@ -1,5 +1,6 @@
 {
   "main": "public/electron.js",
+  "homepage": "./",
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
@@ -38,6 +39,7 @@
     "cmdk": "^1.1.1",
     "cra-template": "1.2.0",
     "date-fns": "^3.6.0",
+    "electron-updater": "^6.6.2",
     "embla-carousel-react": "^8.6.0",
     "input-otp": "^1.4.2",
     "lucide-react": "^0.507.0",
@@ -56,11 +58,12 @@
     "zod": "^3.24.4"
   },
   "scripts": {
-    "start": "craco start",
-    "build": "craco build",
+    "start": "cross-env REACT_APP_VERSION=dev craco start",
+    "build": "cross-env REACT_APP_VERSION=%npm_package_version% craco build",
     "test": "craco test",
     "electron-dev": "concurrently -k -n WEB,APP \"npm start\" \"wait-on http://localhost:3000 && electron .\"",
-    "dist": "npm run build && electron-builder"
+    "dist": "npm run build && electron-builder",
+    "dist:fast": "npm run build && electron-builder --win nsis --publish never -c.compression=store"
   },
   "browserslist": {
     "production": [
@@ -80,9 +83,10 @@
     "@eslint/js": "9.23.0",
     "autoprefixer": "^10.4.20",
     "concurrently": "^9.2.1",
+    "cross-env": "^10.1.0",
+    "crossenv": "^0.0.2-security",
     "electron": "^38.2.0",
     "electron-builder": "^26.0.12",
-    "electron-updater": "^6.6.2",
     "eslint": "9.23.0",
     "eslint-plugin-import": "2.31.0",
     "eslint-plugin-jsx-a11y": "6.10.2",
