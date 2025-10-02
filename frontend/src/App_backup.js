@@ -541,7 +541,6 @@ const App = () => {
         try {
           console.log('Deleting item with ID:', itemId);
           await clothingItemsAPI.delete(itemId);
-          console.log('Item deleted successfully');
 
           // Refresh the items list
           await fetchClothingItems();
@@ -550,7 +549,6 @@ const App = () => {
           // Close the modal
           setSelectedItem(null);
 
-          safeAlert('Item deleted successfully!');
 
         } catch (error) {
           console.error('Delete error:', error);
@@ -1058,7 +1056,6 @@ const App = () => {
         });
 
         fetchAvailableTags(); // FIXED: Use correct function name
-        console.log('Tag added successfully!');
       } catch (error) {
         console.error('Error adding tag:', error);
         if (error.message.includes('already exists')) {
@@ -1071,7 +1068,6 @@ const App = () => {
 
     // FIXED: Use localStorage API instead of axios with proper focus handling
     const handleDeleteTag = async (tagId) => {
-      console.log('Deleting tag with ID:', tagId);
 
       const confirmed = window.confirm('Are you sure you want to delete this tag?');
 
@@ -1080,9 +1076,7 @@ const App = () => {
         setTimeout(async () => {
           try {
             await tagsAPI.delete(tagId);
-            console.log('Tag deleted successfully');
             await fetchAvailableTags(); // FIXED: Use correct function name
-            safeAlert('Tag deleted successfully');
           } catch (error) {
             console.error('Error deleting tag:', error);
             safeAlert('Error deleting tag. Please try again.');
@@ -1101,7 +1095,6 @@ const App = () => {
       });
         setNewSubcategory({ name: '', parent_category: 'accessories' });
         fetchSubcategories(newSubcategory.parent_category);
-        safeAlert('Subcategory added successfully');
       } catch (error) {
         console.error('Error adding subcategory:', error);
         safeAlert('Error adding subcategory. It might already exist.');
@@ -1110,7 +1103,6 @@ const App = () => {
 
     // FIXED: Use localStorage API instead of axios with proper focus handling
     const handleDeleteCategory = async (categoryId, categoryName) => {
-      console.log('Deleting category:', categoryName, 'ID:', categoryId);
 
       const confirmed = window.confirm(`Are you sure you want to delete the "${categoryName}" category? This will not delete items in this category.`);
 
@@ -1119,9 +1111,7 @@ const App = () => {
         setTimeout(async () => {
           try {
             await categoriesAPI.delete(categoryId);
-            console.log('Category deleted successfully');
             await fetchCategories();
-            safeAlert('Category deleted successfully');
           } catch (error) {
             console.error('Error deleting category:', error);
             safeAlert('Error deleting category. Please try again.');
@@ -1141,9 +1131,7 @@ const App = () => {
         setTimeout(async () => {
           try {
             await subcategoriesAPI.delete(subcategoryId);
-            console.log('Subcategory deleted successfully');
             await fetchSubcategories('accessories');
-            safeAlert('Subcategory deleted successfully');
           } catch (error) {
             console.error('Error deleting subcategory:', error);
             safeAlert('Error deleting subcategory. Please try again.');

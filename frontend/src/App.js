@@ -10,7 +10,8 @@ import {
   tagsAPI,
   tagCategoriesAPI,
   statisticsAPI,
-  backupAPI
+  backupAPI,
+  syncAPI
 } from './localStorage';
 
 // FIXED: Helper function to handle all alerts with timeout to prevent text input focus bug
@@ -118,7 +119,7 @@ const getSubcategoryIcon = (subcategory, parentCategory, categories) => {
 const getColorHex = (colorName) => {
   const colors = {
     'red': '#EF4444', 'orange': '#F97316', 'yellow': '#FDE047', 'green': '#22C55E',
-    'blue': '#3B82F6', 'indigo': '#6366F1', 'purple': 'rgba(139, 92, 246, 1)', 'pink': '#EC4899',
+    'blue': '#3B82F6', 'indigo': '#6366F1', 'purple': '#8B5CF6', 'pink': '#EC4899',
     'white': '#F9FAFB', 'gray': '#6B7280', 'grey': '#6B7280', 'black': '#1F2937',
     'navy': '#1E3A8A', 'maroon': '#7F1D1D', 'beige': '#D2B48C', 'cream': '#FEF3C7',
     'gold': '#F59E0B', 'silver': '#9CA3AF', 'rose': '#FB7185', 'coral': '#FF7F7F',
@@ -164,6 +165,13 @@ const App = () => {
   const [accessoriesExpanded, setAccessoriesExpanded] = useState(false);
   const [expandedTagTypes, setExpandedTagTypes] = useState({});
   const [darkMode, setDarkMode] = useState(false);
+
+  // Sync states
+  const [syncing, setSyncing] = useState(false);
+  const [syncStatus, setSyncStatus] = useState(null);
+  const [showSyncModal, setShowSyncModal] = useState(false);
+  const [showExportModal, setShowExportModal] = useState(false);
+  const [exportData, setExportData] = useState(null);
 
   // Image cropping states
   const [originalImage, setOriginalImage] = useState(null);
@@ -224,13 +232,49 @@ const App = () => {
     }
   };
 
-  // Initialize the app with localStorage
+  // Initialize the app with localStorage and sync
   useEffect(() => {
-    initializeApp();
-    fetchClothingItems();
-    fetchCategories();
-    fetchAvailableTags();
-    fetchTagCategories();
+    const initializeWithSync = async () => {
+      // Initialize local data first
+      initializeApp();
+      
+      // Try to sync with remote catalog on startup
+      console.log('Checking for catalog updates...');
+      try {
+        setSyncing(true);
+        const syncResult = await syncAPI.syncCatalog();
+        
+        if (syncResult.updated) {
+          console.log(`✅ Catalog updated: ${syncResult.message}`);
+          setSyncStatus({
+            type: 'success',
+            message: `Catalog updated to version ${syncResult.version} (${syncResult.itemCount} items)`
+          });
+        } else {
+          console.log('📱 Catalog is up to date');
+          setSyncStatus({
+            type: 'info', 
+            message: syncResult.message
+          });
+        }
+      } catch (error) {
+        console.warn('⚠️ Sync failed, using local data:', error.message);
+        setSyncStatus({
+          type: 'warning',
+          message: 'Offline mode - using local data'
+        });
+      } finally {
+        setSyncing(false);
+      }
+
+      // Load data (will use synced data if available)
+      fetchClothingItems();
+      fetchCategories();
+      fetchAvailableTags();
+      fetchTagCategories();
+    };
+
+    initializeWithSync();
   }, []);
 
   useEffect(() => {
@@ -541,6 +585,7 @@ const App = () => {
         try {
           console.log('Deleting item with ID:', itemId);
           await clothingItemsAPI.delete(itemId);
+          console.log('Item deleted successfully');
 
           // Refresh the items list
           await fetchClothingItems();
@@ -549,6 +594,7 @@ const App = () => {
           // Close the modal
           setSelectedItem(null);
 
+          safeAlert('Item deleted successfully!');
 
         } catch (error) {
           console.error('Delete error:', error);
@@ -649,6 +695,75 @@ const App = () => {
     });
 
     return allTags;
+  };
+
+  // Sync Functions
+  const handleManualSync = async () => {
+    setSyncing(true);
+    try {
+      const syncResult = await syncAPI.syncCatalog();
+      
+      if (syncResult.success) {
+        if (syncResult.updated) {
+          setSyncStatus({
+            type: 'success',
+            message: `Updated to version ${syncResult.version} (${syncResult.itemCount} items)`
+          });
+          
+          // Refresh all data after sync
+          await Promise.all([
+            fetchClothingItems(),
+            fetchCategories(), 
+            fetchAvailableTags(),
+            fetchTagCategories()
+          ]);
+        } else {
+          setSyncStatus({
+            type: 'info',
+            message: syncResult.message
+          });
+        }
+      } else {
+        setSyncStatus({
+          type: 'error',
+          message: syncResult.message
+        });
+      }
+    } catch (error) {
+      setSyncStatus({
+        type: 'error',
+        message: `Sync failed: ${error.message}`
+      });
+    } finally {
+      setSyncing(false);
+    }
+  };
+
+  const handleExportCatalog = () => {
+    const exportResult = syncAPI.exportCatalog();
+    if (exportResult.success) {
+      setExportData(exportResult);
+      setShowExportModal(true);
+    } else {
+      setSyncStatus({
+        type: 'error',
+        message: `Export failed: ${exportResult.message}`
+      });
+    }
+  };
+
+  const downloadCatalogFile = () => {
+    if (!exportData) return;
+    
+    const blob = new Blob([exportData.json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `lily-catalog-v${exportData.catalog.version}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   };
 
   const renderTagBadges = (tags) => {
@@ -919,7 +1034,7 @@ const App = () => {
                 }}
                 className="category-card cursor-pointer group"
               >
-                <div className="aspect-square bg-gradient-to-br from-purple-100 to-purple-300 rounded-2xl flex items-center justify-center mb-3 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 p-6">
+                <div className="aspect-square bg-gradient-to-br from-purple-100 to-violet-200 rounded-2xl flex items-center justify-center mb-3 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 p-6">
                   <img
                     src={getSubcategoryIcon(subcategory, selectedSubcategoryParent, categories)}
                     alt={subcategory.name}
@@ -1056,6 +1171,7 @@ const App = () => {
         });
 
         fetchAvailableTags(); // FIXED: Use correct function name
+        console.log('Tag added successfully!');
       } catch (error) {
         console.error('Error adding tag:', error);
         if (error.message.includes('already exists')) {
@@ -1068,6 +1184,7 @@ const App = () => {
 
     // FIXED: Use localStorage API instead of axios with proper focus handling
     const handleDeleteTag = async (tagId) => {
+      console.log('Deleting tag with ID:', tagId);
 
       const confirmed = window.confirm('Are you sure you want to delete this tag?');
 
@@ -1076,7 +1193,9 @@ const App = () => {
         setTimeout(async () => {
           try {
             await tagsAPI.delete(tagId);
+            console.log('Tag deleted successfully');
             await fetchAvailableTags(); // FIXED: Use correct function name
+            safeAlert('Tag deleted successfully');
           } catch (error) {
             console.error('Error deleting tag:', error);
             safeAlert('Error deleting tag. Please try again.');
@@ -1095,6 +1214,7 @@ const App = () => {
       });
         setNewSubcategory({ name: '', parent_category: 'accessories' });
         fetchSubcategories(newSubcategory.parent_category);
+        safeAlert('Subcategory added successfully');
       } catch (error) {
         console.error('Error adding subcategory:', error);
         safeAlert('Error adding subcategory. It might already exist.');
@@ -1103,6 +1223,7 @@ const App = () => {
 
     // FIXED: Use localStorage API instead of axios with proper focus handling
     const handleDeleteCategory = async (categoryId, categoryName) => {
+      console.log('Deleting category:', categoryName, 'ID:', categoryId);
 
       const confirmed = window.confirm(`Are you sure you want to delete the "${categoryName}" category? This will not delete items in this category.`);
 
@@ -1111,7 +1232,9 @@ const App = () => {
         setTimeout(async () => {
           try {
             await categoriesAPI.delete(categoryId);
+            console.log('Category deleted successfully');
             await fetchCategories();
+            safeAlert('Category deleted successfully');
           } catch (error) {
             console.error('Error deleting category:', error);
             safeAlert('Error deleting category. Please try again.');
@@ -1131,7 +1254,9 @@ const App = () => {
         setTimeout(async () => {
           try {
             await subcategoriesAPI.delete(subcategoryId);
+            console.log('Subcategory deleted successfully');
             await fetchSubcategories('accessories');
+            safeAlert('Subcategory deleted successfully');
           } catch (error) {
             console.error('Error deleting subcategory:', error);
             safeAlert('Error deleting subcategory. Please try again.');
@@ -1208,6 +1333,65 @@ const App = () => {
         <div className="text-center">
           <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-2">Settings</h2>
           <p className="text-gray-600 dark:text-gray-300">Manage your categories, tags, and subcategories</p>
+        </div>
+
+        {/* Catalog Sync Settings */}
+        <div className="bg-white dark:bg-neutral-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-neutral-700">
+          <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4">Catalog Sync</h3>
+          
+          {/* Sync Status */}
+          {syncStatus && (
+            <div className={`mb-4 p-3 rounded-lg ${
+              syncStatus.type === 'success' ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400' :
+              syncStatus.type === 'error' ? 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-400' :
+              syncStatus.type === 'warning' ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-400' :
+              'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-400'
+            }`}>
+              {syncStatus.message}
+            </div>
+          )}
+
+          <div className="space-y-4">
+            {/* Sync Actions */}
+            <div className="flex gap-3">
+              <button
+                onClick={handleManualSync}
+                disabled={syncing}
+                className="flex-1 bg-blue-500 hover:bg-blue-600 disabled:bg-blue-300 text-white px-4 py-3 rounded-xl font-medium transition-colors flex items-center justify-center gap-2"
+              >
+                {syncing ? (
+                  <>🔄 Syncing...</>
+                ) : (
+                  <>📡 Check for Updates</>
+                )}
+              </button>
+              
+              <button
+                onClick={handleExportCatalog}
+                className="flex-1 bg-green-500 hover:bg-green-600 text-white px-4 py-3 rounded-xl font-medium transition-colors"
+              >
+                📤 Export Catalog
+              </button>
+            </div>
+
+            {/* Sync Status Info */}
+            <div className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+              <p><strong>Current Version:</strong> {syncAPI.getSyncStatus().currentVersion}</p>
+              <p><strong>Last Sync:</strong> {
+                syncAPI.getSyncStatus().lastSync 
+                  ? new Date(syncAPI.getSyncStatus().lastSync).toLocaleString()
+                  : 'Never'
+              }</p>
+              <p className="text-xs text-gray-500 dark:text-gray-500">
+                <strong>Master URL:</strong> {syncAPI.getSyncStatus().masterUrl}
+              </p>
+            </div>
+
+            <div className="text-xs text-gray-500 dark:text-gray-500 p-3 bg-gray-50 dark:bg-neutral-700 rounded-lg">
+              <strong>How it works:</strong> The app automatically checks for catalog updates on startup. 
+              Use "Check for Updates" to manually sync with the latest catalog version from GitHub.
+            </div>
+          </div>
         </div>
 
         {/* Appearance Settings */}
@@ -2325,6 +2509,67 @@ const App = () => {
                   </button>
                 </div>
               </form>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Export Catalog Modal */}
+      {showExportModal && exportData && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white dark:bg-neutral-800 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">Export Catalog</h2>
+              
+              <div className="space-y-4">
+                <div className="bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-800 rounded-lg p-4">
+                  <h3 className="font-semibold text-green-800 dark:text-green-400 mb-2">Catalog Ready for Export</h3>
+                  <div className="text-sm text-green-700 dark:text-green-300 space-y-1">
+                    <p><strong>Version:</strong> {exportData.catalog.version}</p>
+                    <p><strong>Items:</strong> {exportData.catalog.clothingItems.length}</p>
+                    <p><strong>Categories:</strong> {exportData.catalog.categories.length}</p>
+                    <p><strong>Tags:</strong> {exportData.catalog.tags.length}</p>
+                  </div>
+                </div>
+
+                <div className="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                  <h3 className="font-semibold text-blue-800 dark:text-blue-400 mb-2">Next Steps:</h3>
+                  <ol className="text-sm text-blue-700 dark:text-blue-300 space-y-2 list-decimal list-inside">
+                    <li>Click "Download catalog.json" below</li>
+                    <li>Upload the file to your GitHub repository as <code>catalog.json</code></li>
+                    <li>Users will automatically get the updates on their next app launch</li>
+                  </ol>
+                </div>
+
+                <div className="bg-gray-50 dark:bg-neutral-700 rounded-lg p-4 max-h-40 overflow-y-auto">
+                  <h4 className="font-medium text-gray-700 dark:text-gray-300 mb-2">Preview:</h4>
+                  <pre className="text-xs text-gray-600 dark:text-gray-400 whitespace-pre-wrap">
+                    {exportData.json.substring(0, 500)}...
+                  </pre>
+                </div>
+
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => {
+                      setShowExportModal(false);
+                      setExportData(null);
+                    }}
+                    className="flex-1 bg-gray-100 hover:bg-gray-200 dark:bg-neutral-700 dark:hover:bg-neutral-600 text-gray-700 dark:text-gray-300 py-3 px-4 rounded-xl font-medium transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={() => {
+                      downloadCatalogFile();
+                      setShowExportModal(false);
+                      setExportData(null);
+                    }}
+                    className="flex-1 bg-green-500 hover:bg-green-600 text-white py-3 px-4 rounded-xl font-medium transition-colors"
+                  >
+                    📥 Download catalog.json
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
