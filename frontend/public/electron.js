@@ -9,6 +9,7 @@ function createWindow() {
     height: 1080,
     title: "Lily's Closet",
     icon: path.join(__dirname, "icon.ico"),
+    autoHideMenuBar: true,
     webPreferences: { nodeIntegration: false, contextIsolation: true },
   });
 
