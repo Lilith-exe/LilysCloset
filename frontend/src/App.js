@@ -1034,7 +1034,7 @@ const App = () => {
                 }}
                 className="category-card cursor-pointer group"
               >
-                <div className="aspect-square bg-gradient-to-br from-purple-100 to-violet-200 rounded-2xl flex items-center justify-center mb-3 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 p-6">
+                <div className="aspect-square bg-gradient-to-br from-purple-200 to-purple-300 rounded-2xl flex items-center justify-center mb-3 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 p-6">
                   <img
                     src={getSubcategoryIcon(subcategory, selectedSubcategoryParent, categories)}
                     alt={subcategory.name}
