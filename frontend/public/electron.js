@@ -15,9 +15,11 @@ function createWindow() {
   const isDev = !app.isPackaged;
   if (isDev) {
     win.loadURL("http://localhost:3000");
+    // Only open dev tools in development
+    win.webContents.openDevTools({ mode: "detach" });
   } else {
     win.loadFile(path.join(__dirname, "../build/index.html"));
-    win.webContents.openDevTools({ mode: "detach" });
+    // Dev tools removed from production
   }
 
   if (!isDev) {
