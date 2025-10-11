@@ -3,7 +3,12 @@
   "homepage": "./",
   "name": "lilys-closet",
   "productName": "Lilys Closet",
-  "version": "1.1.3",
+  "version": "1.2.1",
+  "description": "A personal wardrobe management and clothing catalog application",
+  "author": {
+    "name": "Lilith-exe",
+    "email": "lilith14.exe@gmail.com"
+  },
   "private": true,
   "dependencies": {
     "@hookform/resolvers": "^5.0.1",
@@ -63,7 +68,7 @@
     "start": "cross-env REACT_APP_VERSION=dev craco start",
     "build": "cross-env REACT_APP_VERSION=%npm_package_version% craco build",
     "test": "craco test",
-    "electron-dev": "concurrently -k -n WEB,APP \"npm start\" \"wait-on http://localhost:3000 && electron .\"",
+    "electron-dev": "cross-env BROWSER=none concurrently \"craco start\" \"wait-on http://localhost:3000 && electron .\"",
     "dist": "npm run build && electron-builder",
     "dist:fast": "npm run build && electron-builder --win nsis --publish never -c.compression=store",
     "dist:publish": "npm run dist --publish=always"
@@ -113,7 +118,9 @@
     ],
     "win": {
       "target": "nsis",
-      "icon": "public/icon.ico"
+      "icon": "public/icon.ico",
+      "requestedExecutionLevel": "asInvoker",
+      "signAndEditExecutable": false
     },
     "publish": {
       "provider": "github",
@@ -125,6 +132,9 @@
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Lily's Closet",
       "installerIcon": "public/icon.ico",
       "uninstallerIcon": "public/icon.ico",
       "installerHeaderIcon": "public/icon.ico"
