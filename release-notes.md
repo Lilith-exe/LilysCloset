@@ -6,9 +6,11 @@
 - Reset All Filters button with count indicators
 - Visual styling for excluded tags
 
+✅ **Optimization**
+- Drastically optimised particularly when adding new items
+
 ✅ **UI Improvements**
 - Better visual hierarchy and color coding
-- Tooltips for interaction guidance
 - Seamless dark mode integration
 
 ✅ **Bug Fixes**
