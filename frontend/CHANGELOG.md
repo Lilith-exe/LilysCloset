@@ -1,7 +1,8 @@
-## What's New in v1.2.14
+## What's New in v1.2.15
 
-✅ **Fixes**
-- Fixed app icon.
+✅ **Updated auto updates**
+- Added a small UI when updating
+- Added auto restart of the app after update finished
 
 ## Installation
 

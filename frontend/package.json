@@ -3,7 +3,7 @@
   "homepage": "./",
   "name": "lilys-closet",
   "productName": "Lilys Closet",
-  "version": "1.2.14",
+  "version": "1.2.15",
   "description": "A personal wardrobe management and clothing catalog application",
   "author": {
     "name": "Lilith-exe",
@@ -115,7 +115,9 @@
     "files": [
       "build/**/*",
       "node_modules/**/*",
-      "public/electron.js"
+      "public/electron.js",
+      "public/updater-preload.js",
+      "public/updater.html"
     ],
     "extraResources": [
       {

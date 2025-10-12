@@ -1,0 +1,44 @@
+<!doctype html><html><head><meta charset="utf-8"/><title>Updating…</title>
+<style>
+ body{font:14px system-ui,Segoe UI,Arial;margin:14px;color:#222}
+ .row{display:flex;gap:8px;align-items:center}
+ .bar{width:100%;height:10px;background:#eee;border-radius:6px;overflow:hidden}
+ .fill{height:100%;width:0%;background:#9c27b0;transition:width .2s}
+ .muted{color:#666;font-size:12px}
+ button{padding:6px 10px;border:1px solid #ccc;border-radius:6px;background:#fafafa;cursor:pointer}
+</style></head>
+<body>
+  <div id="title">Checking for updates…</div>
+  <div class="row" style="margin:10px 0 6px">
+    <div class="bar"><div id="fill" class="fill"></div></div>
+    <div id="pct" style="width:42px;text-align:right">0%</div>
+  </div>
+  <div id="meta" class="muted"></div>
+  <div id="actions" style="margin-top:10px; display:none">
+    <button id="restart">Restart to update</button>
+  </div>
+<script>
+ const title=document.getElementById("title");
+ const fill=document.getElementById("fill");
+ const pct=document.getElementById("pct");
+ const meta=document.getElementById("meta");
+ const actions=document.getElementById("actions");
+ const btn=document.getElementById("restart");
+ const setPct=(n)=>{const v=Math.max(0,Math.min(100,n|0));fill.style.width=v+"%";pct.textContent=v+"%";};
+ // @ts-ignore
+ window.upd.onState((d)=>{ if(!d)return;
+   if(d.s==="checking") title.textContent="Checking for updates…";
+   if(d.s==="available") title.textContent=`Downloading v${d.v}…`;
+   if(d.s==="none"){ title.textContent="You're up to date."; setPct(100); }
+   if(d.s==="ready"){ title.textContent=`Update ready (v${d.v})`; actions.style.display="block"; }
+   if(d.s==="error"){ title.textContent="Update error"; meta.textContent=d.m||""; }
+ });
+ // @ts-ignore
+ window.upd.onProgress((p)=>{ if(!p)return; setPct(p.percent||0);
+   meta.textContent = p.bytesPerSecond
+     ? `${(p.bytesPerSecond/1024/1024).toFixed(1)} MB/s • ${(p.transferred/1024/1024).toFixed(1)} / ${(p.total/1024/1024).toFixed(1)} MB`
+     : "";
+ });
+ // @ts-ignore
+ btn.addEventListener("click",()=>window.upd.installNow());
+</script></body></html>
