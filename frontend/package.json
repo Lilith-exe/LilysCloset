@@ -3,7 +3,7 @@
   "homepage": "./",
   "name": "lilys-closet",
   "productName": "Lilys Closet",
-  "version": "1.2.1",
+  "version": "1.2.14",
   "description": "A personal wardrobe management and clothing catalog application",
   "author": {
     "name": "Lilith-exe",
@@ -101,6 +101,7 @@
     "eslint-plugin-react": "7.37.4",
     "globals": "15.15.0",
     "postcss": "^8.4.49",
+    "rcedit": "^4.0.1",
     "tailwindcss": "^3.4.17",
     "wait-on": "^9.0.1"
   },
@@ -108,17 +109,23 @@
     "appId": "com.Layla.lilyscloset",
     "productName": "Lilys Closet",
     "directories": {
-      "output": "dist"
+      "output": "dist",
+      "buildResources": "build-res"
     },
     "files": [
       "build/**/*",
       "node_modules/**/*",
-      "public/electron.js",
-      "public/icon.ico"
+      "public/electron.js"
+    ],
+    "extraResources": [
+      {
+        "from": "electron-resources",
+        "to": "electron-resources"
+      }
     ],
     "win": {
       "target": "nsis",
-      "icon": "public/icon.ico",
+      "icon": "icon.ico",
       "requestedExecutionLevel": "asInvoker",
       "signAndEditExecutable": false
     },
@@ -135,10 +142,11 @@
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
       "shortcutName": "Lily's Closet",
-      "installerIcon": "public/icon.ico",
-      "uninstallerIcon": "public/icon.ico",
-      "installerHeaderIcon": "public/icon.ico"
-    }
+      "installerIcon": "icon.ico",
+      "uninstallerIcon": "icon.ico",
+      "installerHeaderIcon": "icon.ico"
+    },
+    "afterPack": "./scripts/afterPack.js"
   },
   "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }

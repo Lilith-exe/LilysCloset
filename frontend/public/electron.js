@@ -1,30 +1,41 @@
-// public/electron.js
 const { app, BrowserWindow } = require("electron");
-const { autoUpdater } = require("electron-updater");
 const path = require("path");
+const fs = require("fs");
+
+const APP_ID = "com.Layla.lilyscloset"; // MUST match build.appId
+app.setAppUserModelId(APP_ID);
+
+function log(line) {
+  try {
+    const f = path.join(app.getPath("userData"), "lilys.log");
+    fs.appendFileSync(f, `[${new Date().toISOString()}] ${line}\n`);
+  } catch {}
+}
+
+function res(p) {
+  return app.isPackaged ? path.join(process.resourcesPath, p) : path.join(process.cwd(), p);
+}
 
 function createWindow() {
+  const iconPath = res(path.join("electron-resources", "icon.ico"));
+  log(`APP_ID=${APP_ID}`);
+  log(`iconPath=${iconPath} exists=${fs.existsSync(iconPath)}`);
+
   const win = new BrowserWindow({
     width: 1920,
     height: 1080,
     title: "Lily's Closet",
-    icon: path.join(__dirname, "icon.ico"),
+    icon: fs.existsSync(iconPath) ? iconPath : undefined,
     autoHideMenuBar: true,
-    webPreferences: { nodeIntegration: false, contextIsolation: true },
+    webPreferences: { contextIsolation: true, nodeIntegration: false }
   });
 
-  const isDev = !app.isPackaged;
-  if (isDev) {
+  if (!app.isPackaged) {
     win.loadURL("http://localhost:3000");
-    // Only open dev tools in development
-    win.webContents.openDevTools({ mode: "detach" });
   } else {
-    win.loadFile(path.join(__dirname, "../build/index.html"));
-    // Dev tools removed from production
-  }
-
-  if (!isDev) {
-    setTimeout(() => autoUpdater.checkForUpdatesAndNotify(), 3000);
+    const indexPath = path.join(__dirname, "..", "build", "index.html");
+    log(`indexPath=${indexPath} exists=${fs.existsSync(indexPath)}`);
+    win.loadFile(indexPath);
   }
 }
 
