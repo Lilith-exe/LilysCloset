@@ -178,6 +178,7 @@ const App = () => {
   const [croppedImage, setCroppedImage] = useState(null);
   const [cropPosition, setCropPosition] = useState({ x: 0, y: 0 });
   const [cropSize, setCropSize] = useState({ width: 300, height: 300 });
+  const [renderedImageInfo, setRenderedImageInfo] = useState({ width: 400, height: 400, offsetX: 0, offsetY: 0 });
 
   const fileInputRef = useRef(null);
   const cameraInputRef = useRef(null);
@@ -536,6 +537,8 @@ const App = () => {
   const handleCropImage = () => {
     if (!originalImage || !canvasRef.current || !imageRef.current) return;
 
+    const { width: renderedWidth, height: renderedHeight, offsetX, offsetY } = renderedImageInfo;
+
     console.log('=== CROP DEBUG ===');
     console.log('Crop Size:', cropSize);
     console.log('Crop Position:', cropPosition);
@@ -545,23 +548,6 @@ const App = () => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     const img = imageRef.current;
-
-    // Calculate the actual rendered dimensions of the image inside the 400x400 box
-    const containerSize = 400;
-    const aspectRatio = img.naturalWidth / img.naturalHeight;
-
-    let renderedWidth = containerSize;
-    let renderedHeight = containerSize;
-    let offsetX = 0;
-    let offsetY = 0;
-
-    if (aspectRatio > 1) {
-      renderedHeight = containerSize / aspectRatio;
-      offsetY = (containerSize - renderedHeight) / 2;
-    } else if (aspectRatio < 1) {
-      renderedWidth = containerSize * aspectRatio;
-      offsetX = (containerSize - renderedWidth) / 2;
-    }
 
     // Convert the crop box position/size to natural image coordinates
     const effectiveCropX = Math.max(0, cropPosition.x - offsetX);
@@ -2236,22 +2222,37 @@ const App = () => {
                     if (imageRef.current) {
                       setTimeout(() => {
                         const img = imageRef.current;
-                        const imgStyle = getComputedStyle(img);
-                        const marginLeft = parseFloat(imgStyle.marginLeft) || 0;
-                        const marginTop = parseFloat(imgStyle.marginTop) || 0;
-                        
                         const containerSize = 400;
-                        const cropSize = containerSize * 1;
-                        
-                        // Adjust crop box position based on margin offset
-                        const centerX = marginLeft + (containerSize - cropSize) / 2;
-                        const centerY = marginTop + (containerSize - cropSize) / 2;
-                        
-                        setCropSize({ width: cropSize, height: cropSize });
+                        const aspectRatio = img.naturalWidth / img.naturalHeight;
+
+                        let renderedWidth = containerSize;
+                        let renderedHeight = containerSize;
+                        let offsetX = 0;
+                        let offsetY = 0;
+
+                        if (aspectRatio > 1) {
+                          renderedHeight = containerSize / aspectRatio;
+                          offsetY = (containerSize - renderedHeight) / 2;
+                        } else if (aspectRatio < 1) {
+                          renderedWidth = containerSize * aspectRatio;
+                          offsetX = (containerSize - renderedWidth) / 2;
+                        }
+
+                        const initialSize = Math.min(renderedWidth, renderedHeight) * 0.9;
+                        const clampedSize = Math.max(80, Math.min(initialSize, containerSize));
+
+                        const centerX = offsetX + (renderedWidth - clampedSize) / 2;
+                        const centerY = offsetY + (renderedHeight - clampedSize) / 2;
+
+                        setRenderedImageInfo({
+                          width: renderedWidth,
+                          height: renderedHeight,
+                          offsetX,
+                          offsetY
+                        });
+
+                        setCropSize({ width: clampedSize, height: clampedSize });
                         setCropPosition({ x: centerX, y: centerY });
-                        
-                        console.log('Margin offset:', marginLeft, marginTop);
-                        console.log('Adjusted position:', centerX, centerY);
                       }, 100);
                     }
                   }}
@@ -2269,7 +2270,9 @@ const App = () => {
                   onMouseDown={(e) => {
                     const imgRect = imageRef.current?.getBoundingClientRect();
                     if (!imgRect) return;
-                    
+
+                    const { width: renderedWidth, height: renderedHeight, offsetX, offsetY } = renderedImageInfo;
+
                     const startX = e.clientX - imgRect.left - cropPosition.x;
                     const startY = e.clientY - imgRect.top - cropPosition.y;
 
@@ -2277,13 +2280,12 @@ const App = () => {
                       const imgRect = imageRef.current?.getBoundingClientRect();
                       if (!imgRect) return;
 
-                      const imgStyle = getComputedStyle(imageRef.current);
-                      const marginLeft = parseFloat(imgStyle.marginLeft) || 0;
-                      const marginTop = parseFloat(imgStyle.marginTop) || 0;
+                      const maxX = offsetX + renderedWidth - cropSize.width;
+                      const maxY = offsetY + renderedHeight - cropSize.height;
 
-                      const newX = Math.max(marginLeft, Math.min(e.clientX - imgRect.left - startX, marginLeft + 400 - cropSize.width));
-                      const newY = Math.max(marginTop, Math.min(e.clientY - imgRect.top - startY, marginTop + 400 - cropSize.height));
-                      
+                      const newX = Math.max(offsetX, Math.min(e.clientX - imgRect.left - startX, maxX));
+                      const newY = Math.max(offsetY, Math.min(e.clientY - imgRect.top - startY, maxY));
+
                       setCropPosition({ x: newX, y: newY });
                     };
 
@@ -2308,14 +2310,11 @@ const App = () => {
                       const startX = e.clientX;
                       const startY = e.clientY;
                       const startSize = cropSize.width;
+                      const { width: renderedWidth, height: renderedHeight, offsetX, offsetY } = renderedImageInfo;
 
                       const handleMouseMove = (e) => {
                         const imgRect = imageRef.current?.getBoundingClientRect();
                         if (!imgRect) return;
-
-                        const imgStyle = getComputedStyle(imageRef.current);
-                        const marginLeft = parseFloat(imgStyle.marginLeft) || 0;
-                        const marginTop = parseFloat(imgStyle.marginTop) || 0;
 
                         const deltaX = e.clientX - startX;
                         const deltaY = e.clientY - startY;
@@ -2323,10 +2322,9 @@ const App = () => {
 
                         const newSize = Math.max(50, Math.min(
                           startSize + delta,
-                          // Constrain within the 400x400 image area, accounting for margins
-                          marginLeft + 400 - cropPosition.x,
-                          marginTop + 400 - cropPosition.y,
-                          400 // Maximum size is the image container size
+                          // Constrain within the rendered image area
+                          offsetX + renderedWidth - cropPosition.x,
+                          offsetY + renderedHeight - cropPosition.y
                         ));
 
                         setCropSize({ width: newSize, height: newSize });
@@ -2351,6 +2349,7 @@ const App = () => {
                       const startSize = cropSize.width;
                       const startPosX = cropPosition.x;
                       const startPosY = cropPosition.y;
+                      const { offsetX, offsetY } = renderedImageInfo;
 
                       const handleMouseMove = (e) => {
                         const deltaX = startX - e.clientX;
@@ -2359,13 +2358,13 @@ const App = () => {
 
                         const newSize = Math.max(50, Math.min(
                           startSize + delta,
-                          startPosX + startSize,
-                          startPosY + startSize
+                          startPosX + startSize - offsetX,
+                          startPosY + startSize - offsetY
                         ));
 
                         const sizeDiff = newSize - startSize;
-                        const newX = Math.max(0, startPosX - sizeDiff);
-                        const newY = Math.max(0, startPosY - sizeDiff);
+                        const newX = Math.max(offsetX, startPosX - sizeDiff);
+                        const newY = Math.max(offsetY, startPosY - sizeDiff);
 
                         setCropSize({ width: newSize, height: newSize });
                         setCropPosition({ x: newX, y: newY });
