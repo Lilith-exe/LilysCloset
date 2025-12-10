@@ -1,8 +1,7 @@
-## What's New in v1.2.15
+## What's New in v1.2.17
 
-✅ **Updated auto updates**
-- Added a small UI when updating
-- Added auto restart of the app after update finished
+✅ **Fixes**
+- Fixed crop modal UI
 
 ## Installation
 
