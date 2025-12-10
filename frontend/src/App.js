@@ -546,41 +546,59 @@ const App = () => {
     const ctx = canvas.getContext('2d');
     const img = imageRef.current;
 
-    // Set high quality canvas size - use actual crop dimensions for better quality
-    const finalSize = 800; // Higher resolution output
-    console.log('Canvas will be:', finalSize, 'x', finalSize);
-    canvas.width = finalSize;
-    canvas.height = finalSize;
+    // Calculate the actual rendered dimensions of the image inside the 400x400 box
+    const containerSize = 400;
+    const aspectRatio = img.naturalWidth / img.naturalHeight;
 
-    // Calculate scale factors
-    const displaySize = 400; // Match the forced display size above
-    const scaleX = img.naturalWidth / displaySize;
-    const scaleY = img.naturalHeight / displaySize;
-    console.log('New scale factors:', scaleX, scaleY); // Should be equal now
+    let renderedWidth = containerSize;
+    let renderedHeight = containerSize;
+    let offsetX = 0;
+    let offsetY = 0;
+
+    if (aspectRatio > 1) {
+      renderedHeight = containerSize / aspectRatio;
+      offsetY = (containerSize - renderedHeight) / 2;
+    } else if (aspectRatio < 1) {
+      renderedWidth = containerSize * aspectRatio;
+      offsetX = (containerSize - renderedWidth) / 2;
+    }
+
+    // Convert the crop box position/size to natural image coordinates
+    const effectiveCropX = Math.max(0, cropPosition.x - offsetX);
+    const effectiveCropY = Math.max(0, cropPosition.y - offsetY);
+    const visibleCropWidth = Math.min(cropSize.width, renderedWidth - effectiveCropX);
+    const visibleCropHeight = Math.min(cropSize.height, renderedHeight - effectiveCropY);
+
+    const scaleX = img.naturalWidth / renderedWidth;
+    const scaleY = img.naturalHeight / renderedHeight;
+
+    const sourceX = effectiveCropX * scaleX;
+    const sourceY = effectiveCropY * scaleY;
+    const sourceWidth = visibleCropWidth * scaleX;
+    const sourceHeight = visibleCropHeight * scaleY;
+
+    // Set canvas size based on the crop dimensions, capping the largest side to 800px for quality
+    const maxDimension = 800;
+    const scaleDown = Math.min(1, maxDimension / Math.max(sourceWidth, sourceHeight));
+    canvas.width = sourceWidth * scaleDown;
+    canvas.height = sourceHeight * scaleDown;
 
     // Enable high quality rendering
-    ctx.imageSmoothingEnabled = false;
+    ctx.imageSmoothingEnabled = true;
     ctx.globalCompositeOperation = 'copy';
 
-    // Draw cropped image at high quality
-    // Work directly with natural dimensions rather than displayed ones
-      const cropX = (cropPosition.x / img.width) * img.naturalWidth;
-      const cropY = (cropPosition.y / img.height) * img.naturalHeight;
-      const cropWidth = (cropSize.width / img.width) * img.naturalWidth;
-      const cropHeight = (cropSize.height / img.height) * img.naturalHeight;
+    ctx.drawImage(
+      img,
+      sourceX,
+      sourceY,
+      sourceWidth,
+      sourceHeight,
+      0,
+      0,
+      canvas.width,
+      canvas.height
+    );
 
-      ctx.drawImage(
-        img,
-        cropPosition.x * scaleX,
-        cropPosition.y * scaleY,
-        cropSize.width * scaleX,
-        cropSize.height * scaleY,
-        0,
-        0,
-        finalSize,
-        finalSize
-      );
-      
     // Use high quality JPEG with 95% quality
     const croppedBase64 = canvas.toDataURL('image/jpeg', 0.95);
     setCroppedImage(croppedBase64);
