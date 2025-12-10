@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef} from 'react';
 import './App.css';
 
+const CROP_CONTAINER_SIZE = 400;
+
 // Import localStorage API functions
 import {
   initializeApp,
@@ -2206,23 +2208,24 @@ const App = () => {
             <div className="p-6">
               <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">Crop Your Image</h2>
 
-              <div className="relative mb-4">
+              <div
+                className="relative mb-4 mx-auto"
+                style={{ width: `${CROP_CONTAINER_SIZE}px`, height: `${CROP_CONTAINER_SIZE}px` }}
+              >
                 <img
                   ref={imageRef}
-                    src={originalImage}
-                    alt="Original"
-                    className="mx-auto border"
-                    style={{
-                      width: '400px',
-                      height: '400px', 
-                      objectFit: 'contain',
-                      objectPosition: 'center'
-                    }}
+                  src={originalImage}
+                  alt="Original"
+                  className="border block w-full h-full"
+                  style={{
+                    objectFit: 'contain',
+                    objectPosition: 'center'
+                  }}
                   onLoad={() => {
                     if (imageRef.current) {
                       setTimeout(() => {
                         const img = imageRef.current;
-                        const containerSize = 400;
+                        const containerSize = CROP_CONTAINER_SIZE;
                         const aspectRatio = img.naturalWidth / img.naturalHeight;
 
                         let renderedWidth = containerSize;
