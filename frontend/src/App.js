@@ -3,6 +3,8 @@ import './App.css';
 
 const CROP_CONTAINER_SIZE = 400;
 
+const CROP_CONTAINER_SIZE = 400;
+
 // Import localStorage API functions
 import {
   initializeApp,
@@ -180,6 +182,7 @@ const App = () => {
   const [croppedImage, setCroppedImage] = useState(null);
   const [cropPosition, setCropPosition] = useState({ x: 0, y: 0 });
   const [cropSize, setCropSize] = useState({ width: 300, height: 300 });
+  const [renderedImageInfo, setRenderedImageInfo] = useState({ width: 400, height: 400, offsetX: 0, offsetY: 0 });
   const [renderedImageInfo, setRenderedImageInfo] = useState({ width: 400, height: 400, offsetX: 0, offsetY: 0 });
 
   const fileInputRef = useRef(null);
@@ -541,6 +544,8 @@ const App = () => {
 
     const { width: renderedWidth, height: renderedHeight, offsetX, offsetY } = renderedImageInfo;
 
+    const { width: renderedWidth, height: renderedHeight, offsetX, offsetY } = renderedImageInfo;
+
     console.log('=== CROP DEBUG ===');
     console.log('Crop Size:', cropSize);
     console.log('Crop Position:', cropPosition);
@@ -570,10 +575,42 @@ const App = () => {
     const scaleDown = Math.min(1, maxDimension / Math.max(sourceWidth, sourceHeight));
     canvas.width = sourceWidth * scaleDown;
     canvas.height = sourceHeight * scaleDown;
+    // Convert the crop box position/size to natural image coordinates
+    const effectiveCropX = Math.max(0, cropPosition.x - offsetX);
+    const effectiveCropY = Math.max(0, cropPosition.y - offsetY);
+    const visibleCropWidth = Math.min(cropSize.width, renderedWidth - effectiveCropX);
+    const visibleCropHeight = Math.min(cropSize.height, renderedHeight - effectiveCropY);
+
+    const scaleX = img.naturalWidth / renderedWidth;
+    const scaleY = img.naturalHeight / renderedHeight;
+
+    const sourceX = effectiveCropX * scaleX;
+    const sourceY = effectiveCropY * scaleY;
+    const sourceWidth = visibleCropWidth * scaleX;
+    const sourceHeight = visibleCropHeight * scaleY;
+
+    // Set canvas size based on the crop dimensions, capping the largest side to 800px for quality
+    const maxDimension = 800;
+    const scaleDown = Math.min(1, maxDimension / Math.max(sourceWidth, sourceHeight));
+    canvas.width = sourceWidth * scaleDown;
+    canvas.height = sourceHeight * scaleDown;
 
     // Enable high quality rendering
     ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingEnabled = true;
     ctx.globalCompositeOperation = 'copy';
+
+    ctx.drawImage(
+      img,
+      sourceX,
+      sourceY,
+      sourceWidth,
+      sourceHeight,
+      0,
+      0,
+      canvas.width,
+      canvas.height
+    );
 
     ctx.drawImage(
       img,
@@ -2212,8 +2249,19 @@ const App = () => {
                 className="relative mb-4 mx-auto"
                 style={{ width: `${CROP_CONTAINER_SIZE}px`, height: `${CROP_CONTAINER_SIZE}px` }}
               >
+              <div
+                className="relative mb-4 mx-auto"
+                style={{ width: `${CROP_CONTAINER_SIZE}px`, height: `${CROP_CONTAINER_SIZE}px` }}
+              >
                 <img
                   ref={imageRef}
+                  src={originalImage}
+                  alt="Original"
+                  className="border block w-full h-full"
+                  style={{
+                    objectFit: 'contain',
+                    objectPosition: 'center'
+                  }}
                   src={originalImage}
                   alt="Original"
                   className="border block w-full h-full"
@@ -2276,6 +2324,9 @@ const App = () => {
 
                     const { width: renderedWidth, height: renderedHeight, offsetX, offsetY } = renderedImageInfo;
 
+
+                    const { width: renderedWidth, height: renderedHeight, offsetX, offsetY } = renderedImageInfo;
+
                     const startX = e.clientX - imgRect.left - cropPosition.x;
                     const startY = e.clientY - imgRect.top - cropPosition.y;
 
@@ -2285,6 +2336,11 @@ const App = () => {
 
                       const maxX = offsetX + renderedWidth - cropSize.width;
                       const maxY = offsetY + renderedHeight - cropSize.height;
+                      const maxX = offsetX + renderedWidth - cropSize.width;
+                      const maxY = offsetY + renderedHeight - cropSize.height;
+
+                      const newX = Math.max(offsetX, Math.min(e.clientX - imgRect.left - startX, maxX));
+                      const newY = Math.max(offsetY, Math.min(e.clientY - imgRect.top - startY, maxY));
 
                       const newX = Math.max(offsetX, Math.min(e.clientX - imgRect.left - startX, maxX));
                       const newY = Math.max(offsetY, Math.min(e.clientY - imgRect.top - startY, maxY));
@@ -2314,6 +2370,7 @@ const App = () => {
                       const startY = e.clientY;
                       const startSize = cropSize.width;
                       const { width: renderedWidth, height: renderedHeight, offsetX, offsetY } = renderedImageInfo;
+                      const { width: renderedWidth, height: renderedHeight, offsetX, offsetY } = renderedImageInfo;
 
                       const handleMouseMove = (e) => {
                         const imgRect = imageRef.current?.getBoundingClientRect();
@@ -2325,6 +2382,9 @@ const App = () => {
 
                         const newSize = Math.max(50, Math.min(
                           startSize + delta,
+                          // Constrain within the rendered image area
+                          offsetX + renderedWidth - cropPosition.x,
+                          offsetY + renderedHeight - cropPosition.y
                           // Constrain within the rendered image area
                           offsetX + renderedWidth - cropPosition.x,
                           offsetY + renderedHeight - cropPosition.y
@@ -2353,6 +2413,7 @@ const App = () => {
                       const startPosX = cropPosition.x;
                       const startPosY = cropPosition.y;
                       const { offsetX, offsetY } = renderedImageInfo;
+                      const { offsetX, offsetY } = renderedImageInfo;
 
                       const handleMouseMove = (e) => {
                         const deltaX = startX - e.clientX;
@@ -2363,9 +2424,13 @@ const App = () => {
                           startSize + delta,
                           startPosX + startSize - offsetX,
                           startPosY + startSize - offsetY
+                          startPosX + startSize - offsetX,
+                          startPosY + startSize - offsetY
                         ));
 
                         const sizeDiff = newSize - startSize;
+                        const newX = Math.max(offsetX, startPosX - sizeDiff);
+                        const newY = Math.max(offsetY, startPosY - sizeDiff);
                         const newX = Math.max(offsetX, startPosX - sizeDiff);
                         const newY = Math.max(offsetY, startPosY - sizeDiff);
 
